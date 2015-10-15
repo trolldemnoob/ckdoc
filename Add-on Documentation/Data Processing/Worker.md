@@ -1,137 +1,136 @@
-# Worker Add-on
+Pekerja # Add-on
 
-Workers are long running background processes. They are typically used for anything from sending emails to running heavy calculations or rebuilding caches in the background.
+Pekerja lama menjalankan proses latar belakang. Mereka Biasanya digunakan untuk apa pun dari mengirim email ke menjalankan perhitungan berat atau membangun kembali cache di latar belakang.
 
-Each worker started via the Worker add-on runs in a seperate isolated container. The containers have exactly the same runtime environment defined by the stack chosen and the buildpack used and have the same access to all of the deployments add-ons.
+Setiap pekerja mulai melalui Pekerja add-on berjalan dalam wadah terisolasi terpisah. Wadah-memiliki tepat lingkungan runtime yang sama yang didefinisikan oleh stack dan buildpack Dipilih dan digunakan-memiliki akses yang sama ke semua penyebaran add-ons.
 
-## Adding the Worker Add-on
+## Menambahkan Pekerja Add-on
 
-Before you can start a worker, add the add-on with the addon.add command.
-
-~~~
-$ ironcliapp APP_NAME/DEP_NAME addon.add worker.single
-~~~
-
-## Starting a Worker
-
-Workers can be started via the command line client's worker.add command.
-
-To specify how to start a worker add a new line to your app's `Procfile` and then use that as the `WORKER_NAME`.
+Sebelum Anda dapat mulai pekerja, tambahkan add-on dengan perintah addon.add.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME worker.add WORKER_NAME [WORKER_PARAMS]
+$ APP_NAME ironcliapp / DEP_NAME addon.add worker.single
 ~~~
 
-Enclose multiple WORKER_PARAMS in double quotes.
+## Mulai Pekerja a
+
+Pekerja dapat dimulai melalui perintah worker.add baris pelanggan perintah ini.
+
+Untuk Tentukan bagaimana memulai pekerja menambahkan baris baru untuk aplikasi Anda `Procfile` Dan Kemudian gunakan dari` Itu memang WORKER_NAME`.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME worker.add WORKER_NAME "PARAM1 PARAM2 PARAM3"
+$ APP_NAME ironcliapp / DEP_NAME worker.add WORKER_NAME [WORKER_PARAMS]
 ~~~
 
-## List Running Workers
-
-To get a list of currently running workers use the worker command.
+Menyertakan beberapa WORKER_PARAMS dalam tanda kutip ganda.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME worker
-Workers
+$ APP_NAME ironcliapp / DEP_NAME worker.add WORKER_NAME "param1 param2 PARAM3"
+~~~
+
+## Daftar Menjalankan Pekerja
+
+Untuk mendapatkan daftar berjalan pekerja Saat menggunakan pekerja perintah.
+
+~~~
+$ APP_NAME ironcliapp / pekerja DEP_NAME
+Pekerja
  nr. wrk_id
    1 WRK_ID
 ~~~
 
-You can also get all the worker details by appending the WRK_ID to the worker command.
+Anda bisa mendapatkan semua rincian aussi pekerja dengan menambahkan perintah WRK_ID untuk pekerja.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME worker WRK_ID
-Worker
-wrk_id   : WRK_ID
-command  : WORKER_NAME
-params   : "PARAM1 PARAM2 PARAM3"
+$ APP_NAME ironcliapp / DEP_NAME pekerja WRK_ID
+Pekerja
+wrk_id: WRK_ID
+perintah: WORKER_NAME
+params "param1 param2 PARAM3"
 ~~~
 
-## Stopping Workers
+## Menghentikan Pekerja
 
-Workers can be either stopped via the command line client or by exiting the process with a zero exit code.
+Pekerja dapat dihentikan Entah melalui baris perintah atau dengan keluar proses pelanggan dengan kode nol keluar.
 
 ### Via Command Line
 
-To stop a running worker via the command line use the worker.remove command.
+Untuk berhenti berjalan pekerja melalui baris perintah menggunakan perintah worker.remove.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME worker.remove WRK_ID
+$ APP_NAME ironcliapp / DEP_NAME worker.remove WRK_ID
 ~~~
 
-To get the WRK_ID refer to the listing workers section above.
+Untuk mendapatkan WRK_ID Lihat bagian atas pekerja daftar.
 
 ### Via Exit Codes
 
-To stop a worker programatically use UNIX style exit codes. There are three distinct exit codes available.
+Untuk menghentikan pekerja programatik menggunakan UNIX gaya kode keluar. Ada tiga kode keluar yang berbeda tersedia.
 
- * exit (0); // Everything OK. Worker will be stopped.
- * exit (1); // Error. Worker will be restarted.
- * exit (2); // Error. Worker will be stopped.
+ * Exit (0); // Semuanya baik-baik saja. Pekerja akan dihentikan.
+ * Exit (1); // Kesalahan. Pekerja Akan Ulang.
+ * Exit (2); // Kesalahan. Pekerja akan dihentikan.
 
-For more details refer to the [PHP example](#php-worker-example) below.
+Untuk lebih jelasnya Rujuk ke [PHP contoh] (# php-pekerja-contoh) di bawah ini.
 
-## Worker log
+Log Pekerja ##
 
-As already explained in the [Logging section](/Platform Documentation.md/#logging) all stdout and stderr output of workers is redirected to the worker log. To see the output in a tail -f like fashion use the log command.
+Seperti yang sudah dijelaskan di [Logging] bagian (/ Landasan Documentation.md/#logging) stdout dan stderr keluaran semua pekerja yang Dialihkan ke log pekerja. Untuk melihat output dalam mode seperti perintah tail -f menggunakan log.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME log worker
-[Fri Dec 17 13:39:41 2010] WRK_ID Started Worker (command: 'WORKER_NAME', parameter: 'PARAM1 PARAM2 PARAM3')
-[Fri Dec 17 13:39:42 2010] WRK_ID Hello PARAM1 PARAM2 PARAM3
+$ APP_NAME ironcliapp / log pekerja DEP_NAME
+[Fri 17 Desember 2010 01:39:41] WRK_ID Dimulai Pekerja (perintah: parameter 'WORKER_NAME' 'param1 param2 PARAM3')
+[Fri 17 Desember 2010 01:39:42] WRK_ID Hello param1 param2 PARAM3
 [...]
 ~~~
 
-## Removing the Worker Add-on
+## Melepaskan Pekerja Add-on
 
-To remove the Worker add-on use the addon.remove command.
+Untuk menghapus Pekerja add-on menggunakan perintah addon.remove.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME addon.remove worker.single
+$ APP_NAME ironcliapp / DEP_NAME addon.remove worker.single
 ~~~
 
-## PHP Worker Example
+## Pekerja PHP Contoh
 
-The following example shows how to use the exit codes to restart or stop a worker.
+The Berikut contoh menunjukkan bagaimana menggunakan kode keluar untuk menghentikan atau memulai kembali pekerja.
 
-~~~php
-// read exit code parameter
-$exitCode = isset($argv[1]) && (int)$argv[1] > 0 ? (int)$argv[1] : 0;
-$steps = 5;
+~~~ Php
+// Parameter Baca keluar kode
+$ ExitCode = isset ($ argv [1]) && (int) $ argv [1]> 0? (Int) $ argv [1]: 0;
+Langkah = $ 5;
 
-$counter = 1;
-while(true) {
-    print "step: " . ($counter) . PHP_EOL;
-    if($counter == $steps){
-        if($exitCode == 0) {
-            print "All O.K. Exiting." . PHP_EOL;
-        } else if ($exitCode == 2){
-            print "An error occured. Exiting." . PHP_EOL;
-        } else {
-            print "An error occured. Restarting." .  PHP_EOL;
+$ Counter = 1;
+sementara (benar) {
+    mencetak "langkah". ($ Counter). PHP_EOL;
+    if ($ == langkah $ counter) {
+        if ($ ExitCode == 0) {
+            mencetak "Semua beres Keluar." . PHP_EOL;
+        } Lain jika ($ ExitCode == 2) {
+            mencetak "Terjadi kesalahan. Keluar." . PHP_EOL;
+        } Lain {
+            mencetak "Terjadi kesalahan. Restart." . PHP_EOL;
         }
-        print "Exitcode: " . $exitCode . PHP_EOL . PHP_EOL;
-        exit($exitCode);
+        mencetak "ExitCode". $ ExitCode. PHP_EOL. PHP_EOL;
+        exit ($ ExitCode);
     }
-    sleep(1);
-    $counter++;
+    tidur (1);
+    $ Kontra ++;
 }
 ~~~
 
-Running this worker with the exit code set to 2 would result in the following output and the worker stopping itself.
+Menjalankan pekerja ini dengan kode keluar set ke 2 di Mengikuti The Akan menghasilkan output dan pekerja berhenti Hakikat.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME worker.add WORKER_NAME 2
-$ ironcliapp APP_NAME/DEP_NAME log worker
-[Tue Apr 12 09:15:54 2011] WRK_ID Started Worker (command: 'WORKER_NAME', parameter: '2')
-[Tue Apr 12 09:15:54 2011] WRK_ID step: 1
-[Tue Apr 12 09:15:55 2011] WRK_ID step: 2
-[Tue Apr 12 09:15:56 2011] WRK_ID step: 3
-[Tue Apr 12 09:15:57 2011] WRK_ID step: 4
-[Tue Apr 12 09:15:58 2011] WRK_ID step: 5
-[Tue Apr 12 09:15:58 2011] WRK_ID An error occured. Exiting.
+$ APP_NAME ironcliapp / DEP_NAME worker.add WORKER_NAME 2
+$ APP_NAME ironcliapp / log pekerja DEP_NAME
+[Tue Apr 12, 2011 09:15:54] WRK_ID Dimulai Pekerja (perintah: 'WORKER_NAME' parameter '2')
+[Tue Apr 12, 2011 09:15:54] WRK_ID langkah: 1
+[Tue Apr 12, 2011 09:15:55] WRK_ID langkah: 2
+[Tue Apr 12, 2011 09:15:56] WRK_ID langkah: 3
+[Tue 12 April 09:15:57 2011] WRK_ID langkah: 4
+[Tue Apr 12, 2011 09:15:58] WRK_ID langkah: 5
+[Tue Apr 12, 2011 09:15:58] WRK_ID Terjadi kesalahan. Keluar.
 [...]
 ~~~
-

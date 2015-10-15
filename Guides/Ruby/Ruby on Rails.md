@@ -1,199 +1,199 @@
-# Deploying a Ruby on Rails Application
+# Menyebarkan Ruby on Rails Aplikasi
 
-In this tutorial we're going to show you how to deploy a [Ruby on Rails] application on [CloudKilat]. You can find the [source code on Github][example-app] and check out the [Ruby buildpack][ruby buildpack] for supported features. The application is a fork of Michael Hartl's [Rails tutorial] sample app which is a Twitter clone.
+Dalam tutorial ini kita akan menunjukkan cara untuk menyebarkan [Ruby on Rails] aplikasi di [CloudKilat]. Anda dapat menemukan [kode sumber di Github] [contoh-aplikasi] dan memeriksa [Ruby buildpack] [ruby buildpack] fitur untuk didukung. Aplikasi ini garpu dari Michael Hartl ini [Rails tutorial] sampel aplikasi yang merupakan tiruan Twitter.
 
-## The Rails Application Explained
+## The Rails Aplikasi Dijelaskan
 
-### Get the App
+### Dapatkan App
 
-First, clone the Rails application from our repository on Github:
+Pertama, mengkloning aplikasi Rails dari repositori kami pada Github:
 
-~~~bash
-$ git clone https://github.com/cloudControl/ruby-rails-example-app.git
-$ cd ruby-rails-example-app; git checkout mysql;
+~~~ Pesta
+$ Git clone https://github.com/cloudControl/ruby-rails-example-app.git
+$ Cd ruby-rel-contoh-aplikasi; git checkout mysql;
 ~~~
 
-### Dependency Tracking
+### Ketergantungan Tracking
 
-The Ruby buildpack tracks dependencies with [Bundler]. Those are defined in the `Gemfile` which is placed in the root directory of your repository. In this example app it contains:
+Ruby buildpack trek ketergantungan dengan [Bundler]. Mereka didefinisikan dalam `Gemfile` yang ditempatkan di direktori root dari repositori Anda. Dalam contoh ini app berisi:
 
-~~~ruby
+~~~ Ruby
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.10'
-gem 'gravatar_image_tag', '1.0.0.pre2'
-gem 'will_paginate', '3.0.4'
+permata 'rel', '3.1.10'
+permata 'gravatar_image_tag', '1.0.0.pre2'
+permata 'will_paginate', '3.0.4'
 
-group :development do
-  gem 'annotate', '2.4.0'
-  gem 'faker', '0.3.1'
-end
+Kelompok: pembangunan yang
+  permata 'membubuhi keterangan', '2.4.0'
+  permata 'faker', '0.3.1'
+akhir
 
-group :test do
-  gem 'webrat', '0.7.1'
-  gem 'spork', '0.9.0.rc8'
-  gem 'factory_girl_rails', '1.0'
-end
+Kelompok: tes dilakukan
+  permata 'webrat', '0.7.1'
+  permata 'spork', '0.9.0.rc8'
+  permata 'factory_girl_rails', '1.0'
+akhir
 
-group :development, :test do
-  gem 'rspec-rails', '2.6.1'
-  gem 'sqlite3', '1.3.4'
-end
+Kelompok: pengembangan,: tes dilakukan
+  permata 'rspec-rel', '2.6.1'
+  permata 'sqlite3', '1.3.4'
+akhir
 
-group :production do
-  gem 'mysql2'
-  gem 'cloudcontrol-rails', '0.0.5'
-end
+Kelompok: produksi dilakukan
+  permata 'mysql2'
+  permata 'cloudcontrol-rel', '0.0.5'
+akhir
 
-group :assets do
-  gem 'sass-rails'
-  gem 'coffee-rails'
-  gem 'uglifier'
-end
+Kelompok: aset lakukan
+  permata 'sass-rel'
+  permata 'kopi-rel'
+  permata 'uglifier'
+akhir
 
-gem 'jquery-rails'
+permata 'jquery-rel'
 ~~~
 
-### Testing
+### Pengujian
 
-The app has an exhaustive set of tests. Check that all the tests are passing locally:
+Aplikasi ini memiliki set lengkap tes. Periksa semua tes melewati lokal:
 
-~~~bash
-$ bundle install
-$ bundle exec rake db:migrate
-$ bundle exec rake db:test:prepare
-$ bundle exec rspec spec/
+~~~ Pesta
+$ Bundel instalasi
+$ Bundel exec rake db: migrate
+$ Bundel exec rake db: test: mempersiapkan
+$ Bundel exec rspec spek /
 ~~~
 
-Now that the app is working, lets have a look at changes we have made to deploy it on CloudKilat.
+Sekarang bahwa aplikasi ini bekerja, mari kita lihat perubahan yang telah kita buat untuk menyebarkan pada CloudKilat.
 
-### Process Type Definition
+### Proses Type Definition
 
-CloudKilat uses a [Procfile] to know how to start your processes. The example code already includes a file called Procfile in the root of your repository. It looks like this:
+CloudKilat menggunakan [Procfile] tahu bagaimana untuk memulai proses Anda. Contoh kode sudah termasuk file bernama Procfile di root repositori Anda. Ini terlihat seperti ini:
 
 ~~~
-web: bundle exec rails s -p $PORT
+web: exec rel bundel s p $ PORT
 ~~~
 
-Left from the colon we specified the required process type called `web` followed by the command that starts the app and listens on the port specified by the environment variable `$PORT`.
+Kiri dari usus kita ditentukan jenis proses yang diperlukan disebut `web` diikuti dengan perintah yang dimulai aplikasi dan mendengarkan pada port yang ditentukan oleh variabel lingkungan` $ PORT`.
 
-### Configuring the Asset Pipeline
+### Konfigurasi Asset Pipeline
 
-We have added following code into the `Application` class defined in the `config/application.rb`:
+Kami telah menambahkan kode ke `Application` kelas didefinisikan dalam` config / application.rb` berikut:
 
-~~~ruby
-module SampleApp
-  class Application < Rails::Application
+~~~ Ruby
+modul SampleApp
+  Aplikasi kelas <Rails :: Aplikasi
 
     ...
 
-    # Do not initialize on precompile in the build process
-    # as this can fail, e.g. if database is being accessed in the process
-    # and there is no benefit in doing it in build process anyway
-    config.assets.initialize_on_precompile = false if ENV['BUILDPACK_RUNNING']
+    # Jangan menginisialisasi pada precompile dalam proses membangun
+    # Karena ini bisa gagal, misalnya jika database sedang diakses dalam proses
+    # Dan tidak ada manfaat dalam melakukannya dalam proses membangun pula
+    config.assets.initialize_on_precompile = false jika ENV ['BUILDPACK_RUNNING']
 
-  end
-end
+  akhir
+akhir
 ~~~
 
-### Production Database
+### Database Produksi
 
-By default, Rails 3 uses SQLite for all the environments. However, it is not recommended to use SQLite on CloudKilat because the filesystem is [not persistent][filesystem]. 
+Secara default, Rails 3 menggunakan SQLite untuk semua lingkungan. Namun, tidak dianjurkan untuk menggunakan SQLite pada CloudKilat karena filesystem ini [tidak terus-menerus] [filesystem].
 
-In this tutorial we use MySQL with the [MySQL Shared Add-on]. This is why we have modified the `Gemfile` by moving the `sqlite3` line to ":development, :test" block and added a new ":production" group with "mysql2" and ["cloudcontrol-rails"][gem itself] gems.
+Dalam tutorial ini kita menggunakan MySQL dengan [MySQL Bersama Add-on]. Ini sebabnya kami telah memodifikasi `Gemfile` dengan memindahkan` garis sqlite3` ke ": pengembangan,: test" blok dan menambahkan baru ": produksi" kelompok dengan "mysql2" dan ["cloudcontrol-rel"] [permata itu sendiri ] permata.
 
-Additionally we have changed the "production" section of `config/database.yml` to use the mysql adapter:
+Selain itu kami telah mengubah "produksi" dari `config / database.yml` menggunakan adaptor mysql:
 ~~~
-production:
-  adapter: mysql2
+Produksi:
+  adaptor: mysql2
   encoding: utf8
   pool: 5
 ~~~
-The 'cloudcontrol-rails' gem will provide the database credentials.
+Permata 'cloudcontrol-rel' akan memberikan mandat basis data.
 
 
-## Pushing and Deploying your App
+## Mendorong dan Menyebarkan App Anda
 
-Choose a unique name to replace the `APP_NAME` placeholder for your application and create it on the CloudKilat platform:
+Pilih nama yang unik untuk menggantikan `APP_NAME` tempat untuk aplikasi Anda dan membuatnya pada platform CloudKilat:
 
-~~~bash
-$ ironcliapp APP_NAME create ruby
+~~~ Pesta
+$ Ironcliapp APP_NAME membuat ruby
 ~~~
 
-Push your code to the application's repository, which triggers the deployment image build process (do it with `mysql` deployment name since we use the same branch in application repo):
+Mendorong kode Anda ke repositori aplikasi, yang memicu membangun proses gambar penyebaran (melakukannya dengan `nama penyebaran mysql` karena kita menggunakan cabang yang sama dalam aplikasi repo):
 
-~~~bash
-$ ironcliapp APP_NAME/mysql push
-Counting objects: 62, done.
-Delta compression using up to 4 threads.
-Compressing objects: 100% (51/51), done.
-Writing objects: 100% (62/62), 15.14 KiB, done.
-Total 62 (delta 2), reused 0 (delta 0)
+~~~ Pesta
+$ Ironcliapp APP_NAME / dorongan mysql
+Menghitung benda: 62, dilakukan.
+Delta kompresi menggunakan sampai 4 benang.
+Mengompresi objek: 100% (51/51), dilakukan.
+Menulis objek: 100% (62/62), 15.14 KiB, dilakukan.
+Total 62 (delta 2), kembali 0 (delta 0)
 
------> Receiving push
------> Using Ruby version: ruby-2.0.0
------> Installing dependencies using Bundler version 1.3.2
-       Running: bundle install --without development:test --path vendor/bundle --binstubs vendor/bundle/bin --deployment
-       Fetching gem metadata from https://rubygems.org/..........
-       Fetching gem metadata from https://rubygems.org/..
-       Installing rake (10.0.3)
+-----> Mendorong Menerima
+-----> Menggunakan versi Ruby: ruby-2.0.0
+-----> Dependensi Instalasi menggunakan Bundler versi 1.3.2
+       Menjalankan: bundel instalasi --without pengembangan: tes --path vendor / bundel --binstubs vendor / bundel / bin --deployment
+       Metadata permata Mengambil dari https: //rubygems.org / ..........
+       Metadata permata Mengambil dari https://rubygems.org/ ..
+       Instalasi rake (10.0.3)
        ...
-       Installing rails (3.1.10)
+       Instalasi rel (3.1.10)
        ...
-       Installing uglifier (1.3.0)
+       Instalasi uglifier (1.3.0)
 
-       Your bundle is complete! It was installed into ./vendor/bundle
-       Post-install message from rdoc:
-       Depending on your version of ruby, you may need to install ruby rdoc/ri data:
-       <= 1.8.6 : unsupported
-       = 1.8.7 : gem install rdoc-data; rdoc-data --install
-       = 1.9.1 : gem install rdoc-data; rdoc-data --install
-       >= 1.9.2 : nothing to do! Yay!
+       Bundel Anda selesai! Itu diinstal ke ./vendor/bundle
+       Post-install pesan dari rdoc:
+       Tergantung pada versi ruby, Anda mungkin perlu menginstal ruby ​​rdoc / data ri:
+       <= 1.8.6: tidak didukung
+       = 1.8.7: gem install rdoc-data; rdoc-data yang --install
+       = 1.9.1: gem install rdoc-data; rdoc-data yang --install
+       > = 1.9.2: tidak ada hubungannya! Hore!
 
-       Cleaning up the bundler cache.
------> Preparing app for Rails asset pipeline
-       Running: rake assets:precompile
-       Asset precompilation completed (6.34s)
-       Cleaning assets
------> WARNINGS:
-       You have not declared a Ruby version in your Gemfile.
-       To set your Ruby version add this line to your Gemfile:
+       Membersihkan cache bundler.
+-----> Mempersiapkan aplikasi untuk pipa aset Rails
+       Menjalankan: aset menyapu: precompile
+       Precompilation aset selesai (6.34s)
+       Membersihkan aset
+-----> PERINGATAN:
+       Anda belum menyatakan versi Ruby di Gemfile Anda.
+       Untuk mengatur versi Ruby Anda tambahkan baris ini ke Gemfile Anda:
        ruby '2.0.0'
------> Building image
------> Uploading image (34M)
+-----> Gambar Building
+-----> Gambar Mengunggah (34m)
 
-To ssh://APP_NAME@kilatiron.net/repository.git
- * [new branch]      mysql -> mysql
+Untuk ssh: //APP_NAME@kilatiron.net/repository.git
+ * [Cabang baru] mysql -> mysql
 ~~~
 
-Add MySQLs Add-on with `free` plan to your deployment and deploy it:
+Tambahkan MySQLs Add-on dengan `rencana free` penyebaran dan menyebarkan:
 
-~~~bash
-$ ironcliapp APP_NAME/mysql addon.add mysqls.free
-$ ironcliapp APP_NAME/mysql deploy
+~~~ Pesta
+$ Ironcliapp APP_NAME / mysql addon.add mysqls.free
+$ Ironcliapp APP_NAME / mysql menyebarkan
 ~~~
 
-Finally, prepare the database by running migrations using the [Run command][run command]:
+Akhirnya, menyiapkan database dengan menjalankan migrasi menggunakan [perintah Run] [menjalankan perintah]:
 
-~~~bash
-$ ironcliapp APP_NAME/mysql run "rake db:migrate"
+~~~ Pesta
+$ Ironcliapp APP_NAME / mysql run "rake db: bermigrasi"
 ~~~
 
-Congratulations, you can now access the app at http://mysql-APP_NAME.kilatiron.net.
+Selamat, Anda sekarang dapat mengakses aplikasi di http://mysql-APP_NAME.kilatiron.net.
 
-For additional information take a look at [Ruby on Rails notes][rails-notes] and
-other [ruby-specific documents][ruby-guides].
+Untuk informasi tambahan lihat [Ruby on Rails catatan] [rel-catatan] dan
+lainnya [-ruby spesifik dokumen] [ruby-panduan].
 
 [Ruby on Rails]: http://rubyonrails.org/
 [CloudKilat]: http://www.cloudkilat.com/
-[example-app]: https://github.com/cloudControl/ruby-rails-example-app
-[ruby buildpack]: https://github.com/cloudControl/buildpack-ruby
+[Contoh-aplikasi]: https://github.com/cloudControl/ruby-rails-example-app
+[Ruby buildpack]: https://github.com/cloudControl/buildpack-ruby
 [Rails tutorial]: http://ruby.railstutorial.org/
 [Bundler]: http://bundler.io/
 [Procfile]: /Platform%20Documentation.md/#buildpacks-and-the-procfile
-[filesystem]: /Platform%20Documentation.md/#non-persistent-filesystem
-[run command]: /Guides/Ruby/RunCommand.md
-[rails-notes]: /Guides/Ruby/RubyNotes.md
-[ruby-guides]: /Guides/Ruby
-[gem itself]: http://rubygems.org/gems/cloudcontrol-rails
-[MySQL Shared Add-on]: /Add-on%20Documentation/Data%20Storage/MySQLs.md
+[Filesystem]: /Platform%20Documentation.md/#non-persistent-filesystem
+[Menjalankan perintah]: /Guides/Ruby/RunCommand.md
+[Rel-catatan]: /Guides/Ruby/RubyNotes.md
+[Ruby-panduan]: / Guides / Ruby
+[Permata itu sendiri]: http://rubygems.org/gems/cloudcontrol-rails
+[MySQL Bersama Add-on]: /Add-on%20Documentation/Data%20Storage/MySQLs.md

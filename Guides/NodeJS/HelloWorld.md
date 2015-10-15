@@ -1,79 +1,79 @@
-# Deploying a Node.js Application
-[Node.js] is a platform built on Chrome's JavaScript runtime for building fast and scalable network applications. Its event-driven, non-blocking I/O model makes it a lightweight and efficient framework for building data-intensive real-time cloud apps.
+# Menyebarkan Aplikasi Node.js
+[Node.js] adalah platform yang dibangun di atas JavaScript runtime Chrome untuk membangun aplikasi jaringan yang cepat dan terukur. -Event yang, non-blocking I / O Model membuat kerangka ringan dan efisien untuk membangun real-time aplikasi cloud data-intensif.
 
-This tutorial demonstrates how to build and deploy a simple Hello World Node.js application on [CloudKilat]. Check out the [Node.js buildpack] for supported features.
+Tutorial ini menunjukkan bagaimana untuk membangun dan menyebarkan aplikasi Hello World Node.js sederhana pada [CloudKilat]. Check out [Node.js buildpack] fitur untuk didukung.
 
-## The Node.js App Explained
+## The Node.js App Dijelaskan
 
-### Get the App
-First, clone the Node.js App from our repository on Github:
+### Dapatkan App
+Pertama, mengkloning Node.js App dari repositori kami pada Github:
 
-~~~bash
-$ git clone https://github.com/cloudControl/nodejs-express-example-app.git
-$ cd nodejs-express-example-app
+~~~ Pesta
+$ Git clone https://github.com/cloudControl/nodejs-express-example-app.git
+$ Cd nodejs-express-contoh-aplikasi
 ~~~
 
-Now you have a small, but fully functional Node.js application.
+Sekarang Anda memiliki aplikasi Node.js kecil, tapi berfungsi penuh.
 
-### Dependency Tracking
-The Node.js buildpack tracks dependencies using [npm]. The dependency
-requirements are defined in a `package.json` file which needs to be located in
-the root of your repository. For the Hello World application, the only
-requirement is Express. The `package.json` you cloned as part of the example
-app looks like this:
+### Ketergantungan Tracking
+The Node.js buildpack melacak dependensi menggunakan [NPM]. Ketergantungan
+persyaratan yang ditetapkan dalam file `package.json` yang perlu berada di
+akar repositori Anda. Untuk aplikasi Hello World, satu-satunya
+persyaratan adalah Express. The `package.json` Anda kloning sebagai bagian dari contoh
+app terlihat seperti ini:
 
-~~~json
+~~~ Json
 {
-  "name": "nodejs-express-example-app",
-  "version": "0.0.1",
-  "dependencies": {
-    "express": "~3.3.4"
+  "Nama": "nodejs-express-contoh-aplikasi",
+  "Versi": "0.0.1",
+  "Dependensi": {
+    "Mengungkapkan": "~ 3.3.4"
   },
-  "engines": {
-    "node": "0.10.13",
-    "npm": "1.3.2"
+  "Mesin": {
+    "Node": "0.10.13",
+    "NPM": "1.3.2"
   }
 }
 ~~~
 
-You should always specify the versions of your dependencies if you want your builds to be reproducible and to prevent unexpected errors caused by version changes.
+Anda harus selalu menentukan versi dependensi Anda jika Anda ingin membangun menjadi direproduksi dan untuk mencegah kesalahan tak terduga yang disebabkan oleh perubahan versi.
 
-### Process Type Definition
-A [Procfile] is required to start processes on the CloudKilat platform. There must be a file called `Procfile` at the root of your repository. In the example code you already cloned it looks like this:
+### Proses Type Definition
+A [Procfile] diperlukan untuk memulai proses pada platform CloudKilat. Harus ada sebuah file yang bernama `Procfile` pada akar repositori Anda. Dalam kode contoh Anda sudah kloning itu terlihat seperti ini:
 
 ~~~
-web: node web.js
+web.js simpul: web
 ~~~
 
-Left from the colon, we specified the **required** process type called `web` followed by the command that starts the app.
+Kiri dari usus besar, kami menetapkan ** diperlukan ** Jenis proses yang disebut `web` diikuti dengan perintah yang dimulai app.
 
-## Pushing and Deploying your App
-Choose a unique name to replace the `APP_NAME` placeholder for your application
-and create it on the CloudKilat platform:
+## Mendorong dan Menyebarkan App Anda
+Pilih nama yang unik untuk menggantikan `APP_NAME` tempat untuk aplikasi Anda
+dan menciptakannya pada platform CloudKilat:
 
-~~~bash
-$ ironcliapp APP_NAME create nodejs
+~~~ Pesta
+$ Ironcliapp APP_NAME membuat nodejs
 ~~~
 
-Push your code to the application's repository, which triggers the deployment image build process:
+Mendorong kode Anda ke repositori aplikasi, yang memicu penyebaran gambar proses build:
 
-~~~bash
-$ ironcliapp APP_NAME/default push
-Counting objects: 307, done.
-Delta compression using up to 8 threads.
-Compressing objects: 100% (261/261), done.
-Writing objects: 100% (307/307), 202.14 KiB | 0 bytes/s, done.
-Total 307 (delta 18), reused 307 (delta 18)
+~~~ Pesta
+$ Ironcliapp APP_NAME / dorongan bawaan
+Menghitung objek: 307, dilakukan.
+Delta kompresi menggunakan hingga 8 benang.
+Mengompresi objek: 100% (261/261), dilakukan.
+Menulis objek: 100% (307/307), 202,14 KiB | 0 byte / s, dilakukan.
+Total 307 (delta 18), kembali 307 (delta 18)
 
------> Receiving push
------> Resolving engine versions
-       Using Node.js version: 0.10.13
-       Using npm version: 1.3.2
------> Fetching Node.js binaries
------> Vendoring node into slug
------> Installing dependencies with npm
-       […]
-       express@3.3.8 node_modules/express
+-----> Mendorong Menerima
+-----> Menyelesaikan versi mesin
+       Menggunakan versi Node.js: 0.10.13
+       Menggunakan versi NPM: 1.3.2
+-----> Mengambil Node.js binari
+-----> Vendoring simpul ke siput
+-----> Dependensi Instalasi dengan NPM
+       [...]
+       express@3.3.8 node_modules / ekspres
        ├── methods@0.0.1
        ├── range-parser@0.0.4
        ├── cookie-signature@1.0.1
@@ -85,29 +85,29 @@ Total 307 (delta 18), reused 307 (delta 18)
        ├── commander@1.2.0 (keypress@0.1.0)
        ├── send@0.1.4 (mime@1.2.11)
        └── connect@2.8.8 (uid2@0.0.2, pause@0.0.1, qs@0.6.5,
-       […]
-       Dependencies installed
------> Building runtime environment
------> Building image
------> Uploading image (4.3M)
+       [...]
+       Dependensi diinstal
+-----> Bangunan lingkungan runtime
+-----> Gambar Building
+-----> Gambar Mengunggah (4.3m)
 
-To ssh://APP_NAME@kilatiron.net/repository.git
- * [new branch]      master -> master
+Untuk ssh: //APP_NAME@kilatiron.net/repository.git
+ * [Cabang baru] Master -> Master
 ~~~
 
-Last but not least, deploy the latest version of the app with the ironcliapp deploy command:
+Last but not least, menyebarkan versi terbaru dari aplikasi dengan ironcliapp yang menyebarkan perintah:
 
-~~~bash
-$ ironcliapp APP_NAME/default deploy
+~~~ Pesta
+$ Ironcliapp APP_NAME / default menyebarkan
 ~~~
 
-Congratulations, you can now see your Node.js app running at
-`http[s]://APP_NAME.kilatiron.net`.
+Selamat, Anda sekarang dapat melihat aplikasi Node.js Anda berjalan pada
+`Http [s]: // APP_NAME.kilatiron.net`.
 
 
 [Node.js]: http://nodejs.org/
-[npm]: https://npmjs.org/
+[NPM]: https://npmjs.org/
 [CloudKilat]: http://www.cloudkilat.com/
 [Node.js buildpack]: https://github.com/cloudControl/buildpack-nodejs
 [Procfile]: /Platform%20Documentation.md/#buildpacks-and-the-procfile
-[platform documentation]: /Platform%20Documentation.md
+[Platform dokumentasi]: /Platform%20Documentation.md

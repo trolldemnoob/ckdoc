@@ -1,97 +1,97 @@
-# Node.js Amazon S3 Integration 
+Integrasi # Node.js Amazon S3
 
-[Amazon S3] is a Storage-as-a-Service solution. It provides a simple web service interface that can be used to store and retrieve data from anywhere on the web.
+[Amazon S3] adalah Storage-as-a-Service solusi. Ini menyediakan antarmuka layanan web sederhana yang dapat digunakan untuk menyimpan dan mengambil data dari mana saja di web.
 
-This guide shows how to integrate Amazon S3 with your Node.js app. 
+Panduan ini menunjukkan bagaimana mengintegrasikan Amazon S3 dengan aplikasi Node.js Anda.
 
 ## Amazon S3 SDK
-For Node.js you can choose between different SDKs for Amazon S3:
+Untuk Node.js Anda dapat memilih antara SDK yang berbeda untuk Amazon S3:
 * [Amazon S3]
-* [Fog]
+* [Kabut]
 * [Knox S3]
 
-## Getting Started
-To use the official Amazon S3 SDK in your project, you should install the AWS SDK for Node.js using the [npm package manager]. 
-To install the SDK, type the following into a terminal window: 
+## Persiapan
+Untuk menggunakan resmi Amazon S3 SDK dalam proyek Anda, Anda harus menginstal AWS SDK untuk Node.js menggunakan [NPM manajer paket].
+Untuk menginstal SDK, ketik berikut ke jendela terminal:
 
-~~~bash
-npm install aws-sdk
+~~~ Pesta
+NPM menginstal aws-sdk
 ~~~
 
-In addition to the AWS SDK, you also need to have AWS access credentials. If you do not already have one, follow the [Amazon Guide] to setup an account and get your [AWS access credentials].
+Selain AWS SDK, Anda juga perlu memiliki akses AWS kredensial. Jika Anda tidak memilikinya, mengikuti [Amazon Panduan] untuk membuat akun dan mendapatkan Anda [AWS akses kredensial].
 
-## Example Usage 
-S3 needs your AWS credentials for access. The recommended way to provide your AWS credentials to your app is via environment variables. To do this, use the [Config Add-on]:
+## Contoh Penggunaan
+S3 membutuhkan mandat AWS Anda untuk akses. Cara yang disarankan untuk memberikan mandat AWS untuk aplikasi Anda adalah melalui variabel lingkungan. Untuk melakukan hal ini, gunakan [Config Add-on]:
 
-~~~bash
-ironcliapp APP_NAME/default config.add 
-AWS_ACCESS_KEY_ID=[YOUR_SECRET_KEY] 
-AWS_SECRET_ACCESS_KEY=[YOUR_ACCESS_KEY] 
-AWS_REGION='eu-west-1' 
+~~~ Pesta
+ironcliapp APP_NAME / default config.add
+AWS_ACCESS_KEY_ID = [YOUR_SECRET_KEY]
+AWS_SECRET_ACCESS_KEY = [YOUR_ACCESS_KEY]
+AWS_REGION = 'eu-barat 1'
 ~~~
 
-To load the AWS library in your Node.js app, use the require function as shown below:
+Untuk memuat perpustakaan AWS di app Node.js Anda, gunakan memerlukan fungsi seperti berikut:
 
-~~~javascript
-var AWS = require('aws-sdk');
-var s3 = new AWS.S3();
+~~~ Javascript
+AWS var = require ('aws-sdk');
+var s3 = AWS.S3 baru ();
 ~~~
 
-Now, let's do some operations on S3 using Node.js. In the example below, we show how to create a new bucket, list existing buckets, add a key into a bucket, read the key from the bucket, delete the key from the bucket, and delete a bucket.   
+Sekarang, mari kita melakukan beberapa operasi pada S3 menggunakan Node.js. Pada contoh di bawah, kita menunjukkan bagaimana untuk membuat ember baru, daftar ember yang ada, tambahkan kunci ke dalam ember, membaca kunci dari ember, menghapus kunci dari ember, dan menghapus ember.
 
-~~~javascript
-   //Create an S3 bucket named myBucket
-   s3.createBucket({Bucket: 'myBucket'}, function(err, data) {
-    if (err) throw new Error(err);
+~~~ Javascript
+   // Buat myBucket S3 ember bernama
+   s3.createBucket ({Bucket: 'myBucket'}, fungsi (err, data) {
+    jika (err) melemparkan kesalahan baru (err);
    });
     
-   //List existing S3 buckets
-   s3.ListBuckets(function(err, data) {
-    if (err) throw new Error(err);
+   // Daftar yang ada ember S3
+   s3.ListBuckets (function (err, data) {
+    jika (err) melemparkan kesalahan baru (err);
 
-    var buckets = data.Body.ListAllMyBucketsResult.Buckets.Bucket;
-    buckets.forEach(function(bucket) {
-        console.log('%s : %s', bucket.CreationDate, bucket.Name);
+    ember var = data.Body.ListAllMyBucketsResult.Buckets.Bucket;
+    buckets.forEach (function (bucket) {
+        console.log ('% s:% s', bucket.CreationDate, bucket.Name);
     });
    });
 
-   //Add a key to myBucket
-   var putparams = {Bucket: 'myBucket', Key: 'myKey', Body: 'Hello!'};
-   s3.putObject(putparams, function(err, data) {
-       if (err)       
-           console.log(err)     
-       else       console.log("Successfully uploaded data to myBucket/myKey");   
+   // Menambahkan kunci myBucket
+   putparams var = {Bucket: 'myBucket', Key: 'MyKey', tubuh: 'Halo'};
+   s3.putObject (putparams, fungsi (err, data) {
+       jika (err)
+           console.log (err)
+       lain console.log ("Berhasil upload data ke myBucket / MyKey");
     });
 
-   //Read the key from myBucket
-   var getparams = {Bucket: 'myBucket', Key: 'myKey'};
-   s3.getObject(getparams, function (err, url) {
-  	if (err)
-	   console.log(err)
-	else	  console.log("The key is", url);
+   // Baca kunci dari myBucket
+   getparams var = {Bucket: 'myBucket', Key: 'MyKey'};
+   s3.getObject (getparams, fungsi (err, url) {
+  jika (err)
+console.log (err)
+lain console.log ("Kuncinya adalah", url);
    });
 
-   //Delete key from myBucket
-   var delparams = {Bucket: 'myBucket', Key: 'myKey'};
-   s3.deleteObject(delparams, function(err, data) {
-        console.log(err, data)
+   // Hapus kunci dari myBucket
+   delparams var = {Bucket: 'myBucket', Key: 'MyKey'};
+   s3.deleteObject (delparams, fungsi (err, data) {
+        console.log (err, data)
    });
 
-   //Delete bucket myBucket
-   s3.deleteBucket({Bucket: bucket}, function (err, data) {
-   if (err)
-           console.log("error deleting bucket " + err);
-   else    console.log("delete the bucket " + data);
+   // Hapus ember myBucket
+   s3.deleteBucket ({Bucket: ember}, fungsi (err, data) {
+   jika (err)
+           console.log ("error menghapus ember" + err);
+   lain console.log ("menghapus ember" + data);
    });
 ~~~
 
-## Next Steps
-You can build rich Node.js apps using more advanced S3 operations. To learn more, check out the Node.js [Amazon Guide]. Good luck.
+## Langkah Berikutnya
+Anda dapat membangun kaya Node.js aplikasi menggunakan operasi S3 lebih maju. Untuk mempelajari lebih lanjut, memeriksa Node.js [Amazon Panduan]. Semoga berhasil.
 
 [Amazon S3]: http://aws.amazon.com/s3/
-[Fog]: https://docs.appfog.com/languages/node
+[Kabut]: https://docs.appfog.com/languages/node
 [Knox S3]: https://github.com/LearnBoost/knox
-[npm package manager]: https://npmjs.org/
-[Amazon Guide]: http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-intro.html
-[AWS access credentials]: http://aws.amazon.com/security-credentials
+[NPM manajer paket]: https://npmjs.org/
+[Amazon Panduan]: http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-intro.html
+[AWS akses kredensial]: http://aws.amazon.com/security-credentials
 [Config Add-on]: /Add-on%20Documentation/Deployment/Custom%20Config.md

@@ -1,175 +1,175 @@
-#Deploying Zend Framework 1.11 to CloudKilat
+#Deploying Zend Framework 1.11 ke CloudKilat
 
-![Successful Deployment](/static/apps/images/ZendFramework-logo.png)
+! [Deployment Sukses] (/ statis / apps / gambar / ZendFramework-logo.png)
 
-If you're looking for a feature-rich, flexible and capable PHP Framework for your projects, you can't go past [Zend Framework](http://framework.zend.com/). Now at [version 1.11](http://framework.zend.com/download/latest) it comes with a variety of features to speed up your application development, including:
+Jika Anda sedang mencari kaya fitur, Kerangka PHP fleksibel dan mampu untuk proyek-proyek Anda, Anda tidak dapat melewati [Zend Framework] (http://framework.zend.com/). Sekarang di [versi 1.11] (http://framework.zend.com/download/latest) datang dengan berbagai fitur untuk mempercepat pengembangan aplikasi Anda, termasuk:
 
- * Straight-forward MVC approach
- * A large, thriving, community
- * Sub-library components for working with a range of services, including PayPal and Google
- * Easy to read documentation
- * A super, shiny, new version 2 **coming soon**
+ * Pendekatan MVC Lurus ke depan
+ * Sebuah besar, berkembang, masyarakat
+ * Sub-perpustakaan komponen untuk bekerja dengan berbagai layanan, termasuk PayPal dan Google
+ * Mudah untuk membaca dokumentasi
+ * A super, mengkilap, baru versi 2 ** segera hadir **
 
-In this tutorial, we're going to take you through deploying Zend Framework v1.11 to [the CloudKilat platform](http://www.cloudkilat.com/).
+Dalam tutorial ini, kita akan membawa Anda melalui penggelaran Zend Framework v1.11 untuk [platform CloudKilat] (http://www.cloudkilat.com/).
 
-##Prerequisites
+## Prasyarat
 
-You're going to need only a few things to following along with this tutorial. These are:
+Anda akan hanya perlu beberapa hal untuk mengikuti bersama dengan tutorial ini. Ini adalah:
 
- * A [Git client](http://git-scm.com/), whether command-line or GUI.
- * A MySQL client, whether command-line or GUI, such as [MySQL Workbench](http://dev.mysql.com/downloads/workbench/) or the command-line tools.
+ * A [Git klien] (http://git-scm.com/), apakah baris perintah atau GUI.
+ * Seorang klien MySQL, apakah baris perintah atau GUI, seperti [MySQL Workbench] (http://dev.mysql.com/downloads/workbench/) atau alat baris perintah.
 
-##1. Grab a Copy of Zend Framework
+## 1. Ambil Copy Zend Framework
 
-So now that you have the prerequisites in place, download a copy of the latest, stable, release. You can find it at: [http://framework.zend.com/download/latest](http://framework.zend.com/download/latest). After that, extract it to your local file system.
+Jadi sekarang bahwa Anda memiliki prasyarat di tempat, men-download salinan terbaru, stabil, rilis. Anda dapat menemukannya di: [http://framework.zend.com/download/latest](http://framework.zend.com/download/latest). Setelah itu, ekstrak ke sistem file lokal.
 
-![Source files](/static/apps/images/zf-source-files.png)
+[Sumber file] (/ statis / apps / gambar / zf-sumber-files.png)
 
-##Create a Basic Application
+## Buat Aplikasi Dasar
 
-After that, create a basic application by using zf.sh (or .bat) as follows:
+Setelah itu, membuat aplikasi dasar dengan menggunakan zf.sh (atau bat) sebagai berikut:
 
-    zf.sh create project test-application
-    zf.sh enable layout
+    zf.sh membuat proyek uji-aplikasi
+    zf.sh memungkinkan tata letak
 
-With that, you'll have a basic application that can be run in a basic VHost.
+Dengan itu, Anda akan memiliki aplikasi dasar yang dapat dijalankan di VHost dasar.
 
-##2. Amend the Code
+## 2. Mengubah Kode
 
-As I mentioned before, a few changes need to be made to the default application configuration and code to accommodate CloudKilat deployment. These changes are as follows:
+Seperti yang saya sebutkan sebelumnya, beberapa perubahan perlu dibuat untuk konfigurasi aplikasi default dan kode untuk mengakomodasi penyebaran CloudKilat. Perubahan ini adalah sebagai berikut:
 
- * Store session and log files in a database, not on the filesystem
- * Auto-magically determine the environment and set the configuration
+ * Sesi Store dan log file dalam database, bukan pada filesystem
+ * Auto-ajaib menentukan lingkungan dan mengatur konfigurasi
 
-###2.1 Store Session and Log Files in a Database, Not on the Filesystem
+### 2.1 Toko Session dan Log File di Database, Bukan pada Filesystem yang
 
-Storing files in a multi-server environment can lead to hard to debug issues. So what we're going to do is to store both the session and log files in a two-level cache, composed of MySQL and APC.
+Menyimpan file dalam lingkungan multi-server dapat menyebabkan sulit untuk debug masalah. Jadi apa yang kita akan lakukan adalah untuk menyimpan baik sesi dan log file dalam cache dua tingkat, yang terdiri dari MySQL dan APC.
 
-Thankfully, Zend Framework is written in a very straight-forward and configurable manner, so this isn't too hard to do. What's more, the community around it is very healthy, so there's loads of options and support available.
+Untungnya, Zend Framework ditulis dalam cara yang sangat lurus ke depan dan dikonfigurasi, jadi ini tidak terlalu sulit untuk dilakukan. Terlebih lagi, masyarakat sekitar sangat sehat, sehingga ada banyak pilihan dan dukungan yang tersedia.
 
-###2.2 Auto-magically Determine the Environment and Set the Configuration
+### 2.2 Auto-ajaib Tentukan Lingkungan dan Set Konfigurasi
 
-If we were deploying the application in a simple, configurable VHost, then we'd set an environment variable, such as ``APPLICATION_ENV`` in the webserver environment, which is then made available to PHP, similar to:
+Jika kita menyebarkan aplikasi secara sederhana, VHost dikonfigurasi, maka kita akan mengatur variabel lingkungan, seperti `` APPLICATION_ENV`` di lingkungan webserver, yang kemudian dibuat tersedia untuk PHP, mirip dengan:
 
-    <VirtualHost *:80>
-        SetEnv APPLICATION_ENV development
-    </VirtualHost>
+    <VirtualHost *: 80>
+        Pengembangan SetEnv APPLICATION_ENV
+    </ VirtualHost>
 
-When using CloudKilat, we need to do this in a slightly different way. It involves, for each environment, setting an environment variable with the ironcliapp config add-on, then reading that information from the environment at runtime. We'll come to this shortly.
+Bila menggunakan CloudKilat, kita perlu melakukan ini dengan cara yang sedikit berbeda. Ini melibatkan, untuk setiap lingkungan, pengaturan variabel lingkungan dengan konfigurasi ironcliapp add-on, kemudian membaca informasi dari lingkungan saat runtime. Kami akan datang ke ini tak lama.
 
-##3. Put the Code Under Git Control
+## 3. Masukan Control Kode bawah Git
 
-Ok, now let's get started making these changes and deploying the application. We'll begin by putting it under Git control. So run the following command to do that:
+Ok, sekarang mari kita mulai membuat perubahan ini dan menggunakan aplikasi. Kita akan mulai dengan meletakkan di bawah kontrol Git. Jadi jalankan perintah berikut untuk melakukannya:
 
-    cd <your Zend Framework directory>
+    cd <directory Zend Framework Anda>
 
-    git init .
+    git init.
 
     git add -A
 
-    git commit -m "First addition of the source files"
+    git commit -m "Selain Pertama sumber file"
 
-Now that the code's under version control, we're going to create a testing branch as well, so that we have one to test with and one for production. Run the following command and it will be done:
+Sekarang bahwa kode ini di bawah kontrol versi, kita akan membuat cabang pengujian juga, sehingga kita memiliki satu untuk menguji dengan dan satu untuk produksi. Jalankan perintah berikut dan itu akan dilakukan:
 
-    git checkout -b testing
+    git checkout pengujian -b
 
-If you're not familiar with Git, the previous command will checkout a copy of our existing branch, into a new branch, called *testing*. You can confirm that you now have two branches, by running the following command:
+Jika Anda tidak terbiasa dengan Git, perintah sebelumnya akan checkout salinan cabang kami yang ada, menjadi cabang baru, yang disebut * pengujian *. Anda dapat mengkonfirmasi bahwa Anda sekarang memiliki dua cabang, dengan menjalankan perintah berikut:
 
     git branch
 
-That will show output similar to below:
+Itu akan menunjukkan output yang mirip dengan di bawah:
 
-    $ git branch
-        master
-        * testing
+    $ Git branch
+        menguasai
+        * Pengujian
 
-Choose a unique name to replace the `APP_NAME` placeholder for your application and create it on the CloudKilat platform. Now, we need to make our first deployment of both branches to the CloudKilat platform. To do this we checkout the master branch, create the application in our CloudKilat account and push and deploy both deployments. By running the following commands, this will all be done:
+Pilih nama yang unik untuk menggantikan `APP_NAME` tempat untuk aplikasi Anda dan membuatnya pada platform CloudKilat. Sekarang, kita perlu membuat penyebaran pertama kami kedua cabang ke platform CloudKilat. Untuk melakukan ini kita checkout cabang master, membuat aplikasi di akun CloudKilat kami dan mendorong dan menyebarkan kedua penyebaran. Dengan menjalankan perintah berikut, ini semua akan dilakukan:
 
-    // switch to the master branch
-    git checkout master
+    // Beralih ke cabang master
+    Master checkout git
 
-    // create the application
-    ironcliapp APP_NAME create php
+    // Membuat aplikasi
+    ironcliapp APP_NAME membuat php
 
-    // deploy the default branch
-    ironcliapp APP_NAME/default push
-    ironcliapp APP_NAME/default deploy
+    // Menyebarkan cabang default
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
 
-    // deploy the testing branch
-    ironcliapp APP_NAME/testing push
-    ironcliapp APP_NAME/testing deploy
+    // Menyebarkan cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
-You'll see output similar to the following:
+Anda akan melihat output yang mirip dengan berikut:
 
-    $ ironcliapp APP_NAME/testing push
-    Total 0 (delta 0), reused 0 (delta 0)
+    $ Ironcliapp APP_NAME / pengujian dorongan
+    Total 0 (delta 0), kembali 0 (delta 0)
 
-    >> Receiving push
-    >> Compiling PHP
-         INFO: Zend Framework 1.x detected
-    >> Building image
-    >> Uploading image (3.6M)
+    >> Mendorong Menerima
+    >> Kompilasi PHP
+         INFO: Zend Framework 1.x terdeteksi
+    >> Bangunan gambar
+    >> Gambar Mengunggah (3.6M)
 
-    To ssh://APP_NAME@kilatiron.net/repository.git
-       dde253a..7b040e2  testing -> testing
+    Untuk ssh: //APP_NAME@kilatiron.net/repository.git
+       pengujian dde253a..7b040e2 -> pengujian
 
-##4. Initialise the Required Add-ons
+## 4. Menginisialisasinya Diperlukan Add-ons
 
-Now that that's done, we need to configure two add-ons, config and mysqls. The config add-on is required for determining the active environment and mysqls for storing our session and logging information.
+Sekarang itu selesai, kita perlu mengkonfigurasi dua add-ons, config dan mysqls. Config add-on diperlukan untuk menentukan lingkungan aktif dan mysqls untuk menyimpan sesi dan login informasi.
 
-###4.1 Check the Add-on Configuration
+### 4.1 Periksa Add-on Konfigurasi
 
-Now let's be sure that everything is in order by having a look at the add-on configuration output, in this case for testing. To do that, run the command below:
+Sekarang mari kita pastikan bahwa segala sesuatu adalah dalam rangka dengan memiliki melihat output konfigurasi add-on, dalam hal ini untuk pengujian. Untuk melakukan itu, jalankan perintah di bawah ini:
 
-    // Initialise the mysqls.free addon for the default deployment
-    ironcliapp APP_NAME/default addon.add mysqls.free
+    // Menginisialisasinya addon mysqls.free untuk penyebaran standar
+    ironcliapp APP_NAME / default addon.add mysqls.free
 
-    // Retrieve the settings
-    ironcliapp APP_NAME/default addon mysqls.free
+    // Ambil pengaturan
+    ironcliapp APP_NAME / default addon mysqls.free
 
-    // Initialise the mysqls.free addon for the testing deployment
-    ironcliapp APP_NAME/testing addon.add mysqls.free
+    // Menginisialisasinya addon mysqls.free untuk penyebaran pengujian
+    ironcliapp APP_NAME / pengujian addon.add mysqls.free
 
-    // Retrieve the settings
-    ironcliapp APP_NAME/testing addon mysqls.free
+    // Ambil pengaturan
+    ironcliapp APP_NAME / pengujian addon mysqls.free
 
-The output of the commands will be similar to that below:
+Output dari perintah akan mirip dengan yang di bawah ini:
 
-    Addon                    : mysqls.free
+    Addon: mysqls.free
 
-     Settings
-       MYSQLS_DATABASE          : <database_name>
-       MYSQLS_PASSWORD          : <database_password>
-       MYSQLS_PORT              : 3306
-       MYSQLS_HOSTNAME          : mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
-       MYSQLS_USERNAME          : <database_username>
+     Pengaturan
+       MYSQLS_DATABASE: <database_name>
+       MYSQLS_PASSWORD: <database_password>
+       MYSQLS_PORT: 3306
+       MYSQLS_HOSTNAME: mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
+       MYSQLS_USERNAME: <database_username>
 
-###4.2 Initialising config
+### 4.2 Mengawali config
 
-Now we need to configure the config add-on and store the respective environment setting in it. So run the following commands to do this:
+Sekarang kita perlu mengkonfigurasi config add-on dan menyimpan lingkungan masing-masing pengaturan di dalamnya. Jadi jalankan perintah berikut untuk melakukan hal ini:
 
-    // Set the default environment setting
-    ironcliapp APP_NAME/default config.add APPLICATION_ENV=production
+    // Mengatur pengaturan lingkungan default
+    ironcliapp APP_NAME / default config.add APPLICATION_ENV = produksi
 
-    // Set the testing environment setting
-    ironcliapp APP_NAME/testing config.add APPLICATION_ENV=testing
+    // Mengatur pengaturan lingkungan pengujian
+    ironcliapp APP_NAME / pengujian config.add APPLICATION_ENV = pengujian
 
-Now that this is done, we're ready to make some changes to our code to make use of the new configuration.
+Sekarang ini dilakukan, kita siap untuk membuat beberapa perubahan pada kode kita untuk menggunakan konfigurasi baru.
 
-##5. Environment Configuration
+## 5. Konfigurasi lingkungan
 
-###5.1 application.ini
+### 5.1 application.ini
 
-In the ini file, below, we've laid out the core configuration, which will be inherited by all environments by default. You can see that the params have been left blank. This is because they're required. But you'll see in the plugin resource, later, that we set them appropriately.
+Dalam file ini, di bawah, kita sudah diletakkan konfigurasi inti, yang akan diwarisi oleh semua lingkungan secara default. Anda dapat melihat bahwa params telah dikosongkan. Hal ini karena mereka diperlukan. Tapi Anda akan melihat di sumber daya Plugin, kemudian, bahwa kita mengatur mereka secara tepat.
 
-    [production]
+    [Produksi]
     phpSettings.display_startup_errors = 1
     phpSettings.display_errors = 1
     resources.frontController.params.displayExceptions = 1
 
-####5.1.1 Database
+#### 5.1.1 database
 
-    ; Configure Database settings
+    ; Mengkonfigurasi pengaturan database
     resources.db.adapter = PDO_MYSQL
     resources.db.isDefaultTableAdapter = true
     resources.db.params.host =
@@ -177,24 +177,24 @@ In the ini file, below, we've laid out the core configuration, which will be inh
     resources.db.params.password =
     resources.db.params.dbname =
 
-####5.1.2 Session Storage
+#### 5.1.2 Penyimpanan Sesi
 
-In the section below, we've configured the session to be saved with the [Zend_Session_SaveHandler_DbTable](http://framework.zend.com/manual/en/zend.session.savehandler.dbtable.html) class. The table schema will be provided shortly. This uses the default database adapter to connect to the database, so no further configuration will be required on our part to make this work properly.
+Pada bagian bawah, kita sudah dikonfigurasi sesi yang akan disimpan dengan [Zend_Session_SaveHandler_DbTable](http://framework.zend.com/manual/en/zend.session.savehandler.dbtable.html) kelas. Tabel skema akan diberikan segera. Ini menggunakan database adapter default untuk menyambung ke database, sehingga tidak ada konfigurasi lebih lanjut akan diperlukan pada bagian kami untuk membuat pekerjaan ini dengan benar.
 
-    ; Configure Zend_Session_SaveHandler_DbTable:
+    ; Konfigurasi Zend_Session_SaveHandler_DbTable:
     resources.session.savehandler.class = "Zend_Session_SaveHandler_DbTable"
-    resources.session.savehandler.options.name = "session"
+    resources.session.savehandler.options.name = "sesi"
     resources.session.savehandler.options.primary = "id"
-    resources.session.savehandler.options.modifiedColumn = "modified"
+    resources.session.savehandler.options.modifiedColumn = "dimodifikasi"
     resources.session.savehandler.options.dataColumn = "data"
-    resources.session.savehandler.options.lifetimeColumn = "lifetime"
+    resources.session.savehandler.options.lifetimeColumn = "seumur hidup"
 
-####5.1.3 Caching
+#### 5.1.3 Caching
 
-In the section below, we've setup a simple cache option which we can use within the application. It has a simple set of frontend options and uses APC as the backend. As per the manual, we could also store the information in the backend, but for the purposes of this tutorial, APC will work just fine.
+Pada bagian bawah, kami sudah menyiapkan opsi Cache sederhana yang dapat kita gunakan dalam aplikasi. Ini memiliki seperangkat sederhana pilihan frontend dan menggunakan APC sebagai backend. Sesuai manual, kami juga bisa menyimpan informasi di backend, tetapi untuk keperluan tutorial ini, APC akan bekerja dengan baik.
 
-    ; Configure the frontend core caching option
-    resources.cachemanager.general.frontend.name = Core
+    ; Mengkonfigurasi opsi frontend inti caching
+    resources.cachemanager.general.frontend.name = Inti
     resources.cachemanager.general.frontend.options.caching = true
     resources.cachemanager.general.frontend.options.cache_id_prefix = NULL
     resources.cachemanager.general.frontend.options.lifetime = 3600
@@ -204,288 +204,288 @@ In the section below, we've setup a simple cache option which we can use within 
     resources.cachemanager.general.frontend.options.automatic_cleaning_factor = 10
     resources.cachemanager.general.frontend.options.ignore_user_abort = false
 
-    ; Configure a simple APC cache
+    ; Mengkonfigurasi APC Cache sederhana
     resources.cachemanager.general.backend.name = Apc
 
-###5.2 Bootstrap Plugin Resources
+### 5.2 Bootstrap Plugin Sumber Daya
 
-Ok, let's start looking over the bootstrap plugin resources that will help us complete the setup of our application.
+Ok, mari kita mulai melihat ke sumber bootstrap plugin yang akan membantu kita menyelesaikan setup aplikasi kita.
 
-####5.2.1 Database
+#### 5.2.1 database
 
-In the database configuration, if we're **not** in the local development environment, we need to consult the ``CRED_FILE`` variable, available in all CloudKilat environments, for the options for mysql.
+Dalam konfigurasi database, jika kita tidak ** ** di lingkungan pembangunan daerah, kita perlu berkonsultasi dengan `` variabel CRED_FILE``, tersedia di semua lingkungan CloudKilat, untuk pilihan untuk mysql.
 
-When we configured the add ons earlier (**mysqls** and **config**) the settings were automatically persisted to the running server environments. So we’re now able to retrieve these settings and configure our database connection to make use of them.
+Ketika kami dikonfigurasi add ons sebelumnya (** mysqls ** dan ** config **) pengaturan yang secara otomatis bertahan dengan lingkungan server berjalan. Jadi kita sekarang dapat mengambil pengaturan ini dan mengkonfigurasi koneksi database kami untuk menggunakan mereka.
 
-It’s really handy as we don’t need to do too much to make use of the options. To do this, we get a handle on the partly-configured database adapter and supplement the settings by calling the ``setParams`` method. Have a look through the code for the resource below to see how it works.
+Ini benar-benar berguna karena kita tidak perlu melakukan terlalu banyak untuk memanfaatkan opsi. Untuk melakukan hal ini, kita mendapatkan pegangan pada adaptor database yang sebagian-dikonfigurasi dan melengkapi pengaturan dengan memanggil `` metode setParams``. Silahkan lihat melalui kode untuk sumber daya di bawah ini untuk melihat cara kerjanya.
 
-        protected function _initDb()
+        Fungsi dilindungi _initDb ()
         {
             //
-            // Get a handle on the existing db plugin resource
+            // Dapatkan pegangan pada sumber daya yang ada Plugin db
             //
-            $dbPluginResource = $this->getPluginResource('db');
+            $ DbPluginResource = $ this-> getPluginResource ('db');
 
-            if (APPLICATION_ENV !=='development') {
+            jika (APPLICATION_ENV! == 'pembangunan') {
 
                 //
-                // Read the environment credentials file
+                // Baca kredensial lingkungan berkas
                 //
-                $string = file_get_contents($_ENV['CRED_FILE'], false);
-                if ($string == false) {
-                    die('FATAL: Could not read credentials file');
+                $ String = file_get_contents ($ _ ENV ['CRED_FILE'], false);
+                if ($ string == false) {
+                    die ('FATAL: Tidak dapat membaca berkas kredensial');
                 }
 
                 //
-                // Decode them from JSON
+                // Decode mereka dari JSON
                 //
-                $creds = json_decode($string, true);
+                $ Creds = json_decode ($ string, true);
 
                 //
-                // Set the missing database settings with the retrieved options.
+                // Mengatur pengaturan database hilang dengan pilihan diambil.
                 //
-                $dbPluginResource->setParams(array(
-                    'dbname' => $creds["MYSQLS"]["MYSQLS_DATABASE"],
-                    'host' => $creds["MYSQLS"]["MYSQLS_HOSTNAME"],
-                    'username' => $creds["MYSQLS"]["MYSQLS_USERNAME"],
-                    'password' => $creds["MYSQLS"]["MYSQLS_PASSWORD"],
+                $ DbPluginResource-> setParams (array (
+                    'Dbname' => $ creds ["MYSQLS"] ["MYSQLS_DATABASE"],
+                    'Host' => $ creds ["MYSQLS"] ["MYSQLS_HOSTNAME"],
+                    'Username' => $ creds ["MYSQLS"] ["MYSQLS_USERNAME"],
+                    'Password' => $ creds ["MYSQLS"] ["MYSQLS_PASSWORD"],
                 ));
             }
 
             //
-            // Set the fetch mode and store the resource in the app registry
+            // Mengatur modus mengambil dan menyimpan sumber daya di registri app
             //
-            if (!is_null($dbPluginResource)) {
-                $db = $this->getPluginResource('db')->getDbAdapter();
-                $db->setFetchMode(Zend_Db::FETCH_OBJ);
-                Zend_Db_Table::setDefaultAdapter($db);
-                Zend_Registry::set('db', $db);
-                return $db;
+            if (! is_null ($ dbPluginResource)) {
+                $ Db = $ this-> getPluginResource ('db') -> getDbAdapter ();
+                $ Db-> setFetchMode (Zend_Db :: FETCH_OBJ);
+                Zend_Db_Table :: setDefaultAdapter ($ db);
+                Zend_Registry :: set ('db', $ db);
+                kembali $ db;
             }
 
-            return FALSE;
+            kembali SALAH;
         }
 
-With this, we'll have a working database configuration.
+Dengan ini, kita akan memiliki konfigurasi database bekerja.
 
-####5.2.2 Logging
+#### 5.2.2 Logging
 
-Despite the flexibility of the Zend Framework application.ini file, it doesn't have support for configuring database-based logging. So we need to do it in a plugin resource. You can see below that we get the application database adapter and then use it when initialising a new [Zend_Log_Writer_Db](http://framework.zend.com/manual/en/zend.log.writers.html#zend.log.writers.database) class.
+Meskipun fleksibilitas Zend Framework application.ini berkas, tidak memiliki dukungan untuk mengkonfigurasi database berbasis logging. Jadi yang perlu kita lakukan dalam sumber daya Plugin. Anda dapat lihat di bawah yang kita dapatkan adaptor aplikasi database dan kemudian menggunakannya ketika inisialisasi baru [Zend_Log_Writer_Db](http://framework.zend.com/manual/en/zend.log.writers.html#zend.log.writers.database) kelas.
 
-        protected function _initLog()
+        Fungsi dilindungi _initLog ()
         {
             //
-            // Get a handle on the db plugin resource
+            // Dapatkan pegangan pada sumber daya Plugin db
             //
-            $dbPluginResource = $this->getPluginResource('db');
+            $ DbPluginResource = $ this-> getPluginResource ('db');
 
-            if (!is_null($dbPluginResource)) {
-                $db = $this->getPluginResource('db')->getDbAdapter();
-
-                //
-                // Create a new Zend_Log_Writer_Db writer
-                //
-                $dbWriter = new Zend_Log_Writer_Db($db, 'log_table');
+            if (! is_null ($ dbPluginResource)) {
+                $ Db = $ this-> getPluginResource ('db') -> getDbAdapter ();
 
                 //
-                // Register it with the logger
+                // Buat penulis Zend_Log_Writer_Db baru
                 //
-                $logger = new Zend_Log($dbWriter);
+                $ DbWriter = Zend_Log_Writer_Db baru ($ db, 'log_table');
 
                 //
-                // Store that in the registry
+                // Daftar dengan logger
                 //
-                Zend_Registry::set('logger', $logger);
-                return $logger;
+                $ Logger = baru Zend_Log ($ dbWriter);
+
+                //
+                // Store yang di registri
+                //
+                Zend_Registry :: set ('logger', $ logger);
+                kembali $ logger;
             }
         }
 
-####5.2.3 Caching
+#### 5.2.3 Caching
 
-This is more of a utility method, for convenience within the application. We make the general ``cachemanager`` object we initialised in the application.ini file earlier available through a plugin resource.
+Ini lebih dari sebuah metode utilitas, untuk kenyamanan dalam aplikasi. Kami membuat umum `` objek cachemanager`` kita dijalankan dalam file application.ini sebelumnya tersedia melalui sumber daya Plugin.
 
-    protected function _initCache()
+    Fungsi dilindungi _initCache ()
     {
         try {
-            $bootstrapCacheMgr = $this->bootstrap('cachemanager');
-        } catch (Zend_Application_Bootstrap_Exception $e) {
-            // log error...
+            $ BootstrapCacheMgr = $ this-> bootstrap ('cachemanager');
+        } Catch (Zend_Application_Bootstrap_Exception $ e) {
+            // Log kesalahan ...
         }
 
-        if (!empty($bootstrapCacheMgr) && $bootstrapCacheMgr instanceof
+        if (! empty ($ bootstrapCacheMgr) && $ bootstrapCacheMgr instanceof
             Zend_Application_Bootstrap_BootstrapAbstract &&
-            $bootstrapCacheMgr->hasResource('cachemanager'))
+            $ BootstrapCacheMgr-> hasResource ('cachemanager'))
         {
 
             //
-            // Get a handle on the existing cache manager
+            // Dapatkan pegangan pada manajer cache yang ada
             //
-            $cacheManager = $bootstrapCacheMgr->getResource('cachemanager');
-            $generalCache = 'general';
+            $ CacheManager = $ bootstrapCacheMgr-> getResource ('cachemanager');
+            $ GeneralCache = 'umum';
 
-            if ($cacheManager->hasCache($generalCache)) {
-                $cache = $cacheManager->getCache($generalCache);
-                // Only attempt to cache the metadata if we have a cache available
-                if (!empty($cache)) {
+            if ($ cacheManager-> hasCache ($ generalCache)) {
+                $ Cache = $ cacheManager-> getCache ($ generalCache);
+                // Hanya mencoba untuk cache metadata jika kita memiliki cache yang tersedia
+                if (! empty ($ cache)) {
                     try {
-                        Zend_Registry::set('cache', $cache);
-                        return $cache;
-                    } catch(Zend_Db_Table_Exception $e) {
-                        // log error...
+                        Zend_Registry :: set ('Cache', $ cache);
+                        kembali $ cache;
+                    } Catch (Zend_Db_Table_Exception $ e) {
+                        // Log kesalahan ...
                     }
                 }
             }
         }
     }
 
-###5.3 index.php
+### 5.3 index.php
 
-We then need to make an adjustment to the default ``index.php`` that comes with a standard Zend Framework installation, as created by ``zf.sh`` (or bat).
+Kami kemudian harus melakukan penyesuaian ke default `` index.php`` yang datang dengan instalasi Zend Framework standar, seperti yang dibuat oleh `` zf.sh`` (atau kelelawar).
 
-Normally it looks like the below (formatted for readability):
+Biasanya terlihat seperti di bawah ini (diformat untuk dibaca):
 
-    // Define path to application directory
-    defined('APPLICATION_PATH')
-        || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
+    // Tentukan path ke direktori aplikasi
+    didefinisikan ('APPLICATION_PATH')
+        || Define ('APPLICATION_PATH', realpath (dirname (__ FILE__) '/../application').);
 
-    // Define path to application directory
-    defined('PROJECT_PATH')
-        || define('PROJECT_PATH', realpath(dirname(__FILE__) . '/../'));
+    // Tentukan path ke direktori aplikasi
+    didefinisikan ('PROJECT_PATH')
+        || Define ('PROJECT_PATH', realpath (dirname (__ FILE__) '/../').);
 
-    // Define application environment
-    defined('APPLICATION_ENV')
-        || define('APPLICATION_ENV',
-            (getenv('APPLICATION_ENV')
-            ? getenv('APPLICATION_ENV') : 'production'));
+    // Tentukan lingkungan aplikasi
+    didefinisikan ('APPLICATION_ENV')
+        || Define ('APPLICATION_ENV',
+            (Getenv ('APPLICATION_ENV')
+            ? getenv ('APPLICATION_ENV'): 'produksi'));
 
-However, we need to make a small change, as highlighted below:
+Namun, kita perlu membuat perubahan kecil, seperti yang disorot di bawah:
 
-    // Define path to application directory
-    defined('APPLICATION_PATH')
-        || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
+    // Tentukan path ke direktori aplikasi
+    didefinisikan ('APPLICATION_PATH')
+        || Define ('APPLICATION_PATH', realpath (dirname (__ FILE__) '/../application').);
 
-    if (!empty($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localdomain') === FALSE) {
-        // Parse the json file with ADDONS credentials
-        $string = file_get_contents($_ENV['CRED_FILE'], false);
+    if (! empty ($ _ SERVER ['HTTP_HOST']) && strpos ($ _ SERVER ['HTTP_HOST'], 'localdomain') === FALSE) {
+        // Parse file json dengan addons kredensial
+        $ String = file_get_contents ($ _ ENV ['CRED_FILE'], false);
 
-        if ($string == false) {
-            die('FATAL: Could not read credentials file');
+        if ($ string == false) {
+            die ('FATAL: Tidak dapat membaca berkas kredensial');
         }
 
-        $creds = json_decode($string, true);
+        $ Creds = json_decode ($ string, true);
 
-        // Now getenv('APPLICATION_ENV') should work:
-        $environment = $creds['CONFIG']['CONFIG_VARS']['APPLICATION_ENV'];
+        // Sekarang getenv ('APPLICATION_ENV') harus bekerja:
+        $ Lingkungan = $ creds ['CONFIG'] ['CONFIG_VARS'] ['APPLICATION_ENV'];
 
-        switch($environment)
+        switch ($ lingkungan)
         {
-            case ('testing'):
-               define('APPLICATION_ENV', 'testing');
+            kasus ('menguji'):
+               define ('APPLICATION_ENV', 'pengujian');
             break;
 
-            case ('staging'):
-               define('APPLICATION_ENV', 'staging');
+            kasus ('pementasan'):
+               define ('APPLICATION_ENV', 'pementasan');
             break;
 
-            case ('production'):
+            kasus ('produksi'):
             default:
-                define('APPLICATION_ENV', 'production');
+                define ('APPLICATION_ENV', 'produksi');
         }
-    } else {
-        define('APPLICATION_ENV', 'development');
+    } Else {
+        define ('APPLICATION_ENV', 'pembangunan');
     }
 
-    // Define application environment
-    defined('APPLICATION_ENV') || define('APPLICATION_ENV', 'production');
+    // Tentukan lingkungan aplikasi
+    didefinisikan ('APPLICATION_ENV') || define ('APPLICATION_ENV', 'produksi');
 
-What that does is to use the ``CRED_FILE`` settings that we configured earlier to help us determine the environment, ``APPLICATION_ENV``, that the application's operating within.
+Apa yang dilakukan adalah dengan menggunakan `` pengaturan CRED_FILE`` yang kita dikonfigurasi sebelumnya untuk membantu kami menentukan lingkungan, `` APPLICATION_ENV``, bahwa aplikasi yang beroperasi dalam.
 
-##6. Database Schema
+## 6. Database Schema
 
-Ok, next we need to create a basic database schema for storing both the session and log information. To save time, add the following to a SQL file called ``zendframework_CloudKilat_init.sql``, ready to be used to initialise the database next.
+Ok, kita perlu membuat skema database dasar untuk menyimpan baik sesi dan informasi log. Untuk menghemat waktu, tambahkan berikut ke file SQL yang disebut `` zendframework_CloudKilat_init.sql``, siap digunakan untuk menginisialisasi database berikutnya.
 
-    -- table structure
+    - Struktur tabel
     CREATE TABLE `session` (
-      `id` char(32),
-      `modified` int,
-      `lifetime` int,
-      `data` text,
+      `Id` Char (32),
+      `Modified` int,
+      `Lifetime` int,
+      `Data` teks,
       PRIMARY KEY (`id`)
     );
 
     CREATE TABLE `log_table` (
-        `priority` varchar(50) default NULL,
-        `message` varchar(100) default NULL,
-        `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-        `priorityName` varchar(40) default NULL
-    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+        `Varchar priority` (50) NULL default,
+        `Message` NULL varchar (100) default,
+        `Timestamp timestamp` NOT NULL CURRENT_TIMESTAMP default pada pembaruan CURRENT_TIMESTAMP,
+        `Varchar priorityName` (40) NULL standar
+    ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
 
     CREATE TABLE `tbl_users` (
-        `first` varchar(50) default NULL,
-        `last` varchar(100) default NULL,
-        `username` varchar(40) default NULL
-    ) ENGINE=InnoDB;
+        `First` NULL varchar (50) default,
+        `Varchar last` (100) NULL default,
+        `Username` varchar (40) NULL standar
+    ) ENGINE = InnoDB;
 
-    -- add some records
-    INSERT INTO tbl_users(first, last, username) VALUES('matthew', 'setter', 'settermjd');
+    - Menambahkan beberapa catatan
+    INSERT INTO tbl_users (pertama, terakhir, nama) VALUES ('matthew', 'setter', 'settermjd');
 
-Now, in the shell, we're going to load the data in to the remote mysql instance that we created earlier. To do so, run the following command, changing the respective options with your configuration settings, doing this for both default and testing:
+Sekarang, di shell, kita akan memuat data ke dalam mysql contoh remote yang kita buat sebelumnya. Untuk melakukannya, jalankan perintah berikut, mengubah pilihan masing-masing dengan pengaturan konfigurasi Anda, melakukan hal ini untuk kedua standar dan pengujian:
 
-    mysql -u <database_username> -p \
-        -h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
-        --ssl-ca=mysql-ssl-ca-cert.pem <database_name> < zendframework_CloudKilat_init.sql
+    mysql -u <database_username> p \
+        h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
+        --ssl-ca = mysql-ssl-ca-cert.pem <database_name> <zendframework_CloudKilat_init.sql
 
-In the command above, you can see a reference to a **.pem** file. This can be downloaded from: [http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem](http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem). All being well, the command will finish silently, loading the data. You can check that all's gone well with following commands:
+Pada perintah di atas, Anda dapat melihat referensi ke pem ** berkas **.. Ini dapat didownload dari: [http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem](http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem). Semua yang baik, perintah akan selesai diam-diam, memuat data. Anda dapat memeriksa bahwa semua sudah pergi baik dengan perintah berikut:
 
-    mysql -u <database_username> -p \
-        -h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
-        --ssl-ca=mysql-ssl-ca-cert.pem <database_name>
+    mysql -u <database_username> p \
+        h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
+        --ssl-ca = mysql-ssl-ca-cert.pem <database_name>
 
-    show tables;
+    menampilkan tabel;
 
-This will show you the tables from the SQL file.
+Ini akan menunjukkan tabel dari file SQL.
 
-Now that that's done, commit the changes we made earlier and push and deploy both environments again so that the new information will be used. This can be done quickly with the following commands:
+Sekarang itu selesai, melakukan perubahan yang kami buat sebelumnya dan mendorong dan menyebarkan kedua lingkungan lagi sehingga informasi baru akan digunakan. Hal ini dapat dilakukan dengan cepat dengan perintah berikut:
 
-    // commit the changes
-    git commit -m "changed to store log and session in mysql and auto-determine environment"
+    // Melakukan perubahan
+    git komit -m "berubah untuk menyimpan log dan sesi di mysql dan auto-menentukan lingkungan"
 
-    // deploy the default branch
-    ironcliapp APP_NAME/default push
-    ironcliapp APP_NAME/default deploy
+    // Menyebarkan cabang default
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
 
-    git checkout testing
-    git merge master
+    pengujian checkout git
+    Master menggabungkan git
 
-    // deploy the testing branch
-    ironcliapp APP_NAME/testing push
-    ironcliapp APP_NAME/testing deploy
+    // Menyebarkan cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
-##7. Review the Deployment
+## 7. Tinjau Deployment yang
 
-With that completed, then have a look at both your deployments to ensure that they're working.
+Dengan itu selesai, maka kita lihat baik penyebaran Anda untuk memastikan bahwa mereka bekerja.
 
-You should see output similar to that below, in figure 2.
+Anda harus melihat output mirip dengan yang di bawah ini, pada gambar 2.
 
-![Successful Deployment](/static/apps/images/zf-deployed.png)
+! [Deployment Sukses] (/ statis / apps / gambar / zf-deployed.png)
 
-###7.1 Deployment Problems
+### 7.1 Masalah Deployment
 
-If you have any issues deploying the Zend Framework application, then please consult the log files. There are, currently, two available, these are **deploy** and **error**. As the names suggest, deploy provides an overview of the deployment process and error shows any and all PHP errors to the extend allowed by your current logging level.
+Jika Anda memiliki masalah penggelaran aplikasi Zend Framework, maka silakan baca file log. Ada, saat ini, dua tersedia, ini adalah ** menyebarkan ** dan ** ** kesalahan. Sebagai nama menyarankan, menyebarkan memberikan gambaran tentang proses penyebaran dan error menunjukkan kesalahan PHP setiap dan semua ke memperpanjang diperbolehkan oleh tingkat penebangan Anda saat ini.
 
-To view the information, run the following commands respectively:
+Untuk melihat informasi ini, jalankan perintah berikut masing-masing:
 
-####7.1.1 Deployment
+#### 7.1.1 Deployment
 
-    ironcliapp APP_NAME/default log deploy
+    ironcliapp APP_NAME / default log menyebarkan
 
-####7.1.1 Errors
+#### 7.1.1 Kesalahan
 
-    ironcliapp APP_NAME/default log error
+    ironcliapp APP_NAME / default error log
 
-The commands output information in a [UNIX tail](http://en.wikipedia.org/wiki/Tail_%28Unix%29) like fashion. So just call them and cancel the commend when you are no longer interested in the output.
+Perintah output informasi dalam [UNIX ekor] (http://en.wikipedia.org/wiki/Tail_%28Unix%29) seperti fashion. Jadi hanya memanggil mereka dan membatalkan memuji ketika Anda tidak lagi tertarik pada output.
 
-##Links
+## Links
 
- * [Zend_Log_Writer_Db - Customising table columns](http://www.webeks.net/php/zend-log-writer-db-customising-table-columns.html)
- * [Logging in Zend Framework (Zend_Log & Zend_Log_Writer_Db)](http://mnshankar.wordpress.com/tag/zend_log_writer_db/)
+ * [Zend_Log_Writer_Db - Menyesuaikan kolom tabel] (http://www.webeks.net/php/zend-log-writer-db-customising-table-columns.html)
+ * [Logging di Zend Framework (Zend_Log & Zend_Log_Writer_Db)] (http://mnshankar.wordpress.com/tag/zend_log_writer_db/)

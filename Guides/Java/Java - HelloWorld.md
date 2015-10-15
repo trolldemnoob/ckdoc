@@ -1,135 +1,135 @@
-# Deploying a Java/Jetty Application
+# Menyebarkan Java / Jetty Aplikasi
 
-If you're looking for a fast and lightweight Java web server / Servlet container for your projects, you definitely have to try [Jetty].
+Jika Anda sedang mencari cepat dan ringan Java web server / Servlet wadah untuk proyek Anda, Anda pasti harus mencoba [Jetty].
 
-In this tutorial we're going to show you how to deploy a Jetty application on [CloudKilat]. You can find the [source code on Github](https://github.com/cloudControl/java-jetty-jsp-example-app.git) and check out the [Java buildpack] for supported features.
+Dalam tutorial ini kita akan menunjukkan kepada Anda bagaimana untuk menggunakan aplikasi Jetty pada [CloudKilat]. Anda dapat menemukan [kode sumber dari Github] (https://github.com/cloudControl/java-jetty-jsp-example-app.git) dan memeriksa [Java buildpack] fitur untuk didukung.
 
 
-## The Jetty Application Explained
-### Get the App
-First, clone the hello world app from our repository:
+## The Jetty Aplikasi Dijelaskan
+### Dapatkan App
+Pertama, mengkloning aplikasi hello world dari repositori kami:
 
-~~~bash
-$ git https://github.com/cloudControl/java-jetty-jsp-example-app.git
-$ cd java-jetty-jsp-example-app
+~~~ Pesta
+$ Git https://github.com/cloudControl/java-jetty-jsp-example-app.git
+$ Cd java-dermaga-jsp-contoh-aplikasi
 ~~~
 
-Now you have a small but fully functional Java/Jetty application.
+Sekarang Anda memiliki aplikasi Java / Jetty kecil tapi berfungsi penuh.
 
 
-### Dependency Tracking
-To create this application we had to provide Spring framework and Log4j as Maven dependencies in the `pom.xml`.
-~~~xml
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-core</artifactId>
-    <version>${org.springframework.version}</version>
-</dependency>
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-webmvc</artifactId>
-    <version>${org.springframework.version}</version>
-</dependency>
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-context</artifactId>
-    <version>${org.springframework.version}</version>
-</dependency>
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-beans</artifactId>
-    <version>${org.springframework.version}</version>
-</dependency>
-<dependency>
-    <groupId>log4j</groupId>
-    <artifactId>log4j</artifactId>
-    <version>1.2.17</version>
-</dependency>
-<dependency>
-    <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-log4j13</artifactId>
-    <version>1.0.1</version>
-</dependency>
+### Ketergantungan Tracking
+Untuk membuat aplikasi ini kita harus menyediakan kerangka kerja Spring dan Maven Log4j sebagai dependensi dalam `pom.xml`.
+~~~ Xml
+<Ketergantungan>
+    <GroupId> org.springframework </ groupId>
+    <ArtifactId> semi-core </ artifactId>
+    <Version> $ {org.springframework.version} </ version>
+</ Ketergantungan>
+<Ketergantungan>
+    <GroupId> org.springframework </ groupId>
+    <ArtifactId> semi-webmvc </ artifactId>
+    <Version> $ {org.springframework.version} </ version>
+</ Ketergantungan>
+<Ketergantungan>
+    <GroupId> org.springframework </ groupId>
+    <ArtifactId> semi-konteks </ artifactId>
+    <Version> $ {org.springframework.version} </ version>
+</ Ketergantungan>
+<Ketergantungan>
+    <GroupId> org.springframework </ groupId>
+    <ArtifactId> semi-biji </ artifactId>
+    <Version> $ {org.springframework.version} </ version>
+</ Ketergantungan>
+<Ketergantungan>
+    <GroupId> log4j </ groupId>
+    <ArtifactId> log4j </ artifactId>
+    <Versi> 1.2.17 </ version>
+</ Ketergantungan>
+<Ketergantungan>
+    <GroupId> org.slf4j </ groupId>
+    <ArtifactId> slf4j-log4j13 </ artifactId>
+    <Versi> 1.0.1 </ version>
+</ Ketergantungan>
 ~~~
 
-[Maven dependency plugin] is also required in the `pom.xml` to copy all dependencies to the target directory to make them available in the classpath. A local Maven repository is not included in the build image.
+[Maven ketergantungan Plugin] juga diperlukan dalam `pom.xml` untuk menyalin semua dependensi ke direktori target untuk membuat mereka tersedia di classpath. Sebuah repositori Maven lokal tidak termasuk dalam membangun citra.
 
-~~~xml
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-dependency-plugin</artifactId>
-    <version>2.4</version>
-    <executions>
-        <execution>
-            <id>copy-dependencies</id>
-            <phase>package</phase>
-            <goals><goal>copy-dependencies</goal></goals>
-        </execution>
-    </executions>
-</plugin>
+~~~ Xml
+<Plugin>
+    <GroupId> org.apache.maven.plugins </ groupId>
+    <ArtifactId> maven-ketergantungan-plugin </ artifactId>
+    <Versi> 2.4 </ version>
+    <Eksekusi>
+        <Eksekusi>
+            <Id> copy-dependensi </ id>
+            <Fase> paket </ fase>
+            <Tujuan> <tujuan> copy-dependensi </ tujuan> </ tujuan>
+        </ Eksekusi>
+    </ Eksekusi>
+</ Plugin>
 ~~~
 
-### Process Type Definition
-CloudKilat uses a [Procfile] to know how to start your processes.
+### Proses Type Definition
+CloudKilat menggunakan [Procfile] tahu bagaimana untuk memulai proses Anda.
 
-The example code already includes the `Procfile` at the top level of your repository. It looks like this:
+Contoh kode yang sudah termasuk `Procfile` di tingkat atas repositori Anda. Ini terlihat seperti ini:
 
 ~~~
-web: java $JAVA_OPTS -jar target/dependency/jetty-runner.jar --port $PORT target/java-jetty-jsp-example-app-0.0.1-SNAPSHOT.war
+web: java $ JAVA_OPTS jar sasaran / ketergantungan / jetty-runner.jar --port sasaran $ PORT / java-dermaga-jsp-contoh-aplikasi 0.0.1-SNAPSHOT.war
 ~~~
 
-The `web` process type is required and specifies the command that will be executed when the app is deployed.
-The java command starts the 'com.exo.sample.jetty.App' with the classpath set to the compiled Java classes and dependencies.
+The `tipe proses web` diperlukan dan menentukan perintah yang akan dijalankan ketika aplikasi ini digunakan.
+Perintah java memulai 'com.exo.sample.jetty.App' dengan classpath ditetapkan untuk kelas Java dikompilasi dan dependensi.
 
-## Pushing and Deploying your App
-Choose a unique name to replace the `APP_NAME` placeholder for your application and create it on the CloudKilat platform: 
+## Mendorong dan Menyebarkan App Anda
+Pilih nama yang unik untuk menggantikan `APP_NAME` tempat untuk aplikasi Anda dan membuatnya pada platform CloudKilat:
 
-~~~bash
-$ ironcliapp APP_NAME create java
+~~~ Pesta
+$ Ironcliapp APP_NAME buat java
 ~~~
 
-Push your code to the application's repository, which triggers the deployment image build process:
+Mendorong kode Anda ke repositori aplikasi, yang memicu penyebaran gambar proses build:
 
 
-~~~bash
-$ ironcliapp APP_NAME/default push
+~~~ Pesta
+$ Ironcliapp APP_NAME / dorongan bawaan
 
------> Receiving push
------> Installing OpenJDK 1.7(openjdk7.b32.tar.gz)... done
------> Installing Maven (maven_3_1_with_cache_1.tar.gz)... done
------> Installing settings.xml... done
------> executing /srv/tmp/buildpack-cache/.maven/bin/mvn -B -Duser.home=/srv/tmp/builddir -Dmaven.repo.local=/srv/tmp/buildpack-cache/.m2/repository -s /srv/tmp/buildpack-cache/.m2/settings.xml -DskipTests=true clean install
-       [INFO] Scanning for projects...
+-----> Mendorong Menerima
+-----> Instalasi OpenJDK 1,7 (openjdk7.b32.tar.gz) ... dilakukan
+-----> Instalasi Maven (maven_3_1_with_cache_1.tar.gz) ... dilakukan
+-----> Instalasi settings.xml ... dilakukan
+-----> Mengeksekusi /srv/tmp/buildpack-cache/.maven/bin/mvn -B -Duser.home = / srv / tmp / builddir -Dmaven.repo.local = / srv / tmp / buildpack-Cache /.m2/repository -s /srv/tmp/buildpack-cache/.m2/settings.xml -DskipTests = true instalasi yang bersih
+       [INFO] Scanning untuk proyek-proyek ...
        [INFO]
-       [INFO] --------------------------------------------------------------
-       [INFO] Building APP_NAME 1.0-SNAPSHOT
-       [INFO] --------------------------------------------------------------
+       [INFO] ----------------------------------------------- ---------------
+       [INFO] Bangunan APP_NAME 1.0-SNAPSHOT
+       [INFO] ----------------------------------------------- ---------------
        ...
-       [INFO] --------------------------------------------------------------
-       [INFO] BUILD SUCCESS
-       [INFO] --------------------------------------------------------------
-       [INFO] Total time: 5:57.950s
-       [INFO] Finished at: Fri Jul 11 14:09:05 UTC 2013
-       [INFO] Final Memory: 10M/56M
------> Building image
------> Uploading image (39M)
+       [INFO] ----------------------------------------------- ---------------
+       [INFO] MEMBANGUN SUKSES
+       [INFO] ----------------------------------------------- ---------------
+       [INFO] Total waktu: 5: 57.950s
+       [INFO] Selesai di: Fri 11 Juli 14:09:05 UTC 2013
+       [INFO] Akhir Memory: 10M / 56m
+-----> Gambar Building
+-----> Gambar Mengunggah (39m)
 
-To ssh://APP_NAME@kilatiron.net/repository.git
-   54b0da2..d247825  master -> master
+Untuk ssh: //APP_NAME@kilatiron.net/repository.git
+   54b0da2..d247825 Master -> Master
 ~~~
 
-Last but not least deploy the latest version of the app with the ironcliapp deploy command:
+Terakhir namun tidak sedikit menyebarkan versi terbaru dari aplikasi dengan ironcliapp yang menyebarkan perintah:
 
-~~~bash
-$ ironcliapp APP_NAME/default deploy
+~~~ Pesta
+$ Ironcliapp APP_NAME / default menyebarkan
 ~~~
 
-Congratulations, you can now see your Jetty Application running at `http[s]://APP_NAME.kilatiron.net`.
+Selamat, Anda sekarang dapat melihat aplikasi Jetty Anda berjalan pada `http [s]: // APP_NAME.kilatiron.net`.
 
 [Jetty]: http://jetty.codehaus.org/jetty/
 [CloudKilat]: http://www.cloudkilat.com/
 [Java buildpack]: https://github.com/cloudControl/buildpack-java
-[CloudKilat-command-line-client]: /Platform%20Documentaion.md/#command-line-client-web-console-and-api
-[Git client]: http://git-scm.com/
-[Maven dependency plugin]: http://maven.apache.org/plugins/maven-dependency-plugin/
+[CloudKilat-baris perintah-client]: /Platform%20Documentaion.md/#command-line-client-web-console-and-api
+[Git klien]: http://git-scm.com/
+[Maven ketergantungan Plugin]: http://maven.apache.org/plugins/maven-dependency-plugin/
 [Procfile]: /Platform%20Documentaion.md/#buildpacks-and-the-procfile

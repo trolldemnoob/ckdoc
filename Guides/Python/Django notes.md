@@ -1,32 +1,32 @@
-# Notes for Django Developers
-This document contains information for Django programmers deploying their applications on [CloudKilat].
+# Catatan untuk Django Pengembang
+Dokumen ini berisi informasi untuk Django programmer menyebarkan aplikasi mereka di [CloudKilat].
 
-## Managing Dependencies
-The [python buildpack] uses [pip] to manage dependencies. Specify your dependencies in a file called `requirements.txt` in the project root directory.
+## Mengelola Dependensi
+The [python buildpack] menggunakan [pip] untuk mengelola dependensi. Tentukan dependensi Anda dalam sebuah file bernama `requirements.txt` di direktori root proyek.
 
-## Defining the Process Type
-CloudKilat uses a [Procfile][procfile] to know how to start your processes. This file specifies a _web_ command that will be executed to start the server once the app is deployed. It optionally also specifies [worker] types that can be used to execute long running tasks.
+## Menentukan Jenis Proses
+CloudKilat menggunakan [Procfile] [procfile] tahu bagaimana untuk memulai proses Anda. File ini menentukan perintah _web_ yang akan dijalankan untuk memulai server setelah aplikasi ini digunakan. Hal opsional juga menetapkan [pekerja] jenis yang dapat digunakan untuk menjalankan tugas-tugas berjalan lama.
 
-The `Procfile` for a Django app using gunicorn as web server can look like this:
+The `Procfile` untuk aplikasi Django menggunakan gunicorn sebagai web server dapat terlihat seperti ini:
 ~~~
 web: python manage.py run_gunicorn --config gunicorn_config.py -b 0.0.0.0:$PORT
-manage: python manage.py
+mengelola: python manage.py
 ~~~
 
-## Executing Management Tasks
-Use the `run` command to execute tasks like `syncdb`. This starts an interactive [SSH-session].
-~~~bash
-ironcliapp APP_NAME/DEP_NAME run "python manage.py syncdb"
+## Pelaksana Tugas Manajemen
+Gunakan perintah `run` untuk melaksanakan tugas-tugas seperti` syncdb`. Ini dimulai sebuah [SSH-sesi] interaktif.
+~~~ Pesta
+ironcliapp APP_NAME / DEP_NAME run "python manage.py syncdb"
 ~~~
 
-## Databases
-To use a database, have a look at the [Shared MySQL Add-on][Shared MySQL Add-on]. To get the credentials of your database, refer to the [Add-on credentials][add-on-credentials] article.
+Database ##
+Untuk menggunakan database, kita lihat di [Bersama MySQL Add-on] [Bersama MySQL Add-on]. Untuk mendapatkan mandat dari database Anda, lihat artikel [Add-on kredensial] [add-on-kredensial].
 
-[SSH-session]: /Platform%20Documentation.md/#secure-shell-ssh
-[python buildpack]: https://github.com/cloudControl/buildpack-python
-[pip]: http://www.pip-installer.org/
-[procfile]: /Platform%20Documentation.md/#buildpacks-and-the-procfile
-[Shared MySQL Add-on]: /Add-on%20Documentation/Data%20Storage/MySQLs.md
-[add-on-credentials]: /Guides/Python/Add-on%20credentials.md
+[SSH-sesi]: /Platform%20Documentation.md/#secure-shell-ssh
+[Python buildpack]: https://github.com/cloudControl/buildpack-python
+[Pip]: http://www.pip-installer.org/
+[Procfile]: /Platform%20Documentation.md/#buildpacks-and-the-procfile
+[Bersama MySQL Add-on]: /Add-on%20Documentation/Data%20Storage/MySQLs.md
+[Add-on-kredensial]: /Guides/Python/Add-on%20credentials.md
 [CloudKilat]: http://www.cloudkilat.com/
-[worker]: /Add-on%20Documentation/Data%20Processing/Worker.md
+[Pekerja]: /Add-on%20Documentation/Data%20Processing/Worker.md

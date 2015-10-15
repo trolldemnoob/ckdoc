@@ -1,65 +1,63 @@
-# CloudKilat Documentation
+# Dokumentasi CloudKilat 
 
-## Platform Access
+## Landasan Akses
 
 **TL;DR:**
 
- * The command line client is the primary interface.
- * We also offer a web console.
- * For full control and integration it's possible to talk directly to the RESTful API.
+ * Baris perintah klien adalah antarmuka utama.
+ * Kami juga menawarkan konsol web.
+ * Untuk kontrol penuh dan integrasi memungkinkan untuk berbicara langsung dengan RESTful API.
 
-To control the platform we offer different interfaces. The primary way of controlling your apps and deployments is via [the command-line interface](http://en.wikipedia.org/wiki/Command-line_interface) (CLI) called *ironcliapp* and *ironcliuser*. Additionally we also offer a [web console]. Both the CLI as well as the web console however are merely frontends to our RESTful API. For deep integration into your apps you can optionally use one of our available [API libraries].
+Untuk mengontrol platform kami menawarkan beberapa antarmuka yang berbeda. Cara utama untuk mengendalikan aplikasi dan penyebaran adalah melalui [antarmuka baris perintah](http://en.wikipedia.org/wiki/Command-line_interface) (CLI) yaitu *ironcliapp* dan *ironcliuser*. Selain itu kami juga menawarkan [web konsol]. Kedua CLI serta konsol web namun hanyalah frontends untuk RESTful API kami. Untuk integrasi yang lebih dalam ke aplikasi Anda, Anda dapat menggunakan salah satu dari yang tersedia [API perpustakaan] kami.
 
-Throughout this documentation we will use the CLI as the primary way of controlling the CloudKilat platform. The CLI consists of 2 parts: *ironcliapp* and *ironcliuser*. To get help for the command line client, just append --help or -h to any of the commands.
+Sepanjang dokumentasi ini kita akan menggunakan CLI sebagai cara utama untuk mengendalikan platform CloudKilat. CLI terdiri dari 2 bagian: *ironcliapp* dan *ironcliuser*. Untuk mendapatkan bantuan untuk klien baris perintah, hanya menambahkan --help atau -h ke salah satu perintah tersebut.
 
-Installing the command line clients is easy and works on Mac/Linux as well as on Windows.
+Instalasi klien baris perintah mudah dan berjalan pada Mac/Linux serta pada Windows.
 
-#### Quick Installation Windows
+#### Instalasi pada Windows
 
-For Windows we offer an installer. Please download [the latest version] of the installer from S3. The file is named cctrl-x.x-setup.exe.
+Untuk Windows kami menawarkan installer. Silahkan download [versi terbaru] installer dari S3. File tersebut bernama cctrl-x.x-setup.exe.
 
-#### Quick Installation Linux/Mac
+#### Instalasi pada Linux/Mac
 
-On Linux and Mac OS we recommend installing and updating the command line clients via pip. They require [Python 2.6+].
+Pada Linux dan Mac OS kami sarankan menginstal dan memperbarui klien baris perintah melalui pip. aplikasi ini membutuhkan [Python 2.6+].
 
 ~~~
 $ sudo pip install -U ironcli
 ~~~
 
-If you don't have pip you can install pip via easy_install (on Linux usually part of the python-setuptools package):
+Jika Anda tidak memiliki pip Anda dapat menginstal pip melalui easy_install (di Linux biasanya merupakan bagian dari paket python-setuptools):
 
 ~~~
 $ sudo easy_install pip
 $ sudo pip install -U ironcli
 ~~~
 
-## User Accounts
+## Akun Pengguna
 
-User accounts are created on [www.cloudkilat.com](http://www.cloudkilat.com/).
+Akun pengguna dapat dibuat di  [www.cloudkilat.com](http://www.cloudkilat.com/).
 
-## Apps and Deployments
+## Aplikasi dan Penyebaran
 
 **TL;DR:**
 
- * Applications (apps) have a repository and deployments.
- * The repository is where your code lives, organized in branches.
- * A deployment is a running version of your application, based on the branch with the same name. Exception: the default deployment is based on the master branch.
+ * Aplikasi (apps) memiliki repositori dan penyebaran.
+ * Repositori adalah tempat dimana kode Anda berada, yang diselenggarakan di cabang.
+ * Penyebaran adalah versi menjalankan aplikasi Anda, berdasarkan cabang dengan nama yang sama. Pengecualian: penyebaran standar didasarkan pada cabang master.
 
-CloudKilat PaaS uses a distinct set of naming conventions. To understand how to
-work with the platform effectively, it's important to understand the following
-few basic concepts.
+CloudKilat PaaS menggunakan satu set konvensi penamaan yang berbeda. Untuk dapat bekerja efektif dengan platform , penting untuk memahami beberapa konsep dasar berikut .
 
-### Apps
+### Aplikasi 
 
-An app consists of a repository (with branches) and deployments.
+Sebuah aplikasi terdiri dari repositori (dengan cabang) dan penyebaran.
 
-Creating an app is easy. Simply specify a name and the desired type to determine which [buildpack](#buildpacks-and-the-procfile) to use.
+Membuat sebuah aplikasi sangatlah mudah. Hanya menentukan nama dan tipe yang diinginkan untuk menentukan [buildpack](#buildpacks-and-the-procfile) untuk digunakan.
 
 ~~~
 $ ironcliapp APP_NAME create php
 ~~~
 
-You can always list your existing apps using the command line client too.
+Anda selalu bisa melisting aplikasi yang ada dengan menggunakan klien baris perintah .
 
 ~~~
 $ ironcliapp -l
@@ -70,19 +68,19 @@ Apps
    [...]
 ~~~
 
-### User Keys
+### Keys Pengguna
 
-For secure access to the app's repository, each developer needs to authenticate
-via public/ private key authentication. Please refer to GitHub's article on
-[generating SSH keys] for details on how to create a key. You can simply add
-your default key to your user account using the *web console* or the command
-line client. If no default key can be found, ironcliapp will offer to create one.
+Untuk mengamankan akses ke repositori aplikasi, masing-masing pengembang perlu mengotentikasi
+melalui otentikasi kunci pribadi/publik. Silakan lihat artikel GitHub di
+[Menghasilkan kunci SSH] untuk rincian tentang cara membuat kunci. Anda bisa menambahkan
+kunci default untuk account pengguna Anda menggunakan *web konsol* atau perintah
+klien baris. Jika tidak ada kunci yang dapat ditemukan, ironcliapp akan menawarkan untuk membuat satu.
 
 ~~~
 $ ironcliuser key.add
 ~~~
 
-You can also list the available key ids and remove existing keys using the key id.
+Anda juga bisa menampilkan id kunci yang tersedia dan menghapus kunci yang ada menggunakan id kunci.
 
 ~~~
 $ ironcliuser key
@@ -95,16 +93,16 @@ ssh-rsa AAA[...]
 $ ironcliuser key.remove Dohyoonuf7
 ~~~
 
-### Deployments
+### Penyebaran
 
-A deployment is the running version of one of your branches made accessible via a [provided subdomain](#provided-subdomains-and-custom-domains).
-It is based on the branch of the same name. Exception: the default deployment is based on the master branch.
+Penyebaran adalah menjalankan salah satu versi pada cabang Anda yang dapat diakses melalui [subdomain yang tersedia](#provided-subdomains-and-custom-domains).
+Hal ini didasarkan pada cabang dengan nama yang sama. Pengecualian: penyebaran standar didasarkan pada cabang master.
 
-Deployments run independently from each other, including separate runtime environments, file system storage and Add-ons (e.g. database).
-This allows you to have different versions of your app running at the same time without interfering with each other.
-Please refer to the section about [development, staging and production environments](#development-staging-and-production-environments) to understand why this is a good idea.
+Penyebaran berjalan secara terpisah satu sama lain, termasuk lingkungan runtime terpisah, penyimpanan file system dan tambahan (misalnya database).
+Hal ini memungkinkan untuk memiliki versi yang berbeda dari aplikasi Anda yang berjalan pada waktu yang sama tanpa mengganggu satu sama lain.
+Silakan lihat bagian tentang [pembangunan, pementasan dan lingkungan produksi](#development-staging-and-production-environments)untuk memahami mengapa hal ini adalah ide yang baik.
 
-You can list all the deployments with the *details* command.
+Anda bisa menampilkan semua penyebaran dengan *details* perintah.
 
 ~~~
 $ ironcliapp APP_NAME details
@@ -121,52 +119,48 @@ App
 ~~~
 
 
-## Version Control & Images
+## Kontrol Versi & Citra
 
 **TL;DR:**
 
- * Git is the supported VCS.
- * When you push an updated branch, an image of your code gets built, ready to be deployed.
- * Image sizes are limited to 200MB (compressed). Use a `.cctrlignore` file to exclude development assets.
+ * Git adalah VCS yang didukung.
+ * Ketika Anda mendorong untuk memperbarui cabang, citra kode Anda akan dibangun, lalu siap untuk digunakan.
+ * Ukuran citra terbatas sampai 200MB (terkompresi). Gunakanlah file `.cctrlignore` untuk mengecualikan aset.
 
-### Image Building
+### Membangun Citra
 
-Whenever you push an updated branch, a deployment image is built automatically.
-This image can then be deployed with the *deploy* command to the deployment
-matching the branch name.  The content of the image is generated by the
-[buildpack](#buildpacks-and-the-procfile) including your application code in a
-runnable form with all the dependencies.
+Setiap kali Anda mendorong untuk memperbarui cabang, citra penyebaran dibangun secara otomatis.
+Citra ini kemudian dapat digunakan dengan perintah *deploy* untuk penyebaran
+sesuai dengan nama cabang. Isi dari citra dihasilkan oleh
+[buildpack](#buildpacks-and-the-procfile) termasuk kode aplikasi Anda dalam
+bentuk siap untuk dijalankan dengan semua dependensi yang ada.
 
-You can either use the ironcliapp push command or git's push command. Please
-remember that deployment and branch names have to match.  So to push to your
-dev deployment the following commands are interchangeable.  Also note, both
-require the existence of a branch called dev.
+Anda bisa menggunakan perintah mendorong ironcliapp atau mendorong dengan perintah git . Mohon Untuk
+mengingat bahwa penyebaran dan nama cabang harus sesuai. Jadi untuk mendorong ke penyebaran dev gunakanlah perintah berikut. Juga perhatikan, keduanya
+membutuhkan keberadaan cabang dev.
 
 ~~~
-# with ironcliapp:
+# Dengan ironcliapp:
 $ ironcliapp APP_NAME/dev push
 
-# get the REPO_URL from the output of ironcliapp APP_NAME details
+# Mendapatkan REPO_URL dari output dari ironcliapp APP_NAME details
 
-# with git:
-$ git remote add exo REPO_URL
+# Dengan git:
+$ git remote add exo REPO_URL 
 $ git push exo dev
 ~~~
 
-The repositories support all other remote operations like pulling and cloning
-as well.
+Repositori mendukung semua operasi jarak jauh lainnya seperti menarik dan kloning juga.
 
-The compressed image size is limited to 200MB.  Smaller images can be deployed
-faster, so we recommend to keep the image size below 50MB.  The image size is
-printed at the end of the build process; if the image exceeds the limit, the
-push gets rejected.
+Ukuran citra dikompresi terbatas sampai dengan 200MB. Citra yang lebih kecil dapat digunakan
+lebih cepat, jadi kami sarankan untuk menjaga ukuran di bawah 50MB. Ukuran citra dicetak pada akhir proses membangun; jika citra melebihi batas tersebut, dorongan akan ditolak.
 
-You can decrease your image size by making sure that no unneeded files (e.g.
-caches, logs, backup files) are tracked in your repository. Files that need to
-be tracked but are not required in the image (e.g. development assets or source
-code files in compiled languages), can be added to a `.cctrlignore` file in the
-project root directory.  The format is similar to the `.gitignore`, but without
-the negation operator `!`. Here’s an example `.cctrlignore`:
+Anda dapat mengurangi ukuran citra Anda dengan memastikan bahwa tidak ada file yang tidak dibutuhkan (misalnya
+cache, log, file backup) yang terlacak dalam repositori Anda. File yang perlu
+dilacak tetapi tidak diperlukan dalam citra (misalnya aset pembangunan atau sumber
+file kode dalam bahasa yang sudah dikompilasi), dapat ditambahkan ke file `.cctrlignore` di dalam
+direktori root projeknya. Formatnya mirip dengan `.gitignore`, tetapi tanpa
+operator  `!`. Berikut ini adalah contoh `.cctrlignore`:
 
 ~~~
 *.psd
@@ -174,67 +168,66 @@ the negation operator `!`. Here’s an example `.cctrlignore`:
 test
 spec
 ~~~
+#### Buildpacks dan Procfile
 
-#### Buildpacks and the Procfile
+Selagi proses mendorong dijalankan buildpack langsung berjalan. Sebuah buildpack adalah satu set
+script yang menentukan bagaimana sebuah aplikasi dalam bahasa tertentu atau kerangka harus
+disiapkan untuk penyebaran pada landasan CloudKilat. Dengan buildpacks kustom,
+dukungan untuk bahasa pemrograman baru dapat ditambahkan atau runtime kustom
+lingkungan dapat dibangun. Untuk mendukung banyak PaaS dengan satu buildpack, kami
+merekomendasikan mengikuti [Heroku buildpack API] yang kompatibel dengan
+CloudKilat dan platform lainnya.
 
-During the push a hook is fired that runs the buildpack. A buildpack is a set
-of scripts that determine how an app in a specific language or framework has to
-be prepared for deployment on the CloudKilat platform. With custom buildpacks,
-support for new programming languages can be added or custom runtime
-environments can be build. To support many PaaS with one buildpack, we
-recommend following the [Heroku buildpack API] which is compatible with
-CloudKilat and other platforms.
+Bagian dari script buildpack juga dapat menarik dependensi menurut
+bahasa atau kerangka cara asli. Misalnya pip dan requirements.txt untuk Python,
+Maven untuk Java, NPM untuk Node.js, Komposer untuk PHP dan sebagainya. Hal ini memungkinkan Anda untuk
+sepenuhnya mengontrol perpustakaan dan versi yang tersedia untuk aplikasi Anda di 
+lingkungan runtime final.
 
-Part of the buildpack scripts is also to pull in dependencies according to the
-languages or frameworks native way. E.g. pip and a requirements.txt for Python,
-Maven for Java, npm for Node.js, Composer for PHP and so on. This allows you to
-fully control the libraries and versions available to your app in the final
-runtime environment.
+Buildpack yang akan digunakan ditentukan oleh jenis aplikasi set
+saat membuat aplikasi.
 
-Which buildpack is going to be used is determined by the application type set
-when creating the app.
-
-A required part of the image is a file called `Procfile` in the root directory.
-It is used to determine how to start the actual application in the container.
-Some of the buildpacks can provide a default Procfile. But it is recommended to
-explicitly define the Procfile in your application to match your individual
-requirements better. For a container to be able to receive requests from the
-routing tier it needs at least the following content:
+Sebuah bagian yang diperlukan dari citra adalah file yang bernama `Procfile` di direktori root.
+Hal ini digunakan untuk menentukan bagaimana untuk memulai aplikasi yang sebenarnya dalam wadah.
+Beberapa buildpacks dapat memberikan standar Procfile. Tapi dianjurkan untuk
+eksplisit menentukan Procfile dalam aplikasi Anda untuk menyesuaikan 
+persyaratan pribadi Anda yang lebih baik. Untuk wadah agar dapat menerima permintaan dari
+lapis Routing dibutuhkan setidaknya konten berikut:
 
 ~~~
 web: COMMAND_TO_START_THE_APP_AND_LISTEN_ON_A_PORT --port $PORT
 ~~~
 
-For more specific examples of a `Procfile` please refer to the language and framework [guides].
+Untuk contoh yang lebih spesifik dari `Procfile` silakan lihat bahasa dan kerangka [panduan].
 
-At the end of the buildpack process, the image is ready to be deployed.
+Pada akhir proses buildpack, citra siap untuk digunakan.
 
 
-## Deploying New Versions
+## Menyebarkan Versi Baru
 
-The CloudKilat platform supports zero downtime deploys for all deployments. To deploy a new version use either the *web console* or the `deploy` command.
+Platform CloudKilat mendukung nol downtime menyebarkan untuk semua penyebaran. Untuk menyebarkan penggunaan versi baru baik *web konsol* atau perintah `deploy`.
 
 ~~~
 $ ironcliapp APP_NAME/DEP_NAME deploy
 ~~~
 
-To deploy a specific version, append your version control systems identifier (full commit-SHA1).
-If not specified, the version to be deployed defaults to the latest image available (the one built during the last successful push).
+Untuk menyebarkan versi tertentu, tambahkan versi pengenal sistem kontrol Anda (komit penuh-SHA1).
+Jika tidak ditentukan, versi yang akan dikerahkan adalah default untuk gambar terbaru yang tersedia (yang dibangun selama push sukses terakhir).
 
-For every deploy, the image is downloaded to as many of the platform’s nodes as required by the [--containers setting](#scaling) and started according to the buildpack’s default or the [Procfile](#buildpacks-and-the-procfile).
-After the new containers are up and running the load balancing tier stops sending requests to the old containers and instead sends them to the new version.
-A log message in the [deploy log](#deploy-log) appears when this process has finished.
+Untuk setiap menyebarkan, citra mengunduh banyak node platform seperti yang dipersyaratkan oleh [--containers setting](#scaling)dan mulai sesuai dengan default buildpack atau[Procfile](#buildpacks-and-the-procfile).
+Setelah wadah baru berjalan dan tingkat load balancing berhenti mengirim permintaan ke kontainer lama dan mengirim mereka ke versi baru.
+Sebuah pesan log di [deploy log](#deploy-log) muncul ketika proses ini selesai.
 
-### Container Idling
+### Kontainer Idling
 
-Deployments running on a single web container with one unit of memory (128MB/h) are automatically idled when they are not receiving HTTP requests for 1 hour or more. This
-results in a temporary suspension of the container where the application is
-running. It does not affect the Add-ons or workers related to this deployment.
+Penyebaran pada wadah web tunggal dengan satu unit memori (128MB/h) secara otomatis malas ketika mereka tidak menerima permintaan HTTP selama 1 jam atau lebih. Ini
+hasil dalam penghentian sementara wadah di mana aplikasi ini
+berjalan. Ini tidak mempengaruhi Pengaya atau pekerja yang terkait dengan penyebaran ini.
 
-Once a new HTTP request is sent to this deployment, the application is automatically re-engaged. This process causes a slight delay until the
-first request is served. All following requests will perform normally.
+Setelah permintaan HTTP baru dikirim ke penyebaran ini, aplikasi secara otomatis kembali terlibat. Proses ini menyebabkan sedikit keterlambatan sampai
+permintaan pertama dilayani. Semua permintaan berikut akan tampil normal.
 
-You can see the state of your application with the following command:
+Anda dapat melihat keadaan aplikasi Anda dengan perintah berikut:
 ~~~
 $ ironcliapp APP_NAME/DEP_NAME details
 Deployment
@@ -244,112 +237,110 @@ Deployment
  [...]
 ~~~
 
-Scaling your deployment will prevent idling, which is recommended for
-any production system.
+Scaling penyebaran Anda akan mencegah pemalasan, yang sangat direkomendasikan untuk
+sistem produksi.
 
-## Emergency Rollback
+## Darurat Rollback
 
-If your newest version breaks unexpectedly, you can use the rollback command to revert to the previous version in a matter of seconds:
+Jika versi terbaru Anda rusak tiba-tiba, Anda dapat menggunakan perintah rollback untuk kembali ke versi sebelumnya dalam hitungan detik:
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME rollback
+$ Ironcliapp APP_NAME/DEP_NAME rollback
 ~~~
 
-It is also possible to deploy any other prior version. To find the version identifier you need, simply check the [deploy log](#deploy-log) for a previously deployed version, or get it directly from the version control system. You can redeploy this version using the deploy command:
+Hal ini juga memungkinkan untuk menyebarkan versi lain sebelumnya. Untuk menemukan identifier versi yang Anda butuhkan, cukup centang [menyebarkan log](#deploy-log) untuk versi sebelumnya, atau mendapatkannya langsung dari sistem kontrol versi. Anda dapat memindahkan versi ini menggunakan perintah menyebarkan:
 
 ~~~
 $ ironcliapp APP_NAME/DEP_NAME deploy THE_LAST_WORKING_VERSION_HASH
 ~~~
 
 
-## Non-Persistent Filesystem
+## Sistemfile Tidak Persisten
 
 **TL;DR:**
 
- * Each container has its own filesystem.
- * The filesystem is not persistent.
- * Don't store uploads on the filesystem.
+ * Setiap wadah memiliki filesystem sendiri.
+ * Filesystem ini tidak terus-menerus.
+ * Jangan menyimpan unggahan pada filesystem.
 
-Deployments on the CloudKilat platform have access to a writable filesystem. This
-filesystem however is not persistent. Data written may or may not be accessible
-again in future requests, depending on how the [routing tier](#routing-tier)
-routes requests across available containers, and is deleted after each deploy.
-This does include deploys you trigger manually, but also re-deploys done by the
-platform itself during normal operation.
+Penyebaran pada platform CloudKilat memiliki akses ke filesystem yang dapat ditulis. 
+Filesystem ini namun tidak persisten. Data ditulis mungkin atau mungkin tidak dapat diakses
+lagi di masa depan apabila ada permintaan, tergantung pada bagaimana [routing tier](#routing-tier)
+rute permintaan di wadah yang tersedia, dan dihapus setelah setiap menyebarkan.
+Hal ini termasuk dengan Anda menyebarkan secara manual, tetapi juga menyebarkan ulang yang dilakukan oleh
+Platform itu sendiri selama operasi normal.
 
-For customer uploads (e.g. user profile pictures) we recommend object stores like Amazon S3 or similar.
+Untuk upload pelanggan (misalnya gambar profil pengguna) kami merekomendasikan toko objek seperti Amazon S3 atau sejenisnya.
 
 
-## Development, Staging and Production Environments
-
-**TL;DR:**
-
- * Leverage multiple deployments to support the complete application lifecycle.
- * Each deployment has a set of environment variables to help you configure your app.
- * Various configuration files are available to adjust runtime settings.
-
-### Development, Staging and Production: The Application Lifecycle
-
-Most apps share a common application lifecycle consisting of development,
-staging and production phases. The CloudKilat platform is designed from the
-ground up to support this. As we explained earlier, each app can have multiple
-deployments. Those deployments match the branches in the version control
-system. The reason for this is very simple. To work on a new feature it is
-advisable to create a new branch. This new version can then be deployed as its
-own deployment making sure the new feature development is not interfering with
-the existing deployments. More importantly even, these development/feature or
-staging deployments also help ensure that the new code will work in production
-because each deployment using the same [stack](#stacks) has the same runtime
-environment.
-
-### Environment Variables
-
-Sometimes you have environment specific configuration, e.g. to enable debugging output in development deployments but disable it in production deployments. This can be done using the environment variables that each deployment provides to the app. The following environment variables are available:
-
- * **TMPDIR**: The path to the tmp directory.
- * **CRED_FILE**: The path of the creds.json file containing the Add-on credentials.
- * **DEP_VERSION**: The Git version the image was built from.
- * **DEP_NAME**: The deployment name in the same format as used by the command line client. E.g. myapp/default. This one stays the same even when undeploying and creating a new deployment with the same name.
- * **DEP_ID**: The internal deployment ID. This one stays the same for the deployments lifetime but changes when undeploying and creating a new deployment with the same name.
- * **WRK_ID**: The internal worker ID. Only set for worker containers.
-
-## Add-ons
+## Pembangunan, Pementasan dan Produksi Lingkungan
 
 **TL;DR:**
 
- * Add-ons give you access to additional services like databases.
- * Each deployment needs its own set of Add-ons.
- * Add-on credentials are available to your app via the JSON formatted `$CRED_FILE` (and via environment variables depending on the programming language).
+ * Beberapa pengaruh penyebaran untuk mendukung penerapan siklus hidup lengkap.
+ * Setiap penyebaran memiliki seperangkat variabel lingkungan untuk membantu Anda mengkonfigurasi aplikasi Anda.
+ * Berbagai file konfigurasi tersedia untuk menyesuaikan pengaturan runtime.
 
-### Managing Add-ons
+### Pembangunan, Pementasan dan Produksi: Siklus hidup Aplikasi
 
-Add-ons add additional services to your deployment. The [Add-on marketplace]
-offers a variety of different Add-ons. Think of it as an app store
-dedicated to developers. Add-ons range from database offerings to data processing services
-or deployment solutions.
+Kebanyakan aplikasi berbagi aplikasi siklus hidup, yang terdiri dari pembangunan,
+pementasan dan tahap produksi. Landasan CloudKilat dirancang dari
+bawah keatas untuk mendukung ini. Seperti yang kita jelaskan sebelumnya, setiap aplikasi dapat memiliki beberapa
+penyebaran. Mereka menyebar sesuai dengan cabang di kontrol versi
+sistem. Alasan untuk ini sangat sederhana. Untuk bekerja pada fitur baru dianjurkan untuk membuat cabang baru. 
+Versi baru ini kemudian dapat digunakan sebagai penyebarannya sendiri memastikan pengembangan fitur baru tidak mengganggu penyebaran yang sudah ada.
+Yang lebih penting adalah, pementasan penyebaran juga membantu memastikan bahwa kode baru akan bekerja dalam sistem produksi
+karena setiap penyebaran menggunakan [tumpukan](#stacks) yang sama memiliki runtime lingkungan hidup yang sama.
 
-Each deployment has its own set of Add-ons. If your app needs a MySQL database
-and you have a production, a development and a staging environment, all three
-must have their own MySQL Add-ons. Each Add-on comes with different plans
-allowing you to choose  a more powerful database for your high traffic
-production deployment and smaller ones for the development or staging
-environments.
+### Variabel Lingkungan
 
-You can see the available Add-on plans on the Add-on marketplace website or with the `ironcliapp addon.list` command.
+Kadang-kadang Anda memiliki konfigurasi khusus lingkungan, misalnya mengaktifkan debugging output dalam penyebaran pembangunan tetapi menonaktifkannya dalam penyebaran produksi. Hal ini dapat dilakukan dengan menggunakan variabel lingkungan yang setiap penyebaran menyediakan untuk aplikasi. Variabel lingkungan yang tersedia:
+
+ * **TMPDIR**: Lokasi ke direktori tmp.
+ * **CRED_FILE**: Lokasi file creds.json yang berisi Add-on kredensial.
+ * **DEP_VERSION**: Versi git untuk membangun citra.
+ * **DEP_NAME**: Nama penyebaran dalam format yang sama seperti yang digunakan oleh klien baris perintah. Misalnya myapp/default. Yang satu ini tetap sama bahkan ketika undeploying dan menciptakan penyebaran baru dengan nama yang sama.
+ * **DEP_ID**: ID penyebaran internal. Yang satu ini tetap sama untuk penyebaran seumur hidup tapi berubah ketika undeploying dan menciptakan penyebaran baru dengan nama yang sama.
+ * **WRK_ID**: ID pekerja internal. Hanya mengatur untuk kontainer pekerja.
+
+
+## Pengaya
+
+**TL;DR:**
+
+ * Pengaya memberikan akses ke layanan tambahan seperti database.
+ * Setiap penyebaran perlu mengatur sendiri Pengaya.
+ * Kredensial Pengaya tersedia untuk aplikasi Anda melalui JSON diformat `$CRED_FILE` (dan melalui variabel lingkungan tergantung pada bahasa pemrogramannya).
+
+### Mengelola Pengaya
+
+Pengaya menambahkan layanan tambahan untuk penyebaran Anda. [Add-on marketplace]
+menawarkan berbagai pilihan Pengaya. Anggap saja sebagai sebuah toko aplikasi
+didedikasikan untuk para pengembang. Pengaya berkisar dari persembahan database untuk jasa pengolahan data
+atau solusi penyebaran.
+
+Setiap penyebaran memiliki set Pengaya sendiri. Jika aplikasi Anda membutuhkan database MySQL
+dan Anda memiliki produksi, pengembangan dan lingkungan pementasan, ketiganya
+harus memiliki sendiri MySQL Pengaya mereka. Setiap Pengaya dilengkapi dengan rencana yang berbeda
+memungkinkan Anda untuk memilih database yang lebih kuat untuk lalu lintas tinggi 
+penyebaran produksi anda dan yang lebih kecil untuk pengembangan atau pementasan
+lingkungan.
+
+Anda dapat melihat rencana Pengaya tersedia di pasar Pengaya situs web atau dengan perintah `ironcliapp addon.list`.
 
 ~~~
 $ ironcliapp APP_NAME/DEP_NAME addon.list
 [...]
 ~~~
 
-Adding an Add-on is just as easy.
+Menambahkan Pengaya sama mudahnya dengan perintah.
 ~~~
 $ ironcliapp APP_NAME/DEP_NAME addon.add ADDON_NAME.ADDON_OPTION
 ~~~
 
-As always replace the placeholders written in uppercase with their respective values.
+Seperti biasa mengganti penampung ditulis dalam huruf besar dengan nilai masing-masing.
 
-To get the list of current Add-ons for a deployment use the addon command.
+Untuk mendapatkan daftar Pengaya untuk penyebaran gunakan perintah addon.
 ~~~
 $ ironcliapp APP_NAME/DEP_NAME addon
 Addon                    : alias.free
@@ -364,7 +355,7 @@ Addon                    : mysqls.free
 [...]
 ~~~
 
-To upgrade or downgrade an Add-on use the respective command followed by the Add-on plan you upgrade from and the Add-on plan you upgrade to.
+Untuk meng-upgrade atau downgrade Pengaya menggunakan perintah berikut diikuti oleh rencana Pengaya Anda meng-upgrade dari dan rencana Pengaya Anda meng-upgrade ke.
 
 ~~~
 # upgrade
@@ -372,35 +363,35 @@ $ ironcliapp APP_NAME/DEP_NAME addon.upgrade FROM_SMALL_ADDON TO_BIG_ADDON
 # downgrade
 $ ironcliapp APP_NAME/DEP_NAME addon.downgrade FROM_BIG_ADDON TO_SMALL_ADDON
 ~~~
-**Remember:** As in all examples in this documentation, replace all the uppercase placeholders with their respective values.
+**Ingat:** Seperti dalam semua contoh dalam dokumentasi ini, gantilah semua penampung huruf besar dengan nilai masing-masing.
 
-### Add-on Credentials
-For many Add-ons you require credentials to connect to their service. The credentials are exported to the deployment in
-a JSON formatted config file. The path to the file can be found in the `CRED_FILE` environment variable. Never
-hardcode these credentials in your application, because they differ over deployments and can change after any redeploy
-without notice.
+### Kredensial Pengaya
+Bagi banyak Pengaya Anda memerlukan kredensial untuk menyambung ke layanan mereka. Kredensial yang diekspor ke penyebaran di
+file konfigurasi dengan format JSON. Path ke file dapat ditemukan dalam variabel lingkungan `CRED_FILE`. Jangan pernah
+hardcode kredensial tersebut dalam aplikasi Anda, karena mereka berbeda selama penyebaran dan dapat berubah setelah redeploy setiap
+tanpa pemberitahuan.
 
-We provide detailed code examples how to use the config file in our guides section.
+Kami menyediakan contoh kode rinci bagaimana menggunakan file konfigurasi di bagian pemandu kami.
 
-#### Enabling/disabling credentials environment variables
-We recommend using the credentials file for security reasons but credentials can also be accessed through environment variables.
-This is disabled by default for PHP and Python apps.
-Accessing the environment is more convenient in most languages, but some reporting tools or wrong security settings in
-your app might print environment variables to external services or even your users. This also applies to any child processes
-of your app if they inherit the environment (which is the default). When in doubt, disable this feature and use
-the credentials file.
+#### Mengaktifkan / menonaktifkan kredensial variabel lingkungan
+Kami merekomendasikan menggunakan kredensial untuk alasan keamanan, tetapi kredensial juga dapat diakses melalui variabel lingkungan.
+Ini dinonaktifkan secara default untuk aplikasi PHP dan Python.
+Mengakses lingkungan lebih nyaman dalam banyak bahasa, tetapi beberapa alat pelaporan atau pengaturan keamanan yang salah dalam
+aplikasi Anda dapat mencetak variabel lingkungan untuk layanan eksternal atau bahkan pengguna Anda. Hal ini juga berlaku untuk setiap proses anak
+dari aplikasi Anda jika mereka mewarisi lingkungan (yang merupakan default). Jika ragu, nonaktifkan fitur ini dan gunakan
+file kredensial.
 
-Set the variable `SET_ENV_VARS` using the [Custom Config Add-on] to either `false` or `true` to explicitly enable or disable
-this feature.
+Set variabel `SET_ENV_VARS` menggunakan [Custom Config Add-on] baik `false` atau `true` secara eksplisit mengaktifkan atau menonaktifkan
+fitur ini.
 
-The guides section has detailed examples about how to get the credentials in
-different languages
+Panduan bagian memiliki contoh rinci tentang bagaimana untuk mendapatkan kredensial dalam
+bahasa yang berbeda
 ([Ruby](/Guides/Ruby/Add-on credentials.md),
 [Python](/Guides/Python/Add-on credentials.md),
 [Node.js](/Guides/NodeJS/Add-on credentials.md),
 [Java](/Guides/Java/Add-on credentials.md),
 [PHP](/Guides/PHP/Add-on credentials.md)).
-To see the format and contents of the credentials file locally, use the `addon.creds` command.
+Untuk melihat format dan isi kredensial lokal, gunakan perintah `addon.creds`.
 
 ~~~
 $ ironcliapp APP_NAME/DEP_NAME addon.creds
@@ -420,358 +411,357 @@ $ ironcliapp APP_NAME/DEP_NAME addon.creds
 }
 ~~~
 
-## Logging
+## Logging 
 
 **TL;DR:**
 
- * There are four different log types (access, error, worker and deploy) available.
+ * Ada empat jenis log yang berbeda (akses, kesalahan, pekerja dan menyebarkan) yang tersedia.
 
-To see the log output in a `tail -f`-like fashion use the ironcliapp log command. The log command initially shows the last 500 log messages and then appends new messages as they arrive.
+Untuk melihat output log dalam gaya `tail -f` mode gunakan perintah log ironcliapp. Perintah log awalnya menunjukkan 500 pesan log dan kemudian menambahkan pesan baru saat mereka tiba.
 
 ~~~
 $ ironcliapp APP_NAME/DEP_NAME log [access,error,worker,deploy]
 [...]
 ~~~
 
-### Access Log
+### Akses Masuk
 
-The `access` log shows each request to your app in an Apache compatible log format.
+The `log access` menunjukkan setiap permintaan untuk aplikasi Anda dalam format log Apache kompatibel.
 
 ### Error Log
 
-The `error` log shows all output your app prints to stdout, stderr and syslog. This log is probably the best place to look at when your app is not doing well. We also show new deployments here to give you more context but you can always refer to the [deploy log](#deploy-log) for detailed information on deploys.
+The `log error` menunjukkan semua keluaran aplikasi Anda cetak ke stdout, stderr dan syslog. Log ini mungkin adalah tempat terbaik untuk melihat ketika aplikasi Anda tidak melakukan dengan baik. Kami juga menunjukkan penyebaran baru di sini untuk memberikan Anda lebih banyak konteks tetapi Anda selalu dapat merujuk pada [menyebarkan log] (# menyebarkan-log) untuk informasi rinci tentang menyebarkan.
 
-### Worker Log
+### Pekerja Log
 
-Workers are long running background processes. They are not accessible via http from outside. To make the workers output visible to you, its stdout, stderr and syslog output is captured in this log. The worker log contains the timestamp of the event, the *wrk_id* of the worker as well as the actual log line.
+Pekerja lama menjalankan proses latar belakang. Mereka tidak dapat diakses melalui http dari luar. Untuk membuat output pekerja terlihat oleh Anda, stdout, stderr dan syslog output ditangkap dalam log ini. Log pekerja berisi timestamp dari acara tersebut, * wrk_id * pekerja serta garis log yang sebenarnya.
 
 ### Deploy Log
 
-The `deploy` log provides detailed information about the deploy process. It shows on how many nodes your deployment is running with additional information about the nodes, startup times and when the loadbalancers begins sending traffic to the [new version](#deploying-new-versions).
+The `log deploy` memberikan informasi rinci tentang proses menyebarkan. Ini menunjukkan berapa banyak node penyebaran Anda berjalan dengan informasi tambahan tentang node, kali startup dan ketika loadbalancers mulai mengirimkan lalu lintas ke [versi baru] (# penggelaran-baru-versi).
 
-### Customizing logging
+### Menyesuaikan penebangan
 
-The [Custom Config Add-on] can be used to forward error and worker logs to the external logging services.
+The [Custom Config Add-on] dapat digunakan untuk meneruskan kesalahan dan pekerja log untuk layanan logging eksternal.
 
-#### Adding custom syslog logging with Custom Config Add-on
+#### Menambahkan syslog kustom logging dengan Kustom Config Add-on
 
-The Custom Config Add-on can be used to specify an additional endpoint to receive error and worker logs.
-This is done by setting the config variable "RSYSLOG_REMOTE". The content should contain valid [rsyslog] configuration and can span multiple lines.
+Custom Config Add-on dapat digunakan untuk menentukan titik akhir tambahan untuk menerima kesalahan dan pekerja log.
+Hal ini dilakukan dengan menetapkan variabel config "RSYSLOG_REMOTE". Konten harus mengandung berlaku [rsyslog] konfigurasi dan dapat span beberapa baris.
 
-E.g. to forward the logs to custom syslog remote over a [TLS] connection, create a temporary file with the following content:
+Misalnya untuk meneruskan log ke syslog kustom jauh lebih [TLS] koneksi, membuat file sementara dengan konten berikut:
 ~~~
-$DefaultNetstreamDriverCAFile /app/CUSTOM_CERTIFICATE_PATH
-$ActionSendStreamDriver gtls
-$ActionSendStreamDriverMode 1
-$ActionSendStreamDriverAuthMode x509/name
-$template CustomFormat, "%syslogtag%%msg%\n"
-*.* @@SERVER_ADDRESS:PORT;CustomFormat
+$ DefaultNetstreamDriverCAFile / app / CUSTOM_CERTIFICATE_PATH
+$ ActionSendStreamDriver GTLS
+$ ActionSendStreamDriverMode 1
+$ ActionSendStreamDriverAuthMode x509 / nama
+$ Template CustomFormat, "% syslogtag %% msg% \ n"
+. * *@@SERVER_ADDRESS: PORT; CustomFormat
 ~~~
-Where "SERVER_ADDRESS" and "PORT" should be replaced with the concrete values and "CUSTOM_CERTIFICATE_PATH" should be the path to a certificate file for the custom syslog remote in you repository.
+Di mana "SERVER_ADDRESS" dan "PORT" harus diganti dengan nilai-nilai konkrit dan "CUSTOM_CERTIFICATE_PATH" harus jalan ke file sertifikat untuk syslog kustom terpencil di repositori Anda.
 
-Use the name of the file (for example `custom_remote.cfg`) as a value for the "RSYSLOG_REMOTE" config variable:
+Gunakan nama file (misalnya `custom_remote.cfg`) sebagai nilai untuk" RSYSLOG_REMOTE "variabel config:
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME config.add RSYSLOG_REMOTE=custom_remote.cfg
+$ Ironcliapp APP_NAME / DEP_NAME config.add RSYSLOG_REMOTE = custom_remote.cfg
 ~~~
 
-From now on all the new logs should be visible in your custom syslog remote.
+Mulai sekarang semua log baru akan terlihat di remote syslog kustom.
 
 
-## Provided Subdomains and Custom Domains
+## Subdomain Asalkan dan Custom Domain
 
-**TL;DR:**
+** TL; DR: **
 
- * Each deployment is provided with both a `*.kilatiron.net` and `*.kilatiron.com` subdomain.
- * Custom domains are supported via the Alias Add-on.
+ * Setiap penyebaran disediakan dengan baik `* .kilatiron.net` dan` * .kilatiron.com` subdomain.
+ * Custom domain didukung melalui Alias ​​Add-on.
 
-Each deployment is provided per default with both a `*.kilatiron.net` and `*.kilatiron.com` subdomain. The `APP_NAME.kilatiron.net` or `APP_NAME.kilatiron.com` will point to the `default` deployment while any additional deployment can be accessed with a prefixed subdomain: `DEP_NAME-APP_NAME.kilatiron.net` or `DEP_NAME-APP_NAME.kilatiron.com`.
+Setiap penyebaran disediakan per bawaan dengan baik `* .kilatiron.net` dan` * .kilatiron.com` subdomain. The `APP_NAME.kilatiron.net` atau` APP_NAME.kilatiron.com` akan menunjuk ke `penyebaran default` sementara setiap penyebaran tambahan dapat diakses dengan subdomain diawali:` DEP_NAME-APP_NAME.kilatiron.net` atau `DEP_NAME-APP_NAME .kilatiron.com`.
 
-You can also use custom domains to access your deployments. To add a domain like `www.example.com`, `app.example.com` or `secure.example.com` to one of your deployments, simply add each one as an alias and add a CNAME for each pointing to your deployment's subdomain. So to point `www.example.com` to the default deployment of the app called *awesomeapp*, add a CNAME for `www.example.com` pointing to `awesomeapp.kilatiron.net` or `awesomeapp.kilatiron.com`. The [Alias Add-on] also supports mapping wildcard domains like `*.example.com` to one of your deployments.
+Anda juga dapat menggunakan domain kustom untuk mengakses penyebaran Anda. Untuk menambahkan domain seperti `www.example.com`,` app.example.com` atau `secure.example.com` ke salah satu penyebaran Anda, cukup tambahkan masing-masing sebagai alias dan menambahkan CNAME untuk setiap menunjuk ke Anda subdomain penyebaran ini. Jadi untuk menunjuk `www.example.com` untuk penyebaran default dari aplikasi yang disebut * awesomeapp *, menambahkan CNAME untuk` www.example.com` menunjuk ke `awesomeapp.kilatiron.net` atau` awesomeapp.kilatiron.com` . The [Alias ​​Add-on] juga mendukung domain pemetaan wildcard seperti `* .example.com` ke salah satu penyebaran Anda.
 
-All custom domains need to be verified before they start working. To verify a domain, it is required to also add the CloudKilat verification code as a TXT record.
+Semua domain kustom perlu diverifikasi sebelum mereka mulai bekerja. Untuk memverifikasi domain, diperlukan juga menambahkan kode verifikasi CloudKilat sebagai catatan TXT.
 
-Changes to DNS can take up to 24 hours until they have effect. Please refer to the Alias Add-on Documentation for detailed instructions on how to setup CNAME and TXT records.
+Perubahan DNS dapat memakan waktu hingga 24 jam sampai mereka memiliki efek. Silakan merujuk ke Alias ​​Add-on Dokumentasi untuk petunjuk rinci tentang cara untuk setup CNAME dan TXT catatan.
 
-### Root Domains
+### Akar Domain
 
-Root domains (e.g. "example.com") can also be added but are not directly
-supported. While you theoretically can add a CNAME record for your root
-domain, you have to be aware that no other record for this domain can
-be set then. ("A CNAME record is not allowed to coexist with any other
-data", http://tools.ietf.org/html/rfc1912). From the point you set a
-CNAME, all standard-compliant DNS servers will ignore any other entry you
-might have set for your zone (e.g. SOA, NS or MX records).
+Domain root (misalnya "example.com") juga dapat ditambahkan tetapi tidak secara langsung
+didukung. Meskipun Anda secara teoritis dapat menambahkan data CNAME untuk root Anda
+domain, Anda harus menyadari bahwa tidak ada catatan lain untuk domain ini bisa
+diatur kemudian. ("A CNAME tidak diperbolehkan untuk hidup berdampingan dengan yang lain
+Data ", http://tools.ietf.org/html/rfc1912). Dari titik Anda menetapkan
+CNAME, semua DNS server standar-compliant akan mengabaikan entri lain yang Anda
+mungkin ditetapkan untuk zona Anda (misalnya SOA, NS atau MX record).
 
-You can circumvent this limitation by using a DNS provider which provides
-CNAME-like functionality for root domains, often called ANAME or ALIAS.
+Anda dapat menghindari keterbatasan ini dengan menggunakan penyedia DNS yang menyediakan
+Fungsi CNAME seperti untuk domain akar, sering disebut aName atau ALIAS.
 
-An alternative is to use a redirection service to send users from the
-root to the configured subdomain (e.g. example.org -> www.example.org).
+Sebuah alternatif adalah dengan menggunakan layanan redirection untuk mengirim pengguna dari
+akar ke subdomain dikonfigurasi (misalnya example.org -> www.example.org).
 
 
-## Routing Tier
+## Tier Routing
 
-**TL;DR:**
+** TL; DR: **
 
- * All HTTP requests are routed via our routing tier.
- * Within the routing tier, you can choose to route requests via the `*.kilatiron.net` or `*.kilatiron.com` subdomains.
- * The `*.kilatiron.net` subdomain provides WebSocket support.
- * The `*.kilatiron.com` subdomain provides support for HTTP caching via Varnish.
- * Requests are routed based on the `Host` header.
- * Use the `X-Forwarded-For` header to get the client IP.
+ * Semua permintaan HTTP diarahkan melalui routing yang tingkat kami.
+ * Dalam routing lapis, Anda dapat memilih untuk rute permintaan melalui `* .kilatiron.net` atau` * .kilatiron.com` subdomain.
+ * The `* .kilatiron.net` subdomain memberikan dukungan WebSocket.
+ * The `* .kilatiron.com` subdomain menyediakan dukungan untuk HTTP caching melalui Varnish.
+ * Permintaan diarahkan berdasarkan `sundulan Host`.
+ * Gunakan `X-Forwarded-For` sundulan untuk mendapatkan IP client.
 
-All HTTP requests made to apps on the platform are routed via our routing tier. The routing tier is designed as a cluster of reverse proxy loadbalancers which orchestrate the forwarding of user requests to your applications. It takes care of routing the request to one of the application's containers based on matching the `Host` header against the list of the deployment's aliases. This is accomplished via the `*.kilatiron.net` or `*.kilatiron.com` subdomains.
+Semua permintaan HTTP dibuat untuk aplikasi pada platform yang diarahkan melalui routing yang tingkat kami. Routing tingkat dirancang sebagai cluster loadbalancers reverse proxy yang mengatur penyampaian permintaan pengguna untuk aplikasi Anda. Dibutuhkan perawatan routing permintaan ke salah satu wadah aplikasi berdasarkan pencocokan `Host` sundulan terhadap daftar alias penyebaran ini. Hal ini dilakukan melalui `* .kilatiron.net` atau` * .kilatiron.com` subdomain.
 
-The routing tier is designed to be robust against single node and even complete datacenter failures while still keeping the added latency as low as possible.
+Routing tingkat dirancang untuk menjadi kuat terhadap node tunggal dan kegagalan datacenter bahkan lengkap sambil tetap latency menambahkan serendah mungkin.
 
-### Elastic Addresses
+### Alamat elastis
 
-Because of the elastic nature of the routing tier, the list of routing tier addresses can change at any time. It is therefore highly discouraged to point custom domains directly to any of the routing tier IP addresses. Please use a CNAME instead. Refer to the [custom domain section](#provided-subdomains-and-custom-domains) for more details on the correct DNS configuration.
+Karena sifat elastis dari routing tier, daftar alamat lapis routing dapat berubah sewaktu-waktu. Oleh karena itu sangat dianjurkan untuk menunjuk kustom domain langsung ke salah alamat IP lapis routing. Silakan gunakan CNAME gantinya. Rujuk ke [bagian custom domain] (# disediakan-subdomain-dan-custom-domain) untuk rincian lebih lanjut tentang konfigurasi DNS yang benar.
 
-### Remote Address
+### Jauh Alamat
 
-Given that client requests don't hit your application directly, but are forwarded via the routing tier, you can't access the client's IP by reading the remote address. The remote address will always be the internal IP of one of the routing nodes. To make the origin remote address available, the routing tier sets the `X-Forwarded-For` header to the original client's IP.
+Mengingat bahwa permintaan klien tidak memukul aplikasi Anda secara langsung, tapi akan diteruskan melalui routing lapis, Anda tidak dapat mengakses IP klien dengan membaca alamat remote. Alamat remote akan selalu menjadi IP internal salah satu node routing. Untuk membuat asal-usul alamat remote yang tersedia, routing lapis menetapkan `X-Forwarded-For` header IP klien asli.
 
-### Reverse Proxy timeouts
+### Terbalik timeout Proxy
 
-Our routing tier uses a cluster of reverse proxy loadbalancers to manage the acceptance and forwarding of user requests to your applications. To do this in an efficient way, we set strict timeouts to the read/ write operations. The values differ slightly between the `*.kilatiron.net` and `*.kilatiron.com` subdomains. You can find them below.
+Kami Routing lapis menggunakan cluster loadbalancers reverse proxy untuk mengelola penerimaan dan penyampaian permintaan pengguna untuk aplikasi Anda. Untuk melakukan hal ini dalam cara yang efisien, kami mengatur timeout ketat untuk operasi baca / tulis. Nilai-nilai sedikit berbeda antara `* .kilatiron.net` dan` * .kilatiron.com` subdomain. Anda dapat menemukan mereka di bawah ini.
 
- * __Connect timeout__ - time within a connection to your application has to be established. If your containers are up, but hanging, then this timeout will not apply as the connection to the endpoints has already been made.
- * __Read timeout__ - time to retrieve a response from your application. It determines how long the routing tier will wait to get the response to a request. The timeout is established not for an entire response, but only between two operations of reading.
- * __Send timeout__ - maximum time between two write operations of a request. If your application does not take new data within this time, the routing tier will shut down the connection.
+ * __Connect Timeout__ - waktu dalam koneksi ke aplikasi Anda telah yang akan didirikan. Jika kontainer Anda, tapi tergantung, maka batas waktu ini tidak akan berlaku sebagai koneksi ke titik akhir telah dibuat.
+ * __Read Timeout__ - waktu untuk mengambil respon dari aplikasi Anda. Ini menentukan berapa lama routing tingkat akan menunggu untuk mendapatkan tanggapan atas permintaan. Timeout didirikan bukan untuk seluruh respon, tapi hanya antara dua operasi membaca.
+ * __Send Timeout__ - waktu maksimum antara dua operasi tulis dari permintaan. Jika aplikasi Anda tidak mengambil data baru dalam waktu ini, routing tingkat akan menutup koneksi.
 
-#### Timeouts for `*.kilatiron.net` subdomain:
+#### Timeout untuk `* .kilatiron.net` subdomain:
 
-|Parameter|Value [s]|
-|:---------|:----------:|
-|Connect timeout|20|
-|Send timeout|55|
-|Read timeout|55|
+| Parameter | Nilai [s] |
+|: --------- |: ----------: |
+| Connect batas waktu | 20 |
+| Kirim batas waktu | 55 |
+| Baca batas waktu | 55 |
 
-#### Timeouts for `*.kilatiron.com` subdomain:
+#### Timeout untuk `* .kilatiron.com` subdomain:
 
-|Parameter|Value [s]|
-|:---------|:----------:|
-|Connect timeout|60|
-|Send timeout|60|
-|Read timeout|120|
+| Parameter | Nilai [s] |
+|: --------- |: ----------: |
+| Connect batas waktu | 60 |
+| Kirim batas waktu | 60 |
+| Baca batas waktu | 120 |
 
-### Requests distribution
+### Permintaan distribusi
 
-Our smart [DNS](https://en.wikipedia.org/wiki/Domain_Name_System) provides a fast and reliable service resolving domain names in a round robin fashion. All nodes are equally distributed to the three different availability zones but can route requests to any container in any other availability zone. To keep latency low, the routing tier tries to route requests to containers in the same availability zone unless none are available. Deployments running on --containers 1 (see the [scaling section](#scaling) for details) only run on one container and therefore are only hosted in one availability zone.
+Kami pintar [DNS] (https://en.wikipedia.org/wiki/Domain_Name_System) menyediakan cepat dan handal layanan menyelesaikan nama domain dalam mode robin round. Semua node merata ke tiga ketersediaan zona yang berbeda namun permintaan dapat rute ke wadah apapun dalam setiap zona ketersediaan lainnya. Untuk menjaga latency rendah, routing lapis mencoba untuk permintaan rute ke kontainer di zona ketersediaan yang sama kecuali tidak tersedia. Penyebaran berjalan pada --containers 1 (lihat [bagian skala] (# skala) untuk rincian) hanya berjalan pada satu wadah dan oleh karena itu hanya host dalam satu zona ketersediaan.
 
-### High Availability
+### Ketersediaan Tinggi
 
-The routing tier provides two mechanisms to ensure high availability, depending on the provided subdomain. These are Health Checker (for the `*.kilatiron.net` subdomain) and Failover (for the `*.kilatiron.com` subdomain). Because these mechanisms depend on having multiple containers available to route requests, only deployments with more than one container running (see the [scaling section](#scaling) for details) can take advantage of high availability.
+Routing lapis menyediakan dua mekanisme untuk memastikan ketersediaan tinggi, tergantung pada subdomain yang disediakan. Ini adalah Kesehatan Checker (untuk `* .kilatiron.net` subdomain) dan Failover (untuk` * .kilatiron.com` subdomain). Karena mekanisme ini tergantung pada memiliki beberapa kontainer yang tersedia untuk permintaan rute, hanya penggelaran dengan lebih dari satu kontainer berjalan (lihat [bagian skala] (# skala) untuk rincian) dapat mengambil keuntungan dari ketersediaan tinggi.
 
-In the event of a single node or container failure, the platform will start a replacement container. Deployments running on --containers 1 will be unavailable for a few minutes while the platform starts the replacement. To avoid even short downtimes, set the --containers option to at least 2.
+Dalam hal node atau wadah kegagalan tunggal, platform akan memulai sebuah wadah pengganti. Penyebaran berjalan pada --containers 1 akan tersedia selama beberapa menit sementara platform mulai penggantian. Untuk menghindari bahkan downtime pendek, mengatur pilihan --containers untuk setidaknya 2.
 
-#### `*.kilatiron.net` subdomain
+#### `* .kilatiron.net` Subdomain
 
-For the `*.kilatiron.net` subdomain, failed requests will cause an error message to be returned to the user once, but the "unhealthy" container will be actively monitored by a health checker. This signals the routing tier to temporarily remove the unhealthy container from the list of containers receiving requests. Subsequent requests are routed to an available container of the deployment. Once the health checker notices that the container has recovered, the container will be re-included in the list to receive requests.
+Untuk `* .kilatiron.net` subdomain, gagal permintaan akan menyebabkan pesan kesalahan akan kembali ke pengguna sekali, tetapi" tidak sehat "kontainer akan aktif dipantau oleh pemeriksa kesehatan. Ini sinyal routing lapis untuk menghapus sementara wadah yang tidak sehat dari daftar kontainer menerima permintaan. Permintaan berikutnya diarahkan ke wadah yang tersedia dari penyebaran. Setelah pemberitahuan checker kesehatan yang wadah telah pulih, wadah akan dimasukkan kembali-dalam daftar untuk menerima permintaan.
 
-Because the health checker actively monitors containers where an application is running into timeouts or returning [http error codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5) `501`, `502` or `greater 503`, you may see requests to `/CloudHealthCheck` coming from a `cloudControl-HealthCheck` agent.
+Karena checker kesehatan secara aktif memonitor wadah di mana aplikasi berjalan ke timeout atau kembali [http kode kesalahan] (http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5) `501`, `502` atau` 503` lebih besar, Anda mungkin melihat permintaan untuk `/ CloudHealthCheck` datang dari` agen cloudControl-HealthCheck`.
 
-#### `*.kilatiron.com` subdomain
+#### `* .kilatiron.com` Subdomain
 
-For the `*.kilatiron.com` subdomain, failed requests are automatically re-routed to alternate containers via a failover mechanism.  Requests will be retried with a different container within the set timeouts. It will also ensure the next request is not sent to the slow/faulty container for a given amount of time.
+Untuk `* .kilatiron.com` subdomain, gagal permintaan secara otomatis kembali dialihkan ke wadah alternatif melalui mekanisme failover. Permintaan akan dicoba dengan wadah yang berbeda dalam set timeout. Hal ini juga akan memastikan permintaan berikutnya tidak dikirim ke lambat / kontainer rusak untuk jumlah waktu tertentu.
 
 
 ## Scaling
 
-**TL;DR:**
+** TL; DR: **
 
- * You can scale up or down at any time by adding more containers (horizontal scaling) or changing the container size (vertical scaling).
- * Use performance monitoring and load testing to determine the optimal scaling settings for your app.
+ * Anda dapat skala naik atau turun setiap saat dengan menambahkan wadah lebih (skala horisontal) atau mengubah ukuran kontainer (skala vertikal).
+ * Gunakan pemantauan kinerja dan pengujian beban untuk menentukan pengaturan skala optimal untuk aplikasi Anda.
 
-When scaling your apps you have two options. You can either scale horizontally by adding more containers, or scale vertically by changing the container size. When you scale horizontally, the CloudKilat loadbalancing and [routing tier](#routing-tier) ensures efficient distribution of incoming requests accross all available containers.
+Ketika skala aplikasi Anda, Anda memiliki dua pilihan. Anda juga dapat skala horizontal dengan menambahkan wadah lebih, atau skala vertikal dengan mengubah ukuran kontainer. Ketika Anda skala horizontal, loadbalancing CloudKilat dan [Routing lapis] (# Routing-tier) memastikan distribusi yang efisien dari permintaan yang masuk seberang semua kontainer yang tersedia.
 
-### Horizontal Scaling
+### Scaling Horizontal
 
-Horizontal scaling is controlled by the --containers parameter.
-It specifies the number of containers you have running.
-Raising --containers also increases the availability in case of node failures.
-Deployments with --containers 1 (the default) are unavailable for a few minutes in the event of a node failure until the failover process has finished. Set --containers value to at least 2 if you want to avoid downtime in such situations.
+Skala horisontal dikendalikan oleh parameter --containers.
+Ini menentukan jumlah kontainer yang telah berjalan.
+Budidaya --containers juga meningkatkan ketersediaan dalam kasus kegagalan node.
+Penyebaran dengan --containers 1 (default) tidak tersedia selama beberapa menit dalam hal kegagalan node sampai proses failover selesai. Set nilai --containers setidaknya 2 jika Anda ingin menghindari downtime dalam situasi seperti itu.
 
-### Vertical Scaling
+### Vertikal Scaling
 
-In addition to controlling the number of containers you can also specify the memory size of a container. Container sizes are specified using the --memory parameter, being possible to choose from 128MB to 1024MB.
+Selain mengontrol jumlah kontainer Anda juga dapat menentukan ukuran memori dari sebuah wadah. Ukuran kontainer yang ditentukan dengan menggunakan parameter --memory, menjadi mungkin untuk memilih dari 128MB ke 1024MB.
 
 
-## Performance & Caching
+## Kinerja & Caching
 
-**TL;DR:**
+** TL; DR: **
 
- * Reduce the total number of requests that make up a page view.
- * Cache as far away from your database as possible.
- * Try to rely on cache breakers instead of flushing.
+ * Mengurangi jumlah permintaan yang membentuk tampilan halaman.
+ * Cache jauh dari database Anda mungkin.
+ * Cobalah untuk mengandalkan pemutus Cache bukannya pembilasan.
 
-### Reducing the Number of Requests
+### Mengurangi Jumlah Permintaan
 
-Perceived web application performance is mostly influenced by the frontend. It's very common that the highest optimization potential lies in reducing the overall number of requests per page view. One common technique to accomplish this is combining and minimizing javascript and css files into one file each and using sprites for images.
+Dirasakan kinerja aplikasi web sebagian besar dipengaruhi oleh frontend. Ini sangat umum bahwa potensi optimasi tertinggi terletak dalam mengurangi jumlah keseluruhan permintaan per tampilan halaman. Salah satu teknik umum untuk mencapai hal ini adalah menggabungkan dan meminimalkan javascript dan file css ke dalam satu file masing-masing dan menggunakan sprite untuk gambar.
 
-### Caching Early
+### Caching Awal
 
-After you have reduced the total number of requests, it's recommended to cache as far away from your database as possible. Using far-future `expires` headers avoids that browsers request resources at all. The next best way of reducing the number of requests that hit your containers is to cache complete responses in the loadbalancer. For this we offer caching directly in the routing tier.
+Setelah Anda telah mengurangi jumlah permintaan, itu dianjurkan untuk cache jauh dari database Anda mungkin. Menggunakan jauh-masa `header expires` menghindari bahwa browser meminta sumber daya sama sekali. Cara terbaik berikutnya untuk mengurangi jumlah permintaan yang melanda kontainer Anda untuk cache tanggapan lengkap dalam loadbalancer tersebut. Untuk ini kami menawarkan caching langsung di routing tier.
 
 #### Caching Proxy
 
-The routing tier that is in front of all deployments includes a [Varnish] caching proxy. To use this feature, it is necessary to use the `*.kilatiron.com` subdomain. To have your requests cached directly in Varnish and speed up the response time through this, ensure you have set correct [cache control headers](http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html) (`Cache-Control`, `Expires`, `Age`) for the request. Also, ensure that the request does not include a cookie. Cookies are often used to keep state across requests (e.g. if a user is logged in). To avoid caching responses for logged-in users and returning them to other users, Varnish is configured to never cache requests with cookies.
+Routing lapis yang ada di depan semua penyebaran termasuk [Varnish] caching proxy. Untuk menggunakan fitur ini, perlu untuk menggunakan `* .kilatiron.com` subdomain. Untuk memiliki permintaan Anda cache secara langsung di Varnish dan mempercepat waktu respon melalui ini, pastikan Anda telah mengatur benar [header cache control] (http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html) (` Cache-Control`, `Expires`,` Age`) untuk permintaan. Juga, memastikan bahwa permintaan tidak termasuk cookie. Cookie sering digunakan untuk menjaga negara di seluruh permintaan (misalnya jika pengguna login). Untuk menghindari tanggapan caching untuk log-in pengguna dan mengembalikan mereka ke pengguna lain, Varnish dikonfigurasi untuk tidak pernah permintaan tembolok dengan cookie.
 
-To be able to cache requests in Varnish for apps that rely on cookies, we recommend using a [cookieless domain](http://www.ravelrumba.com/blog/static-cookieless-domain/). In this case, you have to register a new domain and configure your DNS database with a `CNAME` record that points to your `APP_NAME.kilatiron.com` subdomain `A` record. Then you can update your web application's configuration to serve static resources from your new domain.
+Untuk dapat permintaan cache Varnish untuk aplikasi yang mengandalkan cookie, kami sarankan menggunakan [domain cookieless] (http://www.ravelrumba.com/blog/static-cookieless-domain/). Dalam hal ini, Anda harus mendaftarkan domain baru dan mengkonfigurasi DNS database Anda dengan `rekor CNAME` yang menunjuk ke APP_NAME.kilatiron.com` subdomain` `A` catatan Anda. Kemudian Anda dapat memperbarui konfigurasi aplikasi web Anda untuk melayani sumber daya statis dari domain baru Anda.
 
-You can check if a request was cached in Varnish by checking the response's *X-varnish-cache* header. The value HIT means the respons was answered directly from the cache, and MISS means it was not.
+Anda dapat memeriksa apakah permintaan itu cache di Varnish dengan memeriksa respon yang * X-pernis-Cache * sundulan. Nilai HIT berarti respon dijawab langsung dari cache, dan LEWATKAN berarti itu tidak.
 
-### Cache Breakers
+### Breakers Cache
 
-When caching requests on client side or in a caching proxy, the URL is usually used as the cache identifier. As long as the URL stays the same and the cached response has not expired, the request is answered from cache. As part of every deployment, all containers are started from a clean image. This ensures that all containers have the latest app code including templates, css, image and javascript files. However, when using far-future `expires` headers as recommended above, this doesn't change anything if the response was cached at client or loadbalancer level. To ensure clients get the latest and greatest version, it is recommend to include a changing parameter into the URL. This is commonly referred to as a cache breaker.
+Ketika caching permintaan di sisi klien atau di proxy caching, URL biasanya digunakan sebagai mengidentifikasi Cache. Selama URL tetap sama dan respon cache Belum berakhir, permintaan tersebut Dijawab dari cache. Sebagai bagian dari setiap penyebaran, semua kontainer dimulai dari citra bersih. Ini Memastikan Itu Semua kontainer-memiliki kode aplikasi Termasuk template terbaru, css, javascript dan file gambar. Namun, Bila menggunakan header jauh-masa telah merekomendasikan expires` `atas, ini Apakah tidak mengubah apa pun jika respon cache Apakah di tingkat loadbalancer pelanggan emas. Untuk mendapatkan pelanggan penjamin terbaru dan terbesar versi itu merekomendasikan untuk memasukkan parameter berubah menjadi URL. Hal ini sering disebut sebagai penutup breaker.
 
-The [environment variables](#environment-variables) of the deployment runtime environment contain the DEP_VERSION of the app. If you want to force a refresh of the cache when a new version is deployed you can use the DEP_VERSION to accomplish this.
+The [variabel Lingkungan] (variabel # lingkungan) dari lingkungan deployment runtime contenir yang DEP_VERSION app. Jika Anda ingin memaksa refresh Cache Ketika versi baru Dikerahkan Anda dapat menggunakan DEP_VERSION untuk Dicapai ini.
 
-### Caching in kilatiron.net subdomain
+### Caching di kilatiron.net subdomain
 
-Requests via the `*.kilatiron.net` subdomain cannot be cached in the routing tier. However, it is still possible to provide caching for static assets by utilizing a separate cookieless domain as a CNAME of the `*.kilatiron.com`subdomain. For example, you can serve the dynamic requests of your application via www.example.com (a CNAME FOR `example.kilatiron.net`) and serve the static assets like CSS, JS and images via `static.example.com` (a CNAME for `example.kilatiron.com`).
+Permintaan melalui `* .kilatiron.net` subdomain tidak dapat di-cache di routing tier. Namun, itu masih layak untuk Memberikan caching untuk aset statis dengan Memanfaatkan domain cookieless terpisah sebagai CNAME dari `* .kilatiron.com`subdomain. Misalnya, Anda dapat melayani permintaan dinamis aplikasi Anda melalui www.example.com (CNAME UNTUK `example.kilatiron.net`) dan melayani aset statis seperti CSS, JS dan gambar melalui static.example.com`` ( `example.kilatiron.com` untuk CNAME).
 
 
 ## WebSockets
 
-**TL;DR:**
+** TL; DR: **
 
- * WebSockets are supported via the `*.kilatiron.net` subdomain.
- * WebSockets allow real-time, bidirectional communication between clients and servers
- * Additional steps are necessary to secure WebSocket connections
- * It is highly recommended to use the secure `wss://` protocol rather than the insecure `ws://`.
+ * WebSockets didukung melalui `* .kilatiron.net` subdomain.
+ * WebSockets memungkinkan real-time, pelanggan entre komunikasi dua arah dan server
+ * Langkah-langkah tambahan yang diperlukan untuk mengamankan koneksi WebSocket
+ * Hal ini sangat dianjurkan untuk menggunakan aman `wss: // protocol`` Daripada ws tidak aman: // '.
 
-WebSockets allow you to enable real-time, bidirectional communication channels between clients and servers. WebSocket connections use standard HTTP ports (80 and 443) like normal browsers. In order to establish a WebSocket connection on our platform, the client has to explicitly set `Upgrade` and `Connection` [hop-by-hop](http://tools.ietf.org/html/rfc2616#section-13.5.1) headers in the request. Those headers instruct our reverse-proxy to upgrade the protocol from HTTP to WebSocket. Once the protocol upgrade handshake is completed, data frames can be sent between the client and the server in full-duplex mode.
+WebSockets memungkinkan Anda untuk mengaktifkan real-time, pelanggan saluran komunikasi dua arah entre dan server. Koneksi WebSocket menggunakan port HTTP standar (80 dan 443) seperti browser normal. Dalam rangka untuk MEMBANGUN koneksi WebSocket pada platform kami, pelanggan Memiliki Untuk eksplisit mengatur `` connection` Upgrade` dan [hop-by-hop] (http://tools.ietf.org/html/rfc2616#section-13.5. 1) header dalam permintaan. Mereka header menginstruksikan reverse-proxy untuk meng-upgrade protokol dari HTTP ke WebSockets kami. Setelah upgrade protokol jabat tangan selesai, frame data dapat dikirim entre les pelanggan dan server dalam modus full-duplex.
 
-All the request timeouts described above also apply for WebSocket connections, but with different effects:
+Semua timeout permintaan Dijelaskan atas aussi berlaku untuk koneksi WebSocket, minum dengan efek yang berbeda:
 
-|Parameter|Value [s]|Description|
-|:--------|:--------|:---------:|
-|Send timeout|55|Timeout between two consecutive chunks of data being sent by the client|
-|Read timeout|55|Timeout between two consecutive chunks of data being sent back to the client|
+| Parameter | Nilai [s] | Keterangan |
+|: -------- |: -------- |: ---------: |
+| Kirim batas waktu | 55 | Timeout antara dua potongan berturut-turut dari data yang dikirim oleh pelanggan menjadi putih |
+| Baca batas waktu | 55 | Timeout antara dua potongan berturut-turut data menjadi putih terasa kembali ke pelanggan |
 
-To overcome any timeout limitations, you can explicitly implement the WebSocket [Ping-Pong control](http://tools.ietf.org/html/rfc6455#page-36) mechanism, which keeps connections alive. Nevertheless, many of the WebSocket libraries or clients implemented in many languages already offer this feature out of the box.
+Mengatasi keterbatasan Setiap habis, Anda Secara eksplisit dapat Melaksanakan WebSocket mekanisme [control Ping-Pong] (http://tools.ietf.org/html/rfc6455#page-36), qui terus koneksi hidup. Namun demikian, banyak dari klien WebSocket perpustakaan emas Diimplementasikan dalam banyak bahasa sudah menawarkan fitur ini di luar kotak.
 
-### Secure WebSockets
+### Aman WebSockets
 
-Conventional WebSockets do not offer any kind of protocol specific authentication or data encryption. You are encouraged to use standard HTTP authentication mechanisms like cookies, basic/diggest or TLS. The same goes for data encryption where SSL is your obvious choice. While a conventional WebSocket connection is established via HTTP, a protected one uses HTTPS. The distinction is based on the URI schemes:
+WebSockets konvensional tidak menawarkan jenis protokol otentikasi tertentu atau enkripsi data. Anda Didorong untuk menggunakan standar HTTP Authentication Mekanisme seperti cookies, dasar / diggest atau TLS. Hal yang sama berlaku untuk enkripsi data SSL mana pilihan yang jelas Anda. Sementara koneksi WebSocket konvensional Didirikan melalui HTTP, HTTPS menggunakan satu dilindungi. Perbedaan ini didasarkan pada skema URI:
 
 ~~~
-Normal connection: ws://{host}:{port}/{path to the server}
-Secure connection: wss://{host}:{port}/{path to the server}
+Koneksi normal: ws: // {tuan}: {} pelabuhan / {path ke server}
+Koneksi aman: wss: // {tuan}: {} pelabuhan / {path ke server}
 ~~~
 
-Please note that Secure WebSockets connections can only be established using `*.kilatiron.net` subdomains, not custom ones. It is highly recommended to use them, not only for data security reasons. Secure WebSockets are 100% proxy transparent, which puts your containers in full control of WebSocket `upgrade handshake` in case some of the proxies do not handle it properly.
+Harap Catatan itu WebSockets koneksi aman hanya dapat menggunakan `* Didirikan .kilatiron.net` subdomain, bukan yang kustom. Hal ini sangat dianjurkan untuk menggunakan 'em, tidak hanya untuk keamanan data Alasan. WebSockets aman adalah 100% transparent proxy, qui menempatkan kontainer Anda dalam kontrol penuh dari WebSocket meng-upgrade handshake` `di dalam kotak some of the proxy tidak menanganinya dengan benar.
 
 
-## Scheduled Jobs and Background Workers
+## Pekerjaan Terjadwal dan Pekerja Latar Belakang
 
-**TL;DR:**
+** TL; DR: **
 
- * Web requests are subject to a time limit of 55s.
- * Scheduled jobs are supported through different Add-ons.
- * Background workers are the recommended way of handling long running or asynchronous tasks.
+ * Permintaan Web dikenai batas waktu 55.
+ * Pekerjaan Dijadwalkan didukung melalui berbagai add-ons.
+ * Pekerja Latar belakang adalah cara yang direkomendasikan menangani lama berjalan atau asynchronous tugas.
 
-Since a web request taking longer than 55s is killed by the routing tier, longer running tasks have to be handled asyncronously.
+Sejak permintaan web Mengambil bersama dari 55 dibunuh oleh routing lapis, berjalan bersama-memiliki tugas yang harus ditangani asyncronously.
 
-### Cron
+Cron ###
 
-For tasks that are guaranteed to finish within the time limit, the [Cron add-on] is a simple solution to call a predefined URL daily or hourly and have that task called periodically. For a more detailed documentation on the Cron Add-on, please refer to the [Cron Add-on documentation].
+Untuk tugas itu dijamin untuk menyelesaikan dans le batas waktu, [Cron add-on] solusi sederhana adalah untuk memanggil URL yang telah ditetapkan per jam dan harian emas telah disebut kadaluarsa berkala tugas itu. Untuk dokumentasi yang lebih rinci tentang add-on Cron, silakan Rujuk ke [Cron dokumentasi Add-on].
 
-### Workers
+### Pekerja
 
-Tasks that will take longer than 55s to execute, or that are triggered by a user request and should be handled asyncronously to not keep the user waiting, are best handled by the [Worker add-on]. Workers are long-running processes started in containers. Just like the web processes but they are not listening on any port and therefore do not receive http requests. You can use workers, for example, to poll a queue and execute tasks in the background or handle long-running periodical calculations. More details on usage scenarios and available queuing Add-ons are available as part of the [Worker Add-on documentation].
+Tugas itu akan membawa serta dari 55 untuk mengeksekusi, atau itu dipicu oleh permintaan pengguna dan keharusan tidak ditangani asyncronously untuk menjaga pengguna tunggu, sebaiknya ditangani oleh [Pekerja add-on]. Pekerja proses berjalan lama dimulai pada wadah. Sama seperti proses web bertujuan Mereka Apakah tidak mendengarkan pada port dan The Oleh karena itu tidak recevoir permintaan http. Anda dapat menggunakan pekerja, misalnya, untuk polling antrian dan melaksanakan tugas-tugas di latar belakang emas menangani lama berjalan perhitungan periodik. Rincian lebih lanjut tentang skenario penggunaan antrian dan tersedia add-ons yang tersedia sebagai tangan [Pekerja Dokumentasi Add-on].
 
 
 ## Secure Shell (SSH)
 
-The distributed nature of the CloudKilat platform means it's not possible to SSH
-into the actual server. Instead, we offer the run command, that allows you to
-launch a new container and connect to that via SSH.
+Sifat terdistribusi CloudKilat dari platform means itu tidak layak untuk SSH
+ke server yang sebenarnya. Sebaliknya, kami menawarkan perintah run, yang 'Memungkinkan Anda untuk
+meluncurkan sebuah wadah baru dan terhubung melalui SSH Untuk itu.
 
-The container is identical to the web or worker containers but starts an SSH
-daemon instead of one of the Procfile commands. It's based on the same stack
-image and deployment image and does also provides the Add-on credentials.
+Wadah emas identiques untuk pekerja web dimulai tujuan yang SSH wadah
+daemon BUKAN dari salah satu perintah Procfile. Ini didasarkan pada tumpukan yang sama
+picture and picture dan penyebaran Apakah aussi Menyediakan Add-on kredensial.
 
-### Examples
+Template ###
 
-To start a shell (e.g. bash) use the `run` command.
+Untuk memulai shell (misalnya bash) menggunakan perintah `run`.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME run bash
-Connecting...
-Warning: Permanently added '[10.62.45.100]:25832' (RSA) to the list of known hosts.
-u25832@DEP_ID-25832:~/www$ echo "interactive commands work as well"
-interactive commands work as well
-u25832@DEP_ID-25832:~/www$ exit
-exit
-Connection to 10.62.45.100 closed.
-Connection to sshforwarder.kilatiron.net closed.
+$ APP_NAME ironcliapp / DEP_NAME run pesta
+Menghubungkan ...
+Peringatan: Secara ditambahkan '[10.62.45.100]: 25832' (RSA) ke daftar Dikenal host.
+u25832 DEP_ID-25832 @: ~ / www $ echo "perintah interaktif bekerja dengan baik"
+perintah interaktif bekerja dengan baik
+u25832 DEP_ID-25832 @: ~ / www $ exit
+Keluar
+Koneksi ke 10.62.45.100 ditutup.
+Koneksi ke sshforwarder.kilatiron.net ditutup.
 ~~~
 
-It's also possible to execute a command directly and have the container shutdown after the command is finished. This is very useful for database migrations and other one-time tasks.
+Ini mungkin untuk aussi langsung untuk mengeksekusi perintah dan mitra kontainer-memiliki setelah perintah shutdown selesai. Hal ini sangat berguna untuk --Lain migrasi database dan tugas satu kali.
 
-For example, passing the `"env | sort"` command will list the environment variables. Note that the use of the quotes is required for a command that includes spaces.
+Misalnya, melewati `" env | semacam "` perintah akan daftar variabel lingkungan. Catatan penggunaan que le dari penilaian diperlukan untuk perintah Itu termasuk ruang.
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME run "env | sort"
-Connecting...
-Warning: Permanently added '[10.250.134.126]:10346' (RSA) to the list of known hosts.
-CRED_FILE=/srv/creds/creds.json
-DEP_ID=DEP_ID
-DEP_NAME=APP_NAME/DEP_NAME
-DEP_VERSION=9d5ada800eff9fc57849b3102a2f27ff43ec141f
-DOMAIN=kilatiron.net
-GEM_PATH=vendor/bundle/ruby/1.9.1
-HOME=/srv
-HOSTNAME=DEP_ID-10346
-LANG=en_US.UTF-8
-LOGNAME=u10346
-MAIL=/var/mail/u10346
-OLDPWD=/srv
-PAAS_VENDOR=CloudKilat
-PATH=bin:vendor/bundle/ruby/1.9.1/bin:/usr/local/bin:/usr/bin:/bin
-PORT=10346
-PWD=/srv/www
-RACK_ENV=production
-RAILS_ENV=production
-SHELL=/bin/sh
-SSH_CLIENT=10.32.47.197 59378 10346
-SSH_CONNECTION=10.32.47.197 59378 10.250.134.126 10346
-SSH_TTY=/dev/pts/0
-TERM=xterm
-TMP_DIR=/srv/tmp
-TMPDIR=/srv/tmp
-USER=u10346
-WRK_ID=WRK_ID
-Connection to 10.250.134.126 closed.
-Connection to sshforwarder.kilatiron.net closed.
+$ APP_NAME ironcliapp / DEP_NAME run "env | sort"
+Menghubungkan ...
+Peringatan: Secara ditambahkan '[10250134126]: 10346' (RSA) ke daftar Dikenal host.
+CRED_FILE = / srv / creds / creds.json
+DEP_ID = DEP_ID
+DEP_NAME = APP_NAME / DEP_NAME
+DEP_VERSION = 9d5ada800eff9fc57849b3102a2f27ff43ec141f
+DOMAIN = kilatiron.net
+GEM_PATH = vendor / bundel / ruby ​​/ 1.9.1
+RUMAH = / srv
+HOSTNAME = DEP_ID-10346
+LANG = en_US.UTF-8
+LOGNAME = u10346
+MAIL = / var / mail / u10346
+OLDPWD = / srv
+PAAS_VENDOR = CloudKilat
+PATH = bin: vendor / bundel / ruby ​​/ 1.9.1 / bin: / usr / local / bin: / usr / bin: / bin
+PORT = 10346
+PWD = / srv / www
+RACK_ENV = Produksi
+RAILS_ENV = Produksi
+SHELL = / bin / sh
+SSH_CLIENT = 10.32.47.197 59378 10346
+SSH_CONNECTION = 10.32.47.197 59378 10.250.134.126 10346
+SSH_TTY = / dev / pts / 0
+TERM = xterm
+TMP_DIR = / srv / tmp
+TMPDIR = / srv / tmp
+PENGGUNA = u10346
+WRK_ID = WRK_ID
+Koneksi ke 10250134126 ditutup.
+Koneksi ke sshforwarder.kilatiron.net ditutup.
 ~~~
 
 ## Stacks
 
-**TL;DR:**
+** TL; DR: **
 
- * Stacks define the common runtime environment.
- * They are based on Ubuntu and stack names match the Ubuntu release's first letter.
- * Pinky is the current stack and supports multiple languages according to the available [buildpacks](#buildpacks-and-the-procfile).
+ * Tumpukan menentukan lingkungan runtime umum.
+ * Mereka didasarkan pada Ubuntu dan Ubuntu nama tumpukan sesuai huruf pertama rilis itu.
+ * Pinky adalah tumpukan saat ini dan mendukung beberapa bahasa selon yang tersedia [buildpacks] (# buildpacks-dan-the-procfile).
 
-A stack defines the common runtime environment for all deployments using it.
-This guarantees that all your deployments find the same version of all OS
-components as well as all pre-installed libraries.
+Tumpukan olefin lingkungan runtime umum untuk semua penyebaran menggunakannya.
+Ini Jaminan Itu Semua penyebaran Anda semua versi yang sama dari OS
+komponen serta semua perpustakaan pra-instal.
 
-Stacks are based on Ubuntu releases and have the same first letter as the
-release they are based on. Each stack is named after a super hero sidekick. We
-try to keep them as close to the Ubuntu release as possible, but do make
-changes when necessary for security or performance reasons to optimize the
-stack for its specific purpose on our platform.
+Tumpukan didasarkan pada Ubuntu dan rilis-memiliki huruf pertama yang sama sebagai
+Mereka melepaskan didasarkan pada. Setiap stack bernama Setelah A pahlawan sidekick yang super. Kita
+mencoba untuk menjaga 'em sebagai dekat dengan rilis Ubuntu mungkin, jangan membuat keuntungan
+Ketika Diperlukan pertukaran untuk keamanan atau kinerja Alasan untuk mengoptimalkan
+ik stack untuk tujuan tertentu adalah platform kami.
 
-### Available Stacks
+### Stacks Tersedia
 
- * **Pinky** based on [Ubuntu 12.04 LTS Precise Pangolin]
+ * ** ** Pinky berdasarkan [Ubuntu 12.04 LTS Precise Pangolin]
 
-Details about the current stack are available via the `ironcliapp` command line interface.
-~~~
+Rincian tentang stack saat ini tersedia melalui antarmuka baris perintah `ironcliapp`.~~~
 $ ironcliapp APP_NAME/DEP_NAME details
  name: APP_NAME/DEP_NAME
  stack: pinky

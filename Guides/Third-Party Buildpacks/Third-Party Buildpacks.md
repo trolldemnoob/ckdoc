@@ -1,60 +1,60 @@
-# Third-Party Custom Buildpacks
+# Pihak Ketiga Kustom Buildpacks
 
-[CloudKilat] officially supports the following application types via the [Pinky Stack][PinkyStack].
+[CloudKilat] resmi mendukung jenis aplikasi berikut melalui [Pinky Stack] [PinkyStack].
 
-- Java-based (Java with Maven, Gradle, Grails, Scala, Play! or Clojure)
+- Java berbasis (Jawa dengan Maven, Gradle, Grails, Scala, Bermain atau Clojure!)
 - Ruby
 - PHP
 - Python
 - NodeJS
  
-However, you can deploy apps developed on languages and technologies beyond the officially supported ones using the third-party custom buildpacks feature.
+Namun, Anda dapat menyebarkan aplikasi yang dikembangkan pada bahasa dan teknologi luar yang resmi didukung menggunakan pihak ketiga buildpacks kustom fitur.
 
 ## Verified Buildpacks
 
-Here is a list of verified and recommended buildpacks for the CloudKilat platform covering the following languages and technologies:
+Berikut adalah daftar diverifikasi dan direkomendasikan buildpacks untuk platform CloudKilat meliputi bahasa dan teknologi berikut:
 
-|Technology|Buildpack URL|
-|:---------|:----------:|
-|Go|[https://github.com/kr/heroku-buildpack-go][buildpack-go]|
-|Erlang|[https://github.com/cloudControl/buildpack-erlang-kernel][buildpack-erlang]|
-|Common Lisp|[https://github.com/mtravers/heroku-buildpack-cl][buildpack-common-lisp]|
-|Lua|[https://github.com/leafo/heroku-buildpack-lua][buildpack-lua]|
-|C|[https://github.com/atris/heroku-buildpack-C][buildpack-c]|
-|Haskell|[https://github.com/pufuwozu/heroku-buildpack-haskell][buildpack-haskell]|
-|Perl|[https://github.com/fern4lvarez/buildpack-perl][buildpack-perl]|
+| Teknologi | Buildpack URL |
+|: --------- |: ----------: |
+| Go | [https://github.com/kr/heroku-buildpack-go] [buildpack-pergi] |
+| Erlang | [https://github.com/cloudControl/buildpack-erlang-kernel] [buildpack-erlang] |
+| Common Lisp | [https://github.com/mtravers/heroku-buildpack-cl] [buildpack-umum-cadel] |
+| Lua | [https://github.com/leafo/heroku-buildpack-lua] [buildpack-lua] |
+| C | [https://github.com/atris/heroku-buildpack-C] [buildpack-c] |
+| Haskell | [https://github.com/pufuwozu/heroku-buildpack-haskell] [buildpack-Haskell] |
+| Perl | [https://github.com/fern4lvarez/buildpack-perl] [buildpack-perl] |
 
-## Using a Custom Buildpack
+## Menggunakan Custom Buildpack
 
-In order to create an app using a custom buildpack you have to choose the `custom` app type and then provide the desired buildpack URL:
+Dalam rangka untuk menciptakan sebuah aplikasi menggunakan kustom buildpack Anda harus memilih `custom` jenis aplikasi dan kemudian memberikan URL buildpack yang diinginkan:
 
-~~~bash
-$ ironcliapp APP_NAME create custom --buildpack BUILDPACK_URL
+~~~ Pesta
+$ Ironcliapp APP_NAME membuat BUILDPACK_URL kustom --buildpack
 ~~~
 
-**Note:** `BUILDPACK_URL` has to be a non-ssh git repository.
+** Catatan: ** `BUILDPACK_URL` harus menjadi git repositori non-ssh.
 
-You can use any of the aforementioned buildpacks, fork them and make changes according to your needs or even create your own. Keep in mind that custom buildpacks have to follow heroku's [Buildpack API][buildpack-API].
+Anda dapat menggunakan salah satu buildpacks tersebut, garpu mereka dan membuat perubahan sesuai dengan kebutuhan Anda atau bahkan membuat sendiri. Perlu diingat bahwa buildpacks kustom harus mengikuti heroku ini [Buildpack API] [buildpack-API].
 
-Before using any third party buildpack you should inspect their source code and proceed with caution.
+Sebelum menggunakan pihak ketiga buildpack Anda harus memeriksa kode sumber mereka dan melanjutkan dengan hati-hati.
 
 [CloudKilat]: http://www.cloudkilat.com/
 [PinkyStack]: /Platform%20Documentation.md/#stacks
-[buildpack-java]: https://github.com/cloudControl/buildpack-java
-[buildpack-python]: https://github.com/cloudControl/buildpack-python
-[buildpack-ruby]: https://github.com/cloudControl/buildpack-ruby
-[buildpack-php]: https://github.com/cloudControl/buildpack-php
-[buildpack-nodejs]: https://github.com/heroku/heroku-buildpack-nodejs
-[buildpack-clojure]: https://github.com/heroku/heroku-buildpack-clojure
-[buildpack-gradle]: https://github.com/heroku/heroku-buildpack-gradle
-[buildpack-grails]: https://github.com/heroku/heroku-buildpack-grails
-[buildpack-scala]: https://github.com/heroku/heroku-buildpack-scala
-[buildpack-play]: https://github.com/heroku/heroku-buildpack-play
-[buildpack-erlang]: https://github.com/cloudControl/buildpack-erlang-kernel
-[buildpack-go]: https://github.com/kr/heroku-buildpack-go
-[buildpack-common-lisp]: https://github.com/mtravers/heroku-buildpack-cl
-[buildpack-lua]: https://github.com/leafo/heroku-buildpack-lua
-[buildpack-c]: https://github.com/atris/heroku-buildpack-C
-[buildpack-haskell]: https://github.com/pufuwozu/heroku-buildpack-haskell
-[buildpack-perl]: https://github.com/fern4lvarez/buildpack-perl
-[buildpack-API]: https://devcenter.heroku.com/articles/buildpack-api
+[Buildpack-java]: https://github.com/cloudControl/buildpack-java
+[Buildpack-python]: https://github.com/cloudControl/buildpack-python
+[Buildpack-ruby]: https://github.com/cloudControl/buildpack-ruby
+[Buildpack-php]: https://github.com/cloudControl/buildpack-php
+[Buildpack-nodejs]: https://github.com/heroku/heroku-buildpack-nodejs
+[Buildpack-clojure]: https://github.com/heroku/heroku-buildpack-clojure
+[Buildpack-gradle]: https://github.com/heroku/heroku-buildpack-gradle
+[Buildpack-Grails]: https://github.com/heroku/heroku-buildpack-grails
+[Buildpack-scala]: https://github.com/heroku/heroku-buildpack-scala
+[Buildpack-play]: https://github.com/heroku/heroku-buildpack-play
+[Buildpack-erlang]: https://github.com/cloudControl/buildpack-erlang-kernel
+[Buildpack-go]: https://github.com/kr/heroku-buildpack-go
+[Buildpack-umum-cadel]: https://github.com/mtravers/heroku-buildpack-cl
+[Buildpack-lua]: https://github.com/leafo/heroku-buildpack-lua
+[Buildpack-c]: https://github.com/atris/heroku-buildpack-C
+[Buildpack-Haskell]: https://github.com/pufuwozu/heroku-buildpack-haskell
+[Buildpack-perl]: https://github.com/fern4lvarez/buildpack-perl
+[Buildpack-API]: https://devcenter.heroku.com/articles/buildpack-api

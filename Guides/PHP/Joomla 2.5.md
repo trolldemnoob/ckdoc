@@ -1,281 +1,281 @@
-#Deploying Joomla 2.5 to CloudKilat
+#Deploying Joomla 2.5 ke CloudKilat
 
-![Successful Deployment](/static/apps/images/joomla-logo.png)
+! [Deployment Sukses] (/ statis / apps / gambar / joomla-logo.png)
 
-If you're looking for a fast, light and effective PHP Framework for your projects, you can't go past [Joomla](http://www.joomla.org/download.html). Now at [version 2.5](http://www.joomla.org/download.html) it comes with a variety of features to speed up your application development, including:
+Jika Anda sedang mencari cepat, ringan dan efektif PHP Framework untuk proyek-proyek Anda, Anda tidak dapat melewati [Joomla] (http://www.joomla.org/download.html). Sekarang di [versi 2.5] (http://www.joomla.org/download.html) datang dengan berbagai fitur untuk mempercepat pengembangan aplikasi Anda, termasuk:
 
- * Baked in Security
- * Clear MVC approach
- * A large, thriving, community
- * Loads of plugins and add-ons
- * Easy to read documentation
+ * Baked di Keamanan
+ * Pendekatan Batal MVC
+ * Sebuah besar, berkembang, masyarakat
+ * Banyak plugin dan add-ons
+ * Mudah untuk membaca dokumentasi
 
-In this tutorial, we're going to take you through deploying Joomla v2.5 to [the CloudKilat platform](http://www.CloudKilat.ch). 
+Dalam tutorial ini, kita akan membawa Anda melalui penggelaran Joomla v2.5 untuk [platform CloudKilat] (http://www.CloudKilat.ch).
 
-##Prerequisites
+## Prasyarat
 
-You're going to need only a few things to following along with this tutorial. These are:
+Anda akan hanya perlu beberapa hal untuk mengikuti bersama dengan tutorial ini. Ini adalah:
 
- * A [Git client](http://git-scm.com/), whether command-line or GUI.
- * A MySQL client, whether command-line or GUI, such as [MySQL Workbench](http://dev.mysql.com/downloads/workbench/) or the command-line tools.
+ * A [Git klien] (http://git-scm.com/), apakah baris perintah atau GUI.
+ * Seorang klien MySQL, apakah baris perintah atau GUI, seperti [MySQL Workbench] (http://dev.mysql.com/downloads/workbench/) atau alat baris perintah.
 
-##1. Grab a Copy of Joomla 
+## 1. Ambil Copy Joomla
 
-So now that you have the prerequisites in place, download a copy of the latest, stable, release. You can find it at: [http://www.joomla.org/download.html](http://www.joomla.org/download.html). After that, extract it to your local file sytem. 
+Jadi sekarang bahwa Anda memiliki prasyarat di tempat, men-download salinan terbaru, stabil, rilis. Anda dapat menemukannya di: [http://www.joomla.org/download.html](http://www.joomla.org/download.html). Setelah itu, ekstrak file sytem lokal.
 
-![Successful Deployment](/static/apps/images/joomla-source.png)
+! [Deployment Sukses] (/ statis / apps / gambar / joomla-source.png)
 
 
-##Create a Basic Application
+## Buat Aplikasi Dasar
 
-Once you have a copy of the Joomla source available locally, setup a VHost (or equivalent) in your web server of choice and install a copy of it, accepting the default options and inserting your details as appropriate. If you're not that familiar with Joomla, the first time that you view it as a site it will run the installer. 
+Setelah Anda memiliki salinan dari sumber Joomla tersedia secara lokal, setup VHost (atau setara) di server web Anda pilihan dan menginstal salinan itu, menerima pilihan default dan memasukkan rincian Anda sesuai. Jika Anda belum familiar dengan Joomla, pertama kali Anda melihatnya sebagai situs itu akan menjalankan installer.
 
-##2. Update the Configuration
+## 2. Memperbarui Konfigurasi
 
-A few changes need to be made to the default Joomla configuration and code to accommodate CloudKilat deployment. These changes are as follows:
+Beberapa perubahan perlu dibuat ke default konfigurasi Joomla dan kode untuk mengakomodasi penyebaran CloudKilat. Perubahan ini adalah sebagai berikut:
 
- * Store sessions in the database
- * Store Cache Information in APC
- * Update the Configuration Code
+ * Simpan sesi dalam database
+ * Informasi Toko Cache di APC
+ * Update Kode Konfigurasi
 
-###2.1 Store Sessions in the Database
+### 2.1 Toko Sesi di Database
 
-Unless something goes awry, you won't have to do anything here as Joomla should be configured to store session information in the database by default. But it bears double-checking, just to be sure. So, from "Global Configuration" -> "System" in the right hand side, do the following:
+Kecuali sesuatu berjalan serba salah, Anda tidak perlu melakukan apa-apa di sini sebagai Joomla harus dikonfigurasi untuk menyimpan informasi sesi dalam database secara default. Tapi beruang double-memeriksa, hanya untuk memastikan. Jadi, dari "Global Configuration" -> "System" di sisi kanan, lakukan hal berikut:
 
- * Under **Session Settings**:
-     * ensure **Session Handler** is set to **Database**
+ * Di bawah ** Pengaturan Sesi **:
+     * Memastikan ** Session Handler ** diatur ke ** database **
  
-Click Save.
+Klik Simpan.
 
-###2.2 Store Cache Information in APC
+### 2.2 Informasi Store Cache di APC
 
-By default, caching in Joomla is turned off. So from "Global Configuration" -> "System" in the right hand side, do the following:
+Secara default, caching di Joomla dimatikan. Jadi dari "Global Configuration" -> "System" di sisi kanan, lakukan hal berikut:
 
- * Under **Cache Settings**:
-     * set **Cache** to **On**
-     * set **Cache Handler** to **Alternative PHP Cache**
+ * Di bawah ** Pengaturan Cache **:
+     * Mengatur ** Cache ** untuk ** On **
+     * Mengatur ** Cache Handler ** untuk ** PHP Alternatif Cache **
 
-Click **Save & Close**. 
+Klik ** Simpan & Tutup **.
 
-###2.3 Update the Configuration Code
+### 2.3 Update Kode Konfigurasi
 
-Joomla's core configuration file, ``configuration.php``, is updated whenever the details are changed in the administration panel as we just did. So, to retrieve the information from the CloudKilat environment becomes a, little, bit tricky. 
+File konfigurasi inti Joomla, `` configuration.php``, diperbarui setiap kali rincian yang berubah di panel administrasi seperti yang kita hanya melakukan. Jadi, untuk mengambil informasi dari lingkungan CloudKilat menjadi, sedikit, sedikit rumit.
 
-What we can do, though an impermanent solution if we're upgrading our version of Joomla, is to update the file that is responsible for writing the configuration.php file, so that though a new constructor it can elect to return either the original information or the retrieve the database data from the environment and return that instead. 
+Apa yang bisa kita lakukan, meskipun solusi kekal jika kita upgrade versi kita Joomla, adalah untuk memperbarui file yang bertanggung jawab untuk menulis file configuration.php, sehingga meskipun konstruktor baru dapat memilih untuk kembali baik informasi asli atau mengambil data database dari lingkungan dan kembali bahwa alih-alih.
 
-We do this by updating ``libraries/joomla/registry/format/php.php``. Have a look at the modified version of the file below:
+Kami melakukan ini dengan memperbarui `` perpustakaan / joomla / registry / Format / php.php``. Silahkan lihat pada versi modifikasi dari file di bawah ini:
 
-    <?php
+    <? Php
 
-    class JRegistryFormatPHP extends JRegistryFormat
+    kelas JRegistryFormatPHP meluas JRegistryFormat
     {
 
-    	public function objectToString($object, $params = array())
-    	{
-    		// Build the object variables string
-    		$vars = '';
-    		foreach (get_object_vars($object) as $k => $v)
-    		{
-    			if (is_scalar($v))
-    			{
-    				$vars .= "\tpublic $" . $k . " = '" . addcslashes($v, '\\\'') . "';\n";
-    			}
-    			elseif (is_array($v) || is_object($v))
-    			{
-    				$vars .= "\tpublic $" . $k . " = " . $this->getArrayString((array) $v) . ";\n";
-    			}
-    		}
+    fungsi publik objectToString ($ object, $ params = array ())
+    {
+    // Membangun variabel objek string
+    $ Vars = '';
+    foreach (get_object_vars ($ object) sebagai $ k => $ v)
+    {
+    jika (is_scalar ($ v))
+    {
+    $ Vars. = "\ Tpublic $". $ K. "=" ". addcslashes ($ v, '\\\' '). "'; \ N";
+    }
+    elseif (is_array ($ v) || is_object ($ v))
+    {
+    $ Vars. = "\ Tpublic $". $ K. "=". $ This-> getArrayString ((array) $ v). "; \ N";
+    }
+    }
     
-    		$str = "<?php\nclass " . $params['class'] . " {\n";
-    		$str .= $vars;
-    		
-    		//
-    		// Include in the generation of the class a call to the __get magic
-    		// method, which will read the database settings from the environment
-    		// and pass them when called for in code.
-    		//
-    		$str .= '
-            public function __construct()
+    $ Str = "<? Php \ nclass". $ Params ['kelas']. "{\ N";
+    . $ Str = $ vars;
+    
+    //
+    // Termasuk dalam generasi kelas panggilan ke sihir __get
+    Metode //, yang akan membaca pengaturan database dari lingkungan
+    // Dan melewati mereka saat dipanggil untuk dalam kode.
+    //
+    $ Str. = '
+            fungsi publik __construct ()
             {
-                $creds = null;
+                $ Creds = null;
         
-                if (!empty($_SERVER[\'HTTP_HOST\']) && 
-                    strpos($_SERVER[\'HTTP_HOST\'], \'localdomain\') === FALSE) {
+                if (! empty ($ _ SERVER [\ 'HTTP_HOST \']) &&
+                    strpos ($ _ SERVER [\ 'HTTP_HOST \'], \ 'localdomain \') === FALSE) {
         
-                    $string = file_get_contents($_ENV[\'CRED_FILE\'], false);
-                    if ($string == false) {
-                        die(\'FATAL: Could not read credentials file\');
+                    $ String = file_get_contents ($ _ ENV [\ 'CRED_FILE \'], false);
+                    if ($ string == false) {
+                        mati (\ 'FATAL: tidak dapat membaca kredensial mengajukan \');
                     }
-                    $creds = json_decode($string, true);
-                    $this->host = $creds["MYSQLS"]["MYSQLS_HOSTNAME"];
-                    $this->user = $creds["MYSQLS"]["MYSQLS_USERNAME"];
-                    $this->db = $creds["MYSQLS"]["MYSQLS_DATABASE"];
-                    $this->password = $creds["MYSQLS"]["MYSQLS_PASSWORD"];
+                    $ Creds = json_decode ($ string, true);
+                    $ This-> host = $ creds ["MYSQLS"] ["MYSQLS_HOSTNAME"];
+                    $ This-> user = $ creds ["MYSQLS"] ["MYSQLS_USERNAME"];
+                    $ This-> db = $ creds ["MYSQLS"] ["MYSQLS_DATABASE"];
+                    $ This-> password = $ creds ["MYSQLS"] ["MYSQLS_PASSWORD"];
                 }
-            }' . "\n";
-    		
-    		$str .= "}";
+            } '. "\ N";
     
-    		// Use the closing tag if it not set to false in parameters.
-    		if (!isset($params['closingtag']) || $params['closingtag'] !== false)
-    		{
-    			$str .= "\n?>";
-    		}
+    . $ Str = "}";
     
-    		return $str;
-    	}
+    // Gunakan tag penutup jika tidak diatur ke palsu dalam parameter.
+    if (! isset ($ params ['closingtag']) || $ params ['closingtag']! == false)
+    {
+    . $ Str = "? \ N>";
+    }
+    
+    kembali $ str;
+    }
     
 
 
-##3. Put the Code Under Git Control
+## 3. Masukan Control Kode bawah Git
 
-Ok, now let's get started making these changes and deploying the application. We'll begin by putting it under Git control. So run the following command to do that:
+Ok, sekarang mari kita mulai membuat perubahan ini dan menggunakan aplikasi. Kita akan mulai dengan meletakkan di bawah kontrol Git. Jadi jalankan perintah berikut untuk melakukannya:
 
-    cd <your Joomla directory>
+    cd <directory Joomla Anda>
     
-    git init .
+    git init.
     
     git add -A
     
-    git commit -m "First addition of the source files"
+    git commit -m "Selain Pertama sumber file"
     
-Now that the code's under version control, we're going to create a testing branch as well, so that we have one to test with and one for production. Run the following command and it will be done:
+Sekarang bahwa kode ini di bawah kontrol versi, kita akan membuat cabang pengujian juga, sehingga kita memiliki satu untuk menguji dengan dan satu untuk produksi. Jalankan perintah berikut dan itu akan dilakukan:
 
-    git checkout -b testing
+    git checkout pengujian -b
     
-If you're not familiar with Git, the previous command will checkout a copy of our existing branch, into a new branch, called *testing*. You can confirm that you now have two branches, by running the following command:
+Jika Anda tidak terbiasa dengan Git, perintah sebelumnya akan checkout salinan cabang kami yang ada, menjadi cabang baru, yang disebut * pengujian *. Anda dapat mengkonfirmasi bahwa Anda sekarang memiliki dua cabang, dengan menjalankan perintah berikut:
 
     git branch
     
-That will show output similar to below:
+Itu akan menunjukkan output yang mirip dengan di bawah:
 
-    $ git branch
-        master
-        * testing
+    $ Git branch
+        menguasai
+        * Pengujian
 
-Choose a unique name to replace the `APP_NAME` placeholder for your application and create it on the CloudKilat platform. Now, we need to make our first deployment of both branches to the CloudKilat platform. To do this we checkout the master branch, create the application in our CloudKilat account and push and deploy both deployments. By running the following commands, this will all be done:
+Pilih nama yang unik untuk menggantikan `APP_NAME` tempat untuk aplikasi Anda dan membuatnya pada platform CloudKilat. Sekarang, kita perlu membuat penyebaran pertama kami kedua cabang ke platform CloudKilat. Untuk melakukan ini kita checkout cabang master, membuat aplikasi di akun CloudKilat kami dan mendorong dan menyebarkan kedua penyebaran. Dengan menjalankan perintah berikut, ini semua akan dilakukan:
 
-    // switch to the master branch
-    git checkout master
+    // Beralih ke cabang master
+    Master checkout git
 
-    // create the application
-    ironcliapp APP_NAME create php
+    // Membuat aplikasi
+    ironcliapp APP_NAME membuat php
 
-    // deploy the default branch
-    ironcliapp APP_NAME/default push
-    ironcliapp APP_NAME/default deploy
+    // Menyebarkan cabang default
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
 
-    // deploy the testing branch
-    ironcliapp APP_NAME/testing push
-    ironcliapp APP_NAME/testing deploy
+    // Menyebarkan cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
-##4. Initialise the Required Add-ons
+## 4. Menginisialisasinya Diperlukan Add-ons
 
-Now that that's done, we need to configure two add-ons, config and mysqls. The config add-on's required for determining the active environment and mysqls for storing our session and logging information. 
+Sekarang itu selesai, kita perlu mengkonfigurasi dua add-ons, config dan mysqls. Config add-on yang diperlukan untuk menentukan lingkungan aktif dan mysqls untuk menyimpan sesi dan login informasi.
 
-###4.1 Check the Add-on Configuration
+### 4.1 Periksa Add-on Konfigurasi
 
-Now let's be sure that everything is in order by having a look at the add-on configuration output, in this case for testing. To do that, run the command below:
+Sekarang mari kita pastikan bahwa segala sesuatu adalah dalam rangka dengan memiliki melihat output konfigurasi add-on, dalam hal ini untuk pengujian. Untuk melakukan itu, jalankan perintah di bawah ini:
 
-    // Initialise the mysqls.free addon for the default deployment
-    ironcliapp APP_NAME/default addon.add mysqls.free
+    // Menginisialisasinya addon mysqls.free untuk penyebaran standar
+    ironcliapp APP_NAME / default addon.add mysqls.free
 
-    // Retrieve the settings
-    ironcliapp APP_NAME/default addon mysqls.free
+    // Ambil pengaturan
+    ironcliapp APP_NAME / default addon mysqls.free
 
-    // Initialise the mysqls.free addon for the testing deployment
-    ironcliapp APP_NAME/testing addon.add mysqls.free
+    // Menginisialisasinya addon mysqls.free untuk penyebaran pengujian
+    ironcliapp APP_NAME / pengujian addon.add mysqls.free
 
-    // Retrieve the settings
-    ironcliapp APP_NAME/testing addon mysqls.free
+    // Ambil pengaturan
+    ironcliapp APP_NAME / pengujian addon mysqls.free
 
-The output of the commands will be similar to that below:
+Output dari perintah akan mirip dengan yang di bawah ini:
 
-    Addon                    : mysqls.free
+    Addon: mysqls.free
 
-     Settings
-       MYSQLS_DATABASE          : <database_name>
-       MYSQLS_PASSWORD          : <database_password>
-       MYSQLS_PORT              : 3306
-       MYSQLS_HOSTNAME          : mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
-       MYSQLS_USERNAME          : <database_username>
+     Pengaturan
+       MYSQLS_DATABASE: <database_name>
+       MYSQLS_PASSWORD: <database_password>
+       MYSQLS_PORT: 3306
+       MYSQLS_HOSTNAME: mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
+       MYSQLS_USERNAME: <database_username>
 
-###4.2 Initialising config
+### 4.2 Mengawali config
 
-Now we need to configure the config add-on and store the respective environment setting in it. So run the following commands to do this:
+Sekarang kita perlu mengkonfigurasi config add-on dan menyimpan lingkungan masing-masing pengaturan di dalamnya. Jadi jalankan perintah berikut untuk melakukan hal ini:
 
-    // Set the default environment setting
-    ironcliapp APP_NAME/default config.add APPLICATION_ENV=production
+    // Mengatur pengaturan lingkungan default
+    ironcliapp APP_NAME / default config.add APPLICATION_ENV = produksi
 
-    // Set the testing environment settings
-    ironcliapp APP_NAME/testing config.add APPLICATION_ENV=testing
+    // Mengatur pengaturan lingkungan pengujian
+    ironcliapp APP_NAME / pengujian config.add APPLICATION_ENV = pengujian
 
-Now that this is done, we're ready to make some changes to our code to make use of the new configuration. 
+Sekarang ini dilakukan, kita siap untuk membuat beberapa perubahan pada kode kita untuk menggunakan konfigurasi baru.
 
-##5. A Note About Logging & Temp Directories
+## 5. Sebuah Catatan Tentang Logging & Temp Direktori
 
-Where it may become interesting is if/when you start to use more than one clone for your application. We've had a good look at IRC, Joomla Forums and documentation and there doesn't appear to be simple way to store log information in the database, though we believe [JLog](http://docs.joomla.org/API16:JLog) is extendable. **So please bear this in mind.**
+Mana mungkin menjadi menarik adalah jika / ketika Anda mulai menggunakan lebih dari satu klon untuk aplikasi Anda. Kami sudah melihat baik di IRC, Joomla Forum dan dokumentasi dan ada tampaknya tidak menjadi cara sederhana untuk menyimpan informasi log dalam database, meskipun kami percaya [JLog] (http://docs.joomla.org/API16 : JLog) dapat diperpanjang. ** Jadi tolong diingat ini. **
 
-##6. Database Schema
+## 6. Database Schema
 
-Now, in the shell, we're going to dump the database that the install routine created and load it in to the remote mysql instance that we created earlier. To do so, run the following command, changing the respective options with your configuration settings, doing this for both default and testing:
+Sekarang, di shell, kita akan membuang database yang menginstal rutin dibuat dan beban ke dalam mysql contoh remote yang kita buat sebelumnya. Untuk melakukannya, jalankan perintah berikut, mengubah pilihan masing-masing dengan pengaturan konfigurasi Anda, melakukan hal ini untuk kedua standar dan pengujian:
 
-    -- the database dump (SQL) file
-    mysqldump -u <database_username> -p <database_name> > joomla_CloudKilat_init.sql 
+    - Dump database (SQL) File
+    mysqldump -u <database_username> p <database_name>> joomla_CloudKilat_init.sql
 
-    -- load the database dump (SQL) file in to the remote environment database
-    mysql -u <database_username> -p \
-        -h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
-        --ssl-ca=mysql-ssl-ca-cert.pem <database_name> < joomla_CloudKilat_init.sql
+    - Memuat database dump (SQL) file ke database lingkungan yang jauh
+    mysql -u <database_username> p \
+        h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
+        --ssl-ca = mysql-ssl-ca-cert.pem <database_name> <joomla_CloudKilat_init.sql
 
-In the command above, you can see a reference to a **.pem** file. This can be downloaded from: [http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem](http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem). All being well, the command will finish silently, loading the data. You can check that all's gone well with following commands:
+Pada perintah di atas, Anda dapat melihat referensi ke pem ** berkas **.. Ini dapat didownload dari: [http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem](http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem). Semua yang baik, perintah akan selesai diam-diam, memuat data. Anda dapat memeriksa bahwa semua sudah pergi baik dengan perintah berikut:
 
-    mysql -u <database_username> -p \
-        -h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
-        --ssl-ca=mysql-ssl-ca-cert.pem <database_name>
+    mysql -u <database_username> p \
+        h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
+        --ssl-ca = mysql-ssl-ca-cert.pem <database_name>
     
-    show tables;
+    menampilkan tabel;
     
-This will show you the tables from the SQL file. Now that that's done, commit the changes we made earlier and push and deploy both environments again so that the new information will be used. This can be done quickly with the following commands:
+Ini akan menunjukkan tabel dari file SQL. Sekarang itu selesai, melakukan perubahan yang kami buat sebelumnya dan mendorong dan menyebarkan kedua lingkungan lagi sehingga informasi baru akan digunakan. Hal ini dapat dilakukan dengan cepat dengan perintah berikut:
 
-    // commit the changes
-    git commit -m "changed to store log and session in mysql and auto-determine environment"
+    // Melakukan perubahan
+    git komit -m "berubah untuk menyimpan log dan sesi di mysql dan auto-menentukan lingkungan"
 
-    // deploy the default branch
-    ironcliapp APP_NAME/default push    
-    ironcliapp APP_NAME/default deploy
+    // Menyebarkan cabang default
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
     
-    git checkout testing
-    git merge master
+    pengujian checkout git
+    Master menggabungkan git
     
-    // deploy the testing branch
-    ironcliapp APP_NAME/testing push    
-    ironcliapp APP_NAME/testing deploy
+    // Menyebarkan cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
-##7. Review the Deployment
+## 7. Tinjau Deployment yang
 
-With that completed, then have a look at both your deployments to ensure that they're working. 
+Dengan itu selesai, maka kita lihat baik penyebaran Anda untuk memastikan bahwa mereka bekerja.
 
-###7.1 Deployment Problems
+### 7.1 Masalah Deployment
 
-If you have any issues deploying the Joomla application, then please consult the log files. There are, currently, two available, these are **deploy** and **error**. As the names suggest, deploy provides an overview of the deployment process and error shows any and all PHP errors to the extend allowed by your current logging level.
+Jika Anda memiliki masalah penggelaran aplikasi Joomla, maka silakan baca file log. Ada, saat ini, dua tersedia, ini adalah ** menyebarkan ** dan ** ** kesalahan. Sebagai nama menyarankan, menyebarkan memberikan gambaran tentang proses penyebaran dan error menunjukkan kesalahan PHP setiap dan semua ke memperpanjang diperbolehkan oleh tingkat penebangan Anda saat ini.
 
-To view the information, run the following commands respectively:
+Untuk melihat informasi ini, jalankan perintah berikut masing-masing:
 
-####7.1.1 Deployment
+#### 7.1.1 Deployment
 
-    ironcliapp APP_NAME/default log deploy
+    ironcliapp APP_NAME / default log menyebarkan
 
-####7.1.1 Errors
+#### 7.1.1 Kesalahan
 
-    ironcliapp APP_NAME/default log error
+    ironcliapp APP_NAME / default error log
 
-The commands output information in a [UNIX tail](http://en.wikipedia.org/wiki/Tail_%28Unix%29) like fashion. So just call them and cancel the commend when you are no longer interested in the output. 
+Perintah output informasi dalam [UNIX ekor] (http://en.wikipedia.org/wiki/Tail_%28Unix%29) seperti fashion. Jadi hanya memanggil mereka dan membatalkan memuji ketika Anda tidak lagi tertarik pada output.
 
-###7.2 Deployment Considerations
+### 7.2 Pertimbangan Deployment
 
-As was mentioned earlier, this isn't the most perfect solution as when you upgrade Joomla, the changes made to php.php will be overwritten and JLog still writes to the filesystem. We are working on a more permanent solution to this situation.
+Seperti yang telah disebutkan sebelumnya, ini bukan solusi yang paling sempurna seperti ketika Anda meng-upgrade Joomla, perubahan yang dibuat untuk php.php akan ditimpa dan JLog masih menulis ke filesystem. Kami sedang bekerja pada solusi yang lebih permanen untuk situasi ini.
 
-##Links
+## Links
  
- * [Joomla](http://www.joomla.org/)
+ * [Joomla] (http://www.joomla.org/)

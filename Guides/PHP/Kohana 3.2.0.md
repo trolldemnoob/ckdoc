@@ -1,548 +1,548 @@
 #Deploying Kohana 3.2.0
 
-![Successful Deployment](/static/apps/images/kohana-homepage.png)
+! [Deployment Sukses] (/ statis / apps / gambar / Kohana-homepage.png)
 
-If you're looking for a very fast, light, highly configurable and effective PHP Framework for your projects, look no further than [Kohana](http://kohanaframework.org/). Now at [version 3.2.0](http://dev.kohanaframework.org/attachments/download/1670/kohana-3.2.0.zip) it comes with a variety of features to speed up your application development, including:
+Jika Anda sedang mencari yang sangat cepat, ringan, sangat dapat dikonfigurasi dan efektif Kerangka PHP untuk proyek-proyek Anda, tidak terlihat lagi dari [Kohana] (http://kohanaframework.org/). Sekarang di [versi 3.2.0] (http://dev.kohanaframework.org/attachments/download/1670/kohana-3.2.0.zip) datang dengan berbagai fitur untuk mempercepat pengembangan aplikasi Anda, termasuk:
 
- * Excellent debugging and profiling tools
- * A flexible distribution license
- * A very active community
- * A set of core libraries
- * The ability to easily override and extend the core libraries
- * The ability to add in 3rd party libraries, such as Zend Framework
- * Rich [HMVC](http://en.wikipedia.org/wiki/Hierarchical_model%E2%80%93view%E2%80%93controller) support
+ * Excellent debugging dan alat profiling
+ * Sebuah lisensi distribusi yang fleksibel
+ * Sebuah komunitas yang sangat aktif
+ * Satu set inti perpustakaan
+ * Kemampuan untuk dengan mudah menimpa dan memperluas perpustakaan inti
+ * Kemampuan untuk menambahkan di perpustakaan pihak ke-3, seperti Zend Framework
+ * Kaya [HMVC] (http://en.wikipedia.org/wiki/Hierarchical_model%E2%80%93view%E2%80%93controller) dukungan
 
-In this tutorial, we're going to take you through deploying Kohana 3.2.0 to [the CloudKilat platform](http://www.cloudkilat.com/). If you need further information about Kohana, check out [the online user guide](http://kohanaframework.org/documentation) or jump in to [the IRC channel](irc://irc.freenode.net/kohana). Otherwise, let's get started.
+Dalam tutorial ini, kita akan membawa Anda melalui penggelaran Kohana 3.2.0 untuk [platform CloudKilat] (http://www.cloudkilat.com/). Jika Anda membutuhkan informasi lebih lanjut tentang Kohana, periksa [panduan user online] (http://kohanaframework.org/documentation) atau melompat ke [saluran IRC] (irc: //irc.freenode.net/kohana). Jika tidak, mari kita mulai.
 
-##Prerequisites
+## Prasyarat
 
-You're going to need only a few things to following along with this tutorial. These are:
+Anda akan hanya perlu beberapa hal untuk mengikuti bersama dengan tutorial ini. Ini adalah:
 
- * A [Git client](http://git-scm.com/), whether command-line or GUI.
- * A MySQL client, whether command-line or GUI, such as [MySQL Workbench](http://dev.mysql.com/downloads/workbench/) or the command-line tools.
+ * A [Git klien] (http://git-scm.com/), apakah baris perintah atau GUI.
+ * Seorang klien MySQL, apakah baris perintah atau GUI, seperti [MySQL Workbench] (http://dev.mysql.com/downloads/workbench/) atau alat baris perintah.
 
-##1. Grab a Copy of the Kohana code.
+## 1. Ambil Copy kode Kohana.
 
-Now that you have the prerequisites in place, download a copy of the latest, stable, release, 3.2.0 at the time or publishing. You can find it at: [http://dev.kohanaframework.org/attachments/download/1670/kohana-3.2.0.zip](http://dev.kohanaframework.org/attachments/download/1670/kohana-3.2.0.zip). After that, extract it to your local filesystem.
+Sekarang bahwa Anda memiliki prasyarat di tempat, men-download salinan terbaru, stabil, rilis, 3.2.0 pada saat atau penerbitan. Anda dapat menemukannya di: [http://dev.kohanaframework.org/attachments/download/1670/kohana-3.2.0.zip](http://dev.kohanaframework.org/attachments/download/1670/kohana-3.2.0.zip). Setelah itu, ekstrak ke sistem file lokal Anda.
 
-![Source files](/static/apps/images/kohana-files.png)
+[Sumber file] (/ statis / apps / gambar / Kohana-files.png)
 
-##2. Amend the Code
+## 2. Mengubah Kode
 
-As I mentioned before, a few changes need to be made to the default Kohana configuration. These changes are as follows:
+Seperti yang saya sebutkan sebelumnya, beberapa perubahan perlu dibuat dengan konfigurasi default Kohana. Perubahan ini adalah sebagai berikut:
 
- 1. Store Sessions in the Database
- 2. Auto-Magically Determine the Environment and Set the Configuration
+ 1. Sesi Simpan dalam Database
+ 2. Auto-Ajaib Menentukan Lingkungan dan Set Konfigurasi
 
-###2.1 Store Sessions in the Database
+### 2.1 Toko Sesi di Database
 
-We need to do this because Kohana, by default, stores its session files on the filesystem. However, this approach isn't recommended on the CloudKilat platform.
+Kita perlu melakukan ini karena Kohana, secara default, menyimpan file sesi pada filesystem. Namun, pendekatan ini tidak dianjurkan pada platform CloudKilat.
 
-What's more, storing files in a multi-server environment can lead to hard to debug issues. So what we're going to do is to store them in a MySQL database.
+Terlebih lagi, menyimpan file dalam lingkungan multi-server dapat menyebabkan sulit untuk debug masalah. Jadi apa yang kita akan lakukan adalah untuk menyimpannya dalam database MySQL.
 
-Thankfully, Kohana is written in a very straight-forward and configurable manner, so this isn't too hard to do. What's more, the community around it is very healthy, so there's loads of options and support available when needed.
+Untungnya, Kohana ditulis dalam cara yang sangat lurus ke depan dan dikonfigurasi, jadi ini tidak terlalu sulit untuk dilakukan. Terlebih lagi, masyarakat sekitar sangat sehat, sehingga ada banyak pilihan dan dukungan yang tersedia bila diperlukan.
 
-###2.2 Auto-Magically Determine the Environment and Set the Configuration
+### 2.2 Auto-Ajaib Menentukan Lingkungan dan Set Konfigurasi
 
-As each environment will, likely, have different configuration settings, we also need to be able to differentiate between them. Kohana does do this out of the box, but it's done by using different bootstrap files, such as **index.php**, **index-test.php** and so on.
+Karena setiap lingkungan akan, mungkin, memiliki pengaturan konfigurasi yang berbeda, kami juga harus mampu membedakan antara mereka. Kohana tidak melakukan hal ini di luar kotak, tapi itu dilakukan dengan menggunakan file bootstrap yang berbeda, seperti ** index.php **, ** indeks-test.php ** dan sebagainya.
 
-On CloudKilat, an app should programmatically know where it is and set the appropriate configuration options. That way, your code will run in every environment. So we're going to be making additions to the code so this happens auto-magically.
+Pada CloudKilat, sebuah aplikasi harus pemrograman tahu di mana itu dan mengatur pilihan konfigurasi yang sesuai. Dengan cara itu, kode Anda akan berjalan di setiap lingkungan. Jadi kita akan membuat penambahan kode sehingga hal ini terjadi auto-ajaib.
 
-##3. Put the Code Under Git Control
+## 3. Masukan Control Kode bawah Git
 
-Ok, now let's get started making these changes to the application. We'll begin by putting it [under Git control](http://git-scm.com/). So run the following command to do that:
+Ok, sekarang mari kita mulai membuat perubahan ini untuk aplikasi. Kita akan mulai dengan menempatkan [bawah kontrol Git] (http://git-scm.com/). Jadi jalankan perintah berikut untuk melakukannya:
 
-    cd <your Kohana directory>
+    cd <directory Kohana Anda>
 
-    git init .
+    git init.
 
     git add -A
 
-    git commit -m "First addition of the source files"
+    git commit -m "Selain Pertama sumber file"
 
-Now that the code's under version control, we're going to create a testing branch as well, so that we have one to test with and one for production. Run the following command and it will be done:
+Sekarang bahwa kode ini di bawah kontrol versi, kita akan membuat cabang pengujian juga, sehingga kita memiliki satu untuk menguji dengan dan satu untuk produksi. Jalankan perintah berikut dan itu akan dilakukan:
 
-    git checkout -b testing
+    git checkout pengujian -b
 
-If you're not familiar with Git, the previous command will checkout a copy of our existing branch, into a new branch, called *testing*. You can confirm that you now have two branches, by running the following command:
+Jika Anda tidak terbiasa dengan Git, perintah sebelumnya akan checkout salinan cabang kami yang ada, menjadi cabang baru, yang disebut * pengujian *. Anda dapat mengkonfirmasi bahwa Anda sekarang memiliki dua cabang, dengan menjalankan perintah berikut:
 
     git branch
 
-That will show output similar to below:
+Itu akan menunjukkan output yang mirip dengan di bawah:
 
-    $ git branch
-        master
-        * testing
+    $ Git branch
+        menguasai
+        * Pengujian
 
-Choose a unique name to replace the `APP_NAME` placeholder for your application and create it on the CloudKilat platform. Now, we need to make our first deployment of both branches to the CloudKilat platform. To do this we checkout the master branch, create the application in our CloudKilat account and push and deploy both deployments. By running the following commands, this will all be done:
+Pilih nama yang unik untuk menggantikan `APP_NAME` tempat untuk aplikasi Anda dan membuatnya pada platform CloudKilat. Sekarang, kita perlu membuat penyebaran pertama kami kedua cabang ke platform CloudKilat. Untuk melakukan ini kita checkout cabang master, membuat aplikasi di akun CloudKilat kami dan mendorong dan menyebarkan kedua penyebaran. Dengan menjalankan perintah berikut, ini semua akan dilakukan:
 
-    // switch to the master branch
-    git checkout master
+    // Beralih ke cabang master
+    Master checkout git
 
-    // create the application
-    ironcliapp APP_NAME create php
+    // Membuat aplikasi
+    ironcliapp APP_NAME membuat php
 
-    // deploy the default branch
-    ironcliapp APP_NAME/default push
-    ironcliapp APP_NAME/default deploy
+    // Menyebarkan cabang default
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
 
-    // deploy the testing branch
-    ironcliapp APP_NAME/testing push
-    ironcliapp APP_NAME/testing deploy
+    // Menyebarkan cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
-###3.1 Kohana Auto-Detected
+### 3.1 Kohana Auto-Terdeteksi
 
-When you do this, you'll see output similar to the following:
+Ketika Anda melakukan ini, Anda akan melihat output yang mirip dengan berikut:
 
-    $ ironcliapp APP_NAME/default push
-    Counting objects: 9, done.
-    Delta compression using up to 2 threads.
-    Compressing objects: 100% (5/5), done.
-    Writing objects: 100% (5/5), 489 bytes, done.
-    Total 5 (delta 3), reused 0 (delta 0)
+    $ Ironcliapp APP_NAME / dorongan bawaan
+    Menghitung objek: 9, dilakukan.
+    Delta kompresi menggunakan sampai 2 benang.
+    Mengompresi objek: 100% (5/5), dilakukan.
+    Menulis objek: 100% (5/5), 489 byte, dilakukan.
+    Total 5 (delta 3), kembali 0 (delta 0)
 
-    >> Receiving push
-    remote: No submodule mapping found in .gitmodules for path 'modules/kohana-cache'
-    >> Compiling PHP
-         INFO: Kohana Framework detected
-         INFO: Required directory missing, creating 'application/cache'.
-    >> Building image
-    >> Uploading image (772K)
+    >> Mendorong Menerima
+    remote: Tidak ada pemetaan submodule ditemukan di .gitmodules untuk jalur 'modul / Kohana-Cache'
+    >> Kompilasi PHP
+         INFO: Kohana Kerangka terdeteksi
+         INFO: direktori yang diperlukan hilang, menciptakan 'aplikasi / cache'.
+    >> Bangunan gambar
+    >> Gambar Mengunggah (772K)
 
-    To ssh://APP_NAME@kilatiron.net/repository.git
-       f98a87c..a685cd6  master -> master
+    Untuk ssh: //APP_NAME@kilatiron.net/repository.git
+       Master f98a87c..a685cd6 -> Master
 
-Note the following lines:
+Perhatikan baris berikut:
 
-    INFO: Kohana Framework detected
-    INFO: Required directory missing, creating 'application/cache'.
-
-
-##4. Initialise the Required Addons
-
-Now that that's done, we need to configure two addons, config and mysqls. The config addon's required for determining the active environment and mysqls for storing our session information. To initialise these, run the following commands and make a note of the output:
-
-    // Initialise the mysqls.free addon for the default deployment
-    ironcliapp APP_NAME/default addon.add mysqls.free
-
-    // Initialise the mysqls.free addon for the testing deployment
-    ironcliapp APP_NAME/testing addon.add mysqls.free
-
-Now we need to configure the config addon and store the respective environment setting in it. So run the following commands to do this:
-
-    // Add the APPLICATION_ENV variable to production
-    ironcliapp APP_NAME/default config.add APPLICATION_ENV=production
-
-    // Add the APPLICATION_ENV variable to testing
-    ironcliapp APP_NAME/testing config.add APPLICATION_ENV=testing
-
-###4.1 Check the Add-on Configuration
-
-Now let's be sure that everything is in order by having a look at the add-on configuration output, in this case for testing. To do that, run the command below:
-
-    // Retrieve the settings
-    ironcliapp APP_NAME/testing addon mysqls.free
-
-The output of the commands will be similar to that below:
-
-    Addon                    : alias.free
-
-    Addon                    : mysqls.free
-
-     Settings
-       MYSQLS_DATABASE          : <database_name>
-       MYSQLS_PASSWORD          : <database_password>
-       MYSQLS_PORT              : 3306
-       MYSQLS_HOSTNAME          : mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
-       MYSQLS_USERNAME          : <database_username>
-
-    Addon                    : config.free
-
-     Settings
-       CONFIG_VARS              : {u'APPLICATION_ENV': u'testing'}
+    INFO: Kohana Kerangka terdeteksi
+    INFO: direktori yang diperlukan hilang, menciptakan 'aplikasi / cache'.
 
 
-Now that this is done, we're ready to make some changes to our code to make use of the new configuration.
+## 4. Menginisialisasinya Addons Diperlukan
 
-##5. Environment Configuration
+Sekarang itu selesai, kita perlu mengkonfigurasi dua addons, konfigurasi dan mysqls. Addon konfigurasi ini diperlukan untuk menentukan lingkungan aktif dan mysqls untuk menyimpan informasi sesi kami. Untuk menginisialisasi ini, jalankan perintah berikut dan membuat catatan dari output:
 
-In ``application/bootstrap.php``, search for the following line:
+    // Menginisialisasinya addon mysqls.free untuk penyebaran standar
+    ironcliapp APP_NAME / default addon.add mysqls.free
 
-    if (isset($_SERVER['KOHANA_ENV']))
+    // Menginisialisasinya addon mysqls.free untuk penyebaran pengujian
+    ironcliapp APP_NAME / pengujian addon.add mysqls.free
+
+Sekarang kita perlu mengkonfigurasi addon config dan menyimpan lingkungan masing-masing pengaturan di dalamnya. Jadi jalankan perintah berikut untuk melakukan hal ini:
+
+    // Tambahkan variabel APPLICATION_ENV produksi
+    ironcliapp APP_NAME / default config.add APPLICATION_ENV = produksi
+
+    // Tambahkan variabel APPLICATION_ENV untuk pengujian
+    ironcliapp APP_NAME / pengujian config.add APPLICATION_ENV = pengujian
+
+### 4.1 Periksa Add-on Konfigurasi
+
+Sekarang mari kita pastikan bahwa segala sesuatu adalah dalam rangka dengan memiliki melihat output konfigurasi add-on, dalam hal ini untuk pengujian. Untuk melakukan itu, jalankan perintah di bawah ini:
+
+    // Ambil pengaturan
+    ironcliapp APP_NAME / pengujian addon mysqls.free
+
+Output dari perintah akan mirip dengan yang di bawah ini:
+
+    Addon: alias.free
+
+    Addon: mysqls.free
+
+     Pengaturan
+       MYSQLS_DATABASE: <database_name>
+       MYSQLS_PASSWORD: <database_password>
+       MYSQLS_PORT: 3306
+       MYSQLS_HOSTNAME: mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
+       MYSQLS_USERNAME: <database_username>
+
+    Addon: config.free
+
+     Pengaturan
+       CONFIG_VARS: {u'APPLICATION_ENV ': u'testing'}
+
+
+Sekarang ini dilakukan, kita siap untuk membuat beberapa perubahan pada kode kita untuk menggunakan konfigurasi baru.
+
+## 5. Konfigurasi lingkungan
+
+Dalam `` aplikasi / bootstrap.php``, mencari baris berikut:
+
+    if (isset ($ _ SERVER ['KOHANA_ENV']))
     {
-        Kohana::$environment = constant('Kohana::'.strtoupper($_SERVER['KOHANA_ENV']));
+        Kohana :: $ lingkungan = konstan ('Kohana ::' strtoupper ($ _ SERVER ['KOHANA_ENV']).);
     }
 
-After you've found it, replace them with the following. I'll go through the code afterwards.
+Setelah Anda telah menemukan itu, menggantinya dengan berikut ini. Aku akan pergi melalui kode sesudahnya.
 
-    $env = Kohana::DEVELOPMENT;
+    $ Env = Kohana :: PEMBANGUNAN;
 
-    if (!empty($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localdomain') === FALSE) {
-        // Parse the json file with ADDONS credentials
-        $string = file_get_contents($_ENV['CRED_FILE'], false);
+    if (! empty ($ _ SERVER ['HTTP_HOST']) && strpos ($ _ SERVER ['HTTP_HOST'], 'localdomain') === FALSE) {
+        // Parse file json dengan addons kredensial
+        $ String = file_get_contents ($ _ ENV ['CRED_FILE'], false);
 
-        if ($string == false) {
-            die('FATAL: Could not read credentials file');
+        if ($ string == false) {
+            die ('FATAL: Tidak dapat membaca berkas kredensial');
         }
 
-        $creds = json_decode($string, true);
+        $ Creds = json_decode ($ string, true);
 
-        // Now getenv('APPLICATION_ENV') should work:
-        $environment = $creds['CONFIG']['CONFIG_VARS']['APPLICATION_ENV'];
+        // Sekarang getenv ('APPLICATION_ENV') harus bekerja:
+        $ Lingkungan = $ creds ['CONFIG'] ['CONFIG_VARS'] ['APPLICATION_ENV'];
 
-        switch($environment)
+        switch ($ lingkungan)
         {
-            case ('testing'):
-               $env = Kohana::TESTING;
+            kasus ('menguji'):
+               $ Env = Kohana :: PENGUJIAN;
             break;
 
-            case ('staging'):
-               $env = Kohana::STAGING;
+            kasus ('pementasan'):
+               $ Env = Kohana :: STAGING;
             break;
 
-            case ('production'):
+            kasus ('produksi'):
             default:
-                $env = Kohana::PRODUCTION;
+                $ Env = Kohana :: PRODUKSI;
         }
     }
 
-    Kohana::$environment = $env;
+    Kohana :: $ lingkungan = $ env;
 
-What that the code's completed for replacing the original environment configuration with one that is based on looking at the setting contained in the CloudKilat credentials file setting, *APPLICATION_ENV*, that we set earlier.
+Apa bahwa kode itu selesai untuk mengganti konfigurasi lingkungan asli dengan salah satu yang didasarkan pada melihat pengaturan yang terkandung dalam mandat CloudKilat mengajukan pengaturan, * APPLICATION_ENV *, yang kita tetapkan sebelumnya.
 
-You'll notice that the we're using the Kohana environment constants, which you can find in ``/system/classes/kohana/core.php``. This way, the code can stay consistent throughout and we're not adding on any unnecessary complexity or reinventing the wheel.
+Anda akan melihat bahwa kita menggunakan konstanta lingkungan Kohana, yang dapat Anda temukan di `` / sistem / kelas / Kohana / core.php``. Dengan cara ini, kode dapat tetap konsisten sepanjang dan kita tidak menambahkan pada setiap kompleksitas yang tidak perlu atau menciptakan kembali roda.
 
-What will happen is that if we're in a development environment, determined by "*localdomain*" being in the url, then we'll default to the development setting. Otherwise, we'll retrieve the *APPLICATION_ENV* value and attempt to match it against the Kohana environment configs. Now I'll show you how we use this.
+Apa yang akan terjadi adalah bahwa jika kita berada dalam lingkungan pengembangan, ditentukan oleh "* localdomain *" berada di url, maka kita akan default ke pengaturan pembangunan. Jika tidak, kami akan mengambil * APPLICATION_ENV * nilai dan mencoba untuk mencocokkan terhadap konfigurasi lingkungan Kohana. Sekarang saya akan menunjukkan bagaimana kita menggunakan ini.
 
-###5.1 Core Configuration Settings
+### 5.1 Inti Pengaturan Konfigurasi
 
-By default, in application/bootstrap.php, Kohana has the following configuration:
+Secara default, dalam aplikasi / bootstrap.php, Kohana memiliki konfigurasi sebagai berikut:
 
-    Kohana::modules(array(
-    	// 'auth'       => MODPATH.'auth',       // Basic authentication
-    	// 'cache'      => MODPATH.'cache',      // Caching with multiple backends
-    	// 'codebench'  => MODPATH.'codebench',  // Benchmarking tool
-    	// 'database'   => MODPATH.'database',   // Database access
-    	// 'image'      => MODPATH.'image',      // Image manipulation
-    	// 'orm'        => MODPATH.'orm',        // Object Relationship Mapping
-    	// 'unittest'   => MODPATH.'unittest',   // Unit testing
-    	// 'userguide'  => MODPATH.'userguide',  // User guide and API documentation
+    Kohana :: modul (array (
+    // 'Auth' => MODPATH.'auth ', // otentikasi dasar
+    // 'Cache' => MODPATH.'cache ', // Caching dengan beberapa backends
+    // 'Codebench' => MODPATH.'codebench ', // alat Benchmarking
+    // 'Database' => MODPATH.'database ', // akses database
+    // 'Image' => MODPATH.'image ', // manipulasi Gambar
+    // 'Orm' => MODPATH.'orm ', // Pemetaan Obyek Hubungan
+    // 'Unittest' => MODPATH.'unittest ', // Unit pengujian
+    // 'Userguide' => MODPATH.'userguide ', // Buku petunjuk dan dokumentasi API
     ));
 
-Basically, what this means is that none of the modules above are able to be used. So we're going to need to change this. So in your bootstrap.php file, change it to the following:
+Pada dasarnya, apa artinya ini adalah bahwa tidak ada modul di atas dapat digunakan. Jadi kita akan perlu mengubah ini. Jadi dalam file bootstrap.php Anda, mengubahnya sebagai berikut:
 
-    Kohana::modules(array(
-    	// 'auth'       => MODPATH.'auth',       // Basic authentication
-    	    'cache'      => MODPATH.'cache',      // Caching with multiple backends
-    	// 'codebench'  => MODPATH.'codebench',  // Benchmarking tool
-    	    'database'   => MODPATH.'database',   // Database access
-    	// 'image'      => MODPATH.'image',      // Image manipulation
-    	// 'orm'        => MODPATH.'orm',        // Object Relationship Mapping
-    	// 'unittest'   => MODPATH.'unittest',   // Unit testing
-    	// 'userguide'  => MODPATH.'userguide',  // User guide and API documentation
+    Kohana :: modul (array (
+    // 'Auth' => MODPATH.'auth ', // otentikasi dasar
+    'Cache' => MODPATH.'cache ', // Caching dengan beberapa backends
+    // 'Codebench' => MODPATH.'codebench ', // alat Benchmarking
+    'Database' => MODPATH.'database ', // akses database
+    // 'Image' => MODPATH.'image ', // manipulasi Gambar
+    // 'Orm' => MODPATH.'orm ', // Pemetaan Obyek Hubungan
+    // 'Unittest' => MODPATH.'unittest ', // Unit pengujian
+    // 'Userguide' => MODPATH.'userguide ', // Buku petunjuk dan dokumentasi API
     ));
 
-Now we'll have both the cache and database modules available. As our example application is simple, this is all we'll need to enable. Leave everything else in the file as it is and let's move on to caching.
+Sekarang kita akan memiliki kedua cache dan modul database yang tersedia. Sebagai contoh aplikasi kami sederhana, ini semua kita harus mengaktifkan. Tinggalkan segala sesuatu yang lain dalam file seperti itu dan mari kita beralih ke caching.
 
-###5.2 Configuring Caching
+### 5.2 Konfigurasi Caching
 
-Create a new file under ``application/config`` called ``cache.php``. In that file, add the following code:
+Buat file baru di bawah `` aplikasi / config`` disebut `` cache.php``. Dalam file tersebut, tambahkan kode berikut:
 
-    <?php defined('SYSPATH') or die('No direct script access.');
+    <? Php didefinisikan ('SYSPATH') atau mati ("Tidak ada akses skrip langsung. ');
 
     return array
     (
-        // Override the default configuration
-        'apc'   => array
+        // Override konfigurasi default
+        'Apc' => array
         (
-            'driver'             => 'apc',
-            'default_expire'     => 3600,
+            'Driver' => 'apc',
+            'Default_expire' => 3600,
         ),
     );
 
-What that does is to tell Kohana that the cache will be using APC as the backend, which CloudKilat provides out of the box and sets the default expiry period to be **3600 seconds**, or **60 minutes**.
+Apa yang dilakukan adalah untuk memberitahu Kohana bahwa cache akan menggunakan APC sebagai backend, yang CloudKilat memberikan keluar dari kotak dan menetapkan periode berakhirnya standar menjadi ** 3600 ** detik, atau 60 menit ** **.
 
-###5.3 Configuring Database Connections
+### 5.3 Konfigurasi Koneksi database
 
-Create a new file under ``application/config`` called ``database.php``. In that file, add the following code:
+Buat file baru di bawah `` aplikasi / config`` disebut `` database.php``. Dalam file tersebut, tambahkan kode berikut:
 
-    <?php
+    <? Php
 
-    // override the core settings if we're not in a local development environment
-    if (!empty($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localdomain') === FALSE) {
+    // Menimpa pengaturan inti jika kita tidak dalam lingkungan pembangunan daerah
+    if (! empty ($ _ SERVER ['HTTP_HOST']) && strpos ($ _ SERVER ['HTTP_HOST'], 'localdomain') === FALSE) {
 
-        // read the credentials file
-        $string = file_get_contents($_ENV['CRED_FILE'], false);
-        if ($string == false) {
-            die('FATAL: Could not read credentials file');
+        // Membaca kredensial berkas
+        $ String = file_get_contents ($ _ ENV ['CRED_FILE'], false);
+        if ($ string == false) {
+            die ('FATAL: Tidak dapat membaca berkas kredensial');
         }
 
-        // the file contains a JSON string, decode it and return an associative array
-        $creds = json_decode($string, true);
+        // File berisi string JSON, decode dan mengembalikan array asosiatif
+        $ Creds = json_decode ($ string, true);
 
         return array
         (
-            'default' => array
+            'Default' => array
             (
-                'type'       => 'mysql',
-                'connection' => array(
-                    'hostname'   => $creds["MYSQLS"]["MYSQLS_HOSTNAME"],
-                    'username'   => $creds["MYSQLS"]["MYSQLS_USERNAME"],
-                    'password'   => $creds["MYSQLS"]["MYSQLS_PASSWORD"],
-                    'persistent' => FALSE,
-                    'database'   => $creds["MYSQLS"]["MYSQLS_DATABASE"],
+                'Jenis' => 'mysql',
+                'Koneksi' => array (
+                    'Hostname' => $ creds ["MYSQLS"] ["MYSQLS_HOSTNAME"],
+                    'Username' => $ creds ["MYSQLS"] ["MYSQLS_USERNAME"],
+                    'Password' => $ creds ["MYSQLS"] ["MYSQLS_PASSWORD"],
+                    'Gigih' => SALAH,
+                    'Database' => $ creds ["MYSQLS"] ["MYSQLS_DATABASE"],
                 ),
-                'table_prefix' => '',
-                'charset'      => 'utf8',
-                'profiling'    => TRUE,
+                'Table_prefix' => '',
+                'Charset' => 'utf8',
+                'Profiling' => TRUE,
             ),
         );
-    } else {
+    } Else {
         return array
         (
-            'default' => array
+            'Default' => array
             (
-                'type'       => 'mysql',
-                'connection' => array(
-                    'hostname'   => 'localhost',
-                    'username'   => 'cc_dev',
-                    'password'   => 'cc_dev',
-                    'persistent' => FALSE,
-                    'database'   => 'CloudKilat_kohana',
+                'Jenis' => 'mysql',
+                'Koneksi' => array (
+                    'Hostname' => 'localhost',
+                    'Username' => 'cc_dev',
+                    'Password' => 'cc_dev',
+                    'Gigih' => SALAH,
+                    'Database' => 'CloudKilat_kohana',
                 ),
-                'table_prefix' => '',
-                'charset'      => 'utf8',
-                'profiling'    => TRUE,
+                'Table_prefix' => '',
+                'Charset' => 'utf8',
+                'Profiling' => TRUE,
             ),
         );
     }
 
-When we configured the add ons earlier (*mysqls* and *config*) the settings were automatically persisted to the running server environments. So we're now able to retrieve these settings, when we're not in a local development environment, and configure our database connection to use them. It's really handy as we don't need to do too much to make use of the options.
+Ketika kita mengkonfigurasi add ons sebelumnya (* mysqls * dan * config *) pengaturan secara otomatis bertahan dengan lingkungan server berjalan. Jadi kita sekarang dapat mengambil pengaturan ini, ketika kita tidak dalam lingkungan pembangunan daerah, dan mengkonfigurasi koneksi database kami untuk menggunakannya. Ini benar-benar berguna karena kita tidak perlu melakukan terlalu banyak untuk memanfaatkan opsi.
 
-###5.4 Configuring Session
+### 5.4 Konfigurasi Session
 
-Create a new file under ``application/config`` called ``session.php``. In that file, add the following code:
+Buat file baru di bawah `` aplikasi / config`` disebut `` session.php``. Dalam file tersebut, tambahkan kode berikut:
 
-    <?php
+    <? Php
 
-        // configure the system to store sessions in the database
-        return array(
-            'database' => array(
-                'name' => 'test_cookie',
-                'encrypted' => TRUE,
-                'lifetime' => 43200,
-                'group' => 'default',
-                'table' => 'sessions',
-                'columns' => array(
-                    'session_id'  => 'session_id',
-                    'last_active' => 'last_active',
-                    'contents'    => 'contents'
+        // Mengkonfigurasi sistem untuk menyimpan sesi dalam database
+        kembali array (
+            'Database' => array (
+                'Nama' => 'test_cookie',
+                'Dienkripsi' => TRUE,
+                'Seumur hidup' => 43200,
+                'Kelompok' => 'default',
+                'Table' => 'sesi',
+                'Kolom' => array (
+                    'Session_id' => 'session_id',
+                    'Last_active' => 'last_active',
+                    'Isi' => 'isi'
                 ),
-                'gc' => 500,
+                'Gc' => 500,
             ),
         );
 
-What this does is to say that the session information will be stored in the database. It will be stored in a table called sessions and have a lifetime of **43200 seconds**. You can read about the other settings in [the session documentation online](http://kohanaframework.org/3.0/guide/kohana/sessions).
+Apa yang dilakukan adalah untuk mengatakan bahwa informasi sesi akan disimpan dalam database. Ini akan disimpan dalam sesi tabel yang disebut dan memiliki seumur hidup ** 43.200 detik **. Anda dapat membaca tentang pengaturan lain di [dokumentasi sesi secara online] (http://kohanaframework.org/3.0/guide/kohana/sessions).
 
-So your ``application/config`` directory should look like that below:
+Jadi `` direktori aplikasi / config`` Anda akan terlihat seperti itu di bawah:
 
-![Successful Deployment](/static/apps/images/kohana application-config dir.png)
+! [Deployment Sukses] (/ statis / apps / gambar / Kohana aplikasi-config dir.png)
 
-##6. Database Schema
+## 6. Database Schema
 
-Ok, after all this is done, we need to load the database schema in to each of our environments that we setup earlier in the add-ons. The schema that we're going to load is below:
+Ok, setelah semua ini dilakukan, kita perlu memuat skema database di setiap lingkungan kita yang kita setup sebelumnya di add-ons. Skema yang kita akan memuat bawah:
 
     DROP TABLE IF EXISTS `sessions`;
-    /*!40101 SET @saved_cs_client     = @@character_set_client */;
-    /*!40101 SET character_set_client = utf8 */;
+    ! / * 40101 SETsaved_cs_client =@@character_set_client * /;
+    ! / * 40101 SET character_set_client = utf8 * /;
     CREATE TABLE `sessions` (
-      `session_id` varchar(24) NOT NULL,
-      `last_active` int(10) unsigned NOT NULL,
-      `contents` text NOT NULL,
+      `Session_id` varchar (24) NOT NULL,
+      `Last_active` int (10) unsigned NOT NULL,
+      `Teks contents` NOT NULL,
       PRIMARY KEY (`session_id`),
-      KEY `last_active` (`last_active`)
-    ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-    /*!40101 SET character_set_client = @saved_cs_client */;
+      KEY `last_active` (` last_active`)
+    ) ENGINE = MyISAM DEFAULT CHARSET = latin1;
+    ! / * 40101 SET character_set_client =saved_cs_client * /;
 
-    --
-    -- Dumping data for table `sessions`
-    --
+    -
+    - Dumping data untuk tabel `sessions`
+    -
 
-    LOCK TABLES `sessions` WRITE;
-    /*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-    /*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
+    LOCK TABLES `MENULIS sessions`;
+    ! / * 40000 ALTER TABLE `sessions` DISABLE KEYS * /;
+    ! / * 40000 ALTER TABLE `sessions` ENABLE KEYS * /;
     UNLOCK TABLES;
 
-    --
-    -- Table structure for table `tblUsers`
-    --
+    -
+    - Struktur tabel untuk tabel `tblUsers`
+    -
 
     DROP TABLE IF EXISTS `tblUsers`;
-    /*!40101 SET @saved_cs_client     = @@character_set_client */;
-    /*!40101 SET character_set_client = utf8 */;
+    ! / * 40101 SETsaved_cs_client =@@character_set_client * /;
+    ! / * 40101 SET character_set_client = utf8 * /;
     CREATE TABLE `tblUsers` (
-      `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-      `firstName` varchar(100) NOT NULL,
-      `lastName` varchar(100) NOT NULL,
-      `emailAddress` varchar(200) NOT NULL,
+      `Id` int (11) unsigned NOT NULL AUTO_INCREMENT,
+      `FirstName` varchar (100) NOT NULL,
+      `LastName` varchar (100) NOT NULL,
+      `EmailAddress` varchar (200) NOT NULL,
       PRIMARY KEY (`id`)
-    ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-    /*!40101 SET character_set_client = @saved_cs_client */;
+    ) ENGINE = MyISAM AUTO_INCREMENT = 5 DEFAULT CHARSET = latin1;
+    ! / * 40101 SET character_set_client =saved_cs_client * /;
 
-    --
-    -- Dumping data for table `tblUsers`
-    --
+    -
+    - Dumping data untuk tabel `tblUsers`
+    -
 
-    LOCK TABLES `tblUsers` WRITE;
-    /*!40000 ALTER TABLE `tblUsers` DISABLE KEYS */;
-    INSERT INTO `tblUsers` VALUES (1,'matthew','setter','ms@example.com'),(2,'don','bradman','db@example.com'),(3,'alan','border','ab@example.com');
-    /*!40000 ALTER TABLE `tblUsers` ENABLE KEYS */;
+    LOCK TABLES `tblUsers` MENULIS;
+    ! / * 40000 ALTER TABLE `tblUsers` DISABLE KEYS * /;
+    INSERT INTO `NILAI tblUsers` (1,'matthew','setter','ms@example.com'),(2,'don','bradman','db@example.com'),(3,'alan','border','ab@example.com');
+    ! / * 40000 ALTER TABLE `tblUsers` ENABLE KEYS * /;
     UNLOCK TABLES;
 
-What we have is a simple MySQL schema that creates two tables, one to store **session information** and one to store **users**, which we'll be using in our simple example application controller and view next.
+Apa yang kita miliki adalah skema MySQL sederhana yang menciptakan dua meja, satu untuk menyimpan informasi sesi ** ** dan satu untuk menyimpan pengguna ** **, yang kita akan menggunakan di sederhana contoh aplikasi pengendali dan tampilan berikutnya.
 
-We also load in a few users in to the users table as we're not going to create and forms to manage the information there, but want to have something to look at to confirm it's working. So store the schema in a file called ``kohana_CloudKilat_init.sql``.
+Kami juga memuat dalam beberapa pengguna ke meja pengguna seperti yang kita tidak akan membuat dan bentuk untuk mengelola informasi di sana, tetapi ingin memiliki sesuatu untuk melihat untuk mengkonfirmasi itu bekerja. Jadi menyimpan skema dalam file bernama `` kohana_CloudKilat_init.sql``.
 
-Now, in the shell, we're going to load the schema in to the remote mysql instance that we created earlier with the mysqls add-on. To do so, run the following command, changing the respective options with your configuration settings:
+Sekarang, di shell, kita akan memuat skema ke dalam mysql contoh remote yang kita buat sebelumnya dengan mysqls add-on. Untuk melakukannya, jalankan perintah berikut, mengubah pilihan masing-masing dengan pengaturan konfigurasi Anda:
 
-    mysql -u <database_username> -p \
-        -h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
-        --ssl-ca=mysql-ssl-ca-cert.pem <database_name> < kohana_CloudKilat_init.sql
+    mysql -u <database_username> p \
+        h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
+        --ssl-ca = mysql-ssl-ca-cert.pem <database_name> <kohana_CloudKilat_init.sql
 
-In the command above, you can see a reference to a **.pem** file. This can be downloaded from: [http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem](http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem). All being well, the command will finish silently, loading the data. You can check that all's gone well with following commands:
+Pada perintah di atas, Anda dapat melihat referensi ke pem ** berkas **.. Ini dapat didownload dari: [http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem](http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem). Semua yang baik, perintah akan selesai diam-diam, memuat data. Anda dapat memeriksa bahwa semua sudah pergi baik dengan perintah berikut:
 
-    mysql -u <database_username> -p \
-        -h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
-        --ssl-ca=mysql-ssl-ca-cert.pem <database_name>
+    mysql -u <database_username> p \
+        h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
+        --ssl-ca = mysql-ssl-ca-cert.pem <database_name>
 
-    show tables;
+    menampilkan tabel;
 
-This should show you output similar to below:
+Ini harus menunjukkan output yang Anda mirip dengan di bawah:
 
-    Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+    Ketik 'bantuan;' atau '\ h' untuk membantu. Ketik '\ c' untuk menghapus pernyataan masukan saat ini.
 
     mysql> show tables;
-    +-----------------------+
+    + ----------------------- +
     | Tables_in_dep5jrx8a9a |
-    +-----------------------+
-    | sessions              |
-    | tblUsers              |
-    +-----------------------+
+    + ----------------------- +
+    | Sesi |
+    | TblUsers |
+    + ----------------------- +
     2 rows in set (0.06 sec)
 
 
-##Commit and Push the Code
+## Komit dan Push Kode
 
-After all these changes are done, we need to then commit them on the master branch and merge the changes to the testing branch, we created earlier. To keep it simple, you can run the commands below:
+Setelah semua perubahan ini dilakukan, kita perlu kemudian melakukan mereka di cabang master dan menggabungkan perubahan ke cabang percobaan, kita buat sebelumnya. Untuk tetap sederhana, Anda dapat menjalankan perintah di bawah ini:
 
-    git add application/config/database.php
-    git add application/config/cache.php
-    git add application/config/session.php
-    git add application/bootstrap.php
-    git commit -m "Updated to enable cache, database & session and auto-determine the environment"
-    git checkout testing
-    git merge master
+    git add aplikasi / config / database.php
+    git add aplikasi / config / cache.php
+    git add aplikasi / config / session.php
+    git add aplikasi / bootstrap.php
+    git komit -m "Diperbarui mengaktifkan cache, basis data sesi dan auto-menentukan lingkungan"
+    pengujian checkout git
+    Master menggabungkan git
 
-    // push the code to the default (production) branch
-    ironcliapp APP_NAME/default push
-    ironcliapp APP_NAME/default deploy
+    // Mendorong kode untuk default (produksi) cabang
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
 
-    // push the code to the testing branch
-    ironcliapp APP_NAME/testing push
-    ironcliapp APP_NAME/testing deploy
+    // Mendorong kode untuk cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
-##A Simple Application
+## A Aplikasi Sederhana
 
-Now we're going to build a very simple application to test our new configuration and deployment. It will have only one controller and view. In the controller we're going to:
+Sekarang kita akan membangun sebuah aplikasi yang sangat sederhana untuk menguji konfigurasi baru dan penyebaran. Ini akan hanya memiliki satu kontroler dan melihat. Dalam controller kita akan:
 
- * Get a handle on our database and perform some basic SQL
- * Create, store and manipulate a simple object in the cache
+ * Dapatkan pegangan pada database kami dan melakukan beberapa SQL dasar
+ * Membuat, menyimpan dan memanipulasi objek sederhana dalam cache
 
-Under ``application/classes/controller`` create a new controller file called ``hello.php``, which contains the following code:
+Di bawah `` aplikasi / kelas / controller`` membuat file kontroler baru yang disebut `` hello.php``, yang berisi kode berikut:
 
-    <?php defined('SYSPATH') OR die('No Direct Script Access');
+    <? Php didefinisikan ('SYSPATH') ATAU mati ('Tidak Langsung Script Access');
 
-    Class Controller_Hello extends Controller_Template
+    Kelas Controller_Hello meluas Controller_Template
     {
-        public $template = 'site';
+        $ publik Template = 'situs';
 
-        public function action_index()
+        fungsi publik action_index ()
         {
-            $this->template->message = 'hello, world!';
+            $ This-> template-> Pesan = 'hello, world!';
 
-            // Change the default cache driver to memcache
-            Cache::$default = 'apc';
+            // Mengubah driver Cache default memcache
+            Cache :: $ default = 'apc';
 
-            // Create a new instance of cache using the default group
-            $cache = Cache::instance();
+            // Buat contoh baru cache menggunakan grup standar
+            $ Cache = Cache :: contoh ();
 
-            // Create a cachable object
-            $object = new stdClass;
+            // Buat objek cachable
+            $ Object = stdClass baru;
 
-            // Set a property
-            $object->foo = 'bar';
+            // Set properti
+            $ Object> foo = 'bar';
 
-            // Cache the object using default group (quick interface) with default time (3600 seconds)
-            Cache::instance()->set('foo', $object);
+            // Cache objek menggunakan grup standar (antarmuka cepat) dengan waktu default (3600 detik)
+            Cache :: contoh () -> set ('foo', $ object);
 
-            print "Stored item in cache";
+            mencetak "item disimpan dalam cache";
 
-            // If the cache key is available (with default value set to FALSE)
-            if ($object = Cache::instance()->get('foo', FALSE)) {
-                 print "<br />Retrieved item from cache";
-            } else {
-                 print "<br />Didn't retrieve item from cache";
+            // Jika tombol cache yang tersedia (dengan nilai default diatur ke FALSE)
+            if ($ object = Cache :: contoh () -> get ('foo', FALSE)) {
+                 print "<br /> Diperoleh item dari cache";
+            } Else {
+                 print "<br /> Tidak mengambil item dari cache";
             }
 
-            // If the cache entry for 'foo' is deleted
-            if (Cache::instance()->delete('foo')) {
-                print '<br />Deleted the module';
+            // Jika entri cache untuk 'foo' dihapus
+            if (Cache :: misalnya () -> menghapus ('foo')) {
+                print '<br /> Dihapus modul';
             }
 
-            $results = DB::select('id', 'emailAddress')->from('tblUsers')->execute();
-            $this->template->users = $results->as_array();
+            $ Hasil = DB :: pilih ('id', 'EmailAddress') -> dari ('tblUsers') -> execute ();
+            $ This-> template-> pengguna = $ hasil-> as_array ();
         }
     }
 
-What this does is to tell the controller that we're going to use a view template, called ``site.php`` that we'll create next. We then get a handle on the database configuration, based on the environment we've automatically determined and use the configured cache.
+Apa yang dilakukan adalah untuk memberitahu controller yang kita akan menggunakan tampilan template, yang disebut `` site.php`` yang akan kita buat berikutnya. Kami kemudian mendapatkan pegangan pada konfigurasi database, berdasarkan lingkungan kita secara otomatis ditentukan dan menggunakan cache dikonfigurasi.
 
-After that, we create an object that we use to manipulate the cache and print out output showing how it worked, or not. After this, we select ``id`` and ``emailAddress`` from the table: ``tblUsers`` and return the information as a simple array and assign the value to a template variable called users.
+Setelah itu, kita membuat sebuah objek yang kita gunakan untuk memanipulasi cache dan mencetak output yang menunjukkan bagaimana ini bekerja, atau tidak. Setelah ini, kita pilih `` `` id`` dan emailAddress`` dari tabel: `` tblUsers`` dan kembali informasi sebagai array sederhana dan menetapkan nilai ke variabel template yang disebut pengguna.
 
-##The View Template
+## The View Template
 
-Now create a file called ``site.php`` under ``application/views/``. In it, add the following code:
+Sekarang membuat file bernama `` `` site.php`` bawah aplikasi / views / ``. Di dalamnya, tambahkan kode berikut:
 
-    <html>
-        <head>
-            <title>We've got a message for you!</title>
-            <style type="text/css">
+    <Html>
+        <Head>
+            <Title> Kami punya pesan untuk Anda! </ Title>
+            <Style type = "text / css">
                 body {font-family: Georgia;}
                 h1 {font-style: italic;}
 
-            </style>
-        </head>
-        <body>
-            <h1>Welcome to Kohana on CloudKilat</h1>
-            <p><?php echo $message; ?></p>
-            <table cellspacing="2" cellpadding="4" border="2" width="100%">
-                <tr>
-                    <th>User ID</th>
-                    <th>User Email</th>
-                </tr>
-            <?php foreach($users as $user) : ?>
-                <tr>
-                    <td><?php print $user['id']; ?></td>
-                    <td><?php print $user['emailAddress']; ?></td>
-                </tr>
-            <?php endforeach; ?>
-            </table>
-        </body>
-    </html>
+            </ Style>
+        </ Head>
+        <Body>
+            <H1> Selamat Datang di Kohana di CloudKilat </ h1>
+            ? <P> <? Php echo $ pesan; ?> </ P>
+            <Table cellspacing = "2" cellpadding = "4" border = "2" width = "100%">
+                <Tr>
+                    <Th> Pengguna ID </ th>
+                    <Th> User Email </ th>
+                </ Tr>
+            <? Php foreach ($ pengguna sebagai $ user):?>
+                <Tr>
+                    ? <Td> <php print $ user ['id']; ?> </ Td>
+                    <Td> <php print $ user ['EmailAddress']; ?> </ Td>
+                </ Tr>
+            ? <Endforeach php; ?>
+            </ Table>
+        </ Body>
+    </ Html>
 
-In this view file, we output some simple HTML and then iterate the value of the users that we retrieved in the controller before. Point your browser to `APP_NAME.kilatiron.net/hello.php` to see the result.
+Dalam pandangan file ini, kami output beberapa HTML sederhana dan kemudian iterate nilai pengguna yang kita diambil di controller sebelumnya. Arahkan browser Anda ke `APP_NAME.kilatiron.net / hello.php` untuk melihat hasilnya.
 
-##7. Review the Deployment
+## 7. Tinjau Deployment yang
 
-After this, add the files to git and commit them and push/deploy the changes out to both environments. From there you can review the testing and production deployments to ensure that they're working as well.
+Setelah ini, menambahkan file ke git dan komit mereka dan mendorong / menyebarkan perubahan untuk kedua lingkungan. Dari sana Anda dapat meninjau pengujian dan produksi penyebaran untuk memastikan bahwa mereka bekerja juga.
 
-With that, you should be up and running, ready to create your next, amazing, PHP web application, using Kohana and CloudKilat. If you have any issues, feel free to email [support@cloudkilat.com](mailto:support@cloudkilat.com).
+Dengan itu, Anda harus bangun dan berjalan, siap untuk membuat berikutnya, menakjubkan, aplikasi PHP web Anda, menggunakan Kohana dan CloudKilat. Jika Anda memiliki masalah apapun, jangan ragu untuk email [support@cloudkilat.com] (mailto: support@cloudkilat.com).

@@ -1,75 +1,74 @@
-# Custom Config Add-on
+# Kustom Config Add-on
 
-The Custom Config Add-on allows you to add custom credentials to the standard
-creds.json file provided for each of your deployments. This makes it possible
-for you to keep your code in separate branches, each with their own configuration settings.
+Custom Pengaturan Add-on Memungkinkan Anda untuk menambahkan mandat kustom untuk standar
+File creds.json Disediakan Untuk Setiap penyebaran Anda. Ini yang Membuat Hal ini dapat
+bagi Anda untuk menjaga kode Anda di terpisah isinya cabang, masing-masing dengan konfigurasi pengaturan Sendiri.
 
-## Adding Configuration Settings
+## Menambahkan Pengaturan Konfigurasi
 
-To add configuration settings, simply invoke the config command with the add
-option, and append the desired `key` / `value` pairs.
-~~~bash
-$ ironcliapp APP_NAME/DEP_NAME config.add KEY=VALUE
+Untuk menambahkan pengaturan konfigurasi, hanya memanggil perintah config dengan add
+pilihan, dan menambahkan key` Diinginkan `/` rekan value`.
+~~~ Bash
+$ APP_NAME ironcliapp / DEP_NAME CONFIG.ADD KEY = NILAI
 ~~~
 
-This will automatically add the Config Add-on to your deployment.
+Ini secara otomatis akan menambahkan Config add-on untuk penyebaran Anda.
 
-Replace APP_NAME, DEP_NAME, KEY and VALUE with the desired values and they will
-be added to your deployment's cred.json file.
+Ganti APP_NAME, DEP_NAME, KUNCI dan NILAI dengan nilai-nilai yang diinginkan dan Mereka Will
+ditambahkan ke penyebaran Anda cred.json antrian.
 
-To set multiple settings at once, simply append more than one `key` / `value` pair.
-~~~bash
-$ ironcliapp APP_NAME/DEP_NAME config.add KEY1=VALUE1 KEY2=VALUE2 [...]
+Untuk mengatur beberapa pengaturan sekaligus, hanya menambahkan lebih dari satu key` `/` pasangan value`.
+~~~ Bash
+$ APP_NAME ironcliapp / DEP_NAME CONFIG.ADD VALUE1 key2 key1 = = VALUE2 [...]
 ~~~
 
-Config parameters can be set using the format shown in first column of the following table. They are then stored in JSON format, as shown in the second column. Multiline arguments can be set using the `\n` escape character.
+Parameter setup dapat diatur menggunakan layar ditampilkan di kolom pertama Dari tabel berikut. Mereka disimpan dalam format JSON Kemudian, seperti yang ditunjukkan pada kolom kedua. Argumen multiline dapat diatur menggunakan `\ n` melarikan diri karakter.
 
-CLI parameter|JSON representation
----|---
-key=value|{"key": "value"}
-key="multiline\nvalue"|{"key": "multiline\\\\nvalue"}
-key=path_to_file.txt|{"key": "content\nof\nfile\n"}
-key|{"key": true}
+Parameter CLI | JSON representasi
+--- | ---
+key = value | {"key": "value"}
+key = "multiline \ nvalue" | {"key" "multiline \\\\ nvalue"}
+key = path_to_file.txt | {"kunci", "isi \ nof \ nfile \ n"}
+kunci | {"key": true}
 
-Note: It is recommended to use double quotes `"` for setting multispace or
-multiline values to make sure they are stored properly.
+Catatan: Disarankan untuk menggunakan tanda kutip ganda `" `untuk pengaturan multispace emas
+nilai multiline untuk membuat asam Mereka Apakah disimpan dengan benar.
 
-## Listing Configuration Settings
+## Pengaturan Daftar Konfigurasi
 
-You can list the existing set of configuration settings by invoking the config
-command:
-~~~bash
-$ ironcliapp APP_NAME/DEP_NAME config
-KEY1=VALUE1
-KEY2=VALUE2
+Anda bisa daftar pengaturan konfigurasi dari set yang ada dengan Meminjam konfigurasi
+perintah:
+~~~ Bash
+Ironcliapp $ APP_NAME / config DEP_NAME
+Key1 = VALUE1
+Key2 = VALUE2
 ~~~
 
-To show the value of a specific key, simply append the desired key name:
-~~~bash
-$ ironcliapp APP_NAME/DEP_NAME config KEY
-VALUE
+Untuk menunjukkan nilai kunci tertentu, hanya menambahkan nama kunci yang diinginkan:
+~~~ Bash
+Ironcliapp $ APP_NAME / config DEP_NAME KEY
+NILAI
 ~~~
 
-## Updating Configuration Settings
+## Memperbarui Pengaturan Konfigurasi
 
-To add or remove settings to your custom config, simply use the `add` or
-`remove` option of the config command and append the parameters you need.
-~~~bash
-$ ironcliapp APP_NAME/DEP_NAME config.add [-f|--force] NEW_PARAM=NEW_VALUE [...]
-$ ironcliapp APP_NAME/DEP_NAME config.remove PARAM1 PARAM2 [...]
+Untuk menambah atau menghapus pengaturan kustom untuk konfigurasi Anda, cukup gunakan `add` emas
+Opsi `Remove` dari perintah config dan menambahkan parameter yang Anda butuhkan.
+~~~ Bash
+$ APP_NAME ironcliapp / DEP_NAME CONFIG.ADD [-f | force] NEW_PARAM NEW_VALUE = [...]
+$ APP_NAME ironcliapp / DEP_NAME config.remove param1 param2 [...]
 ~~~
 
-Updating the existing settings is also possible using the `add` command. This
-will require your confirmation unless you use the `-f` or `--force` flag after
-the add command.
+Memperbarui pengaturan yang ada est mungkin menggunakan perintah `add`. Ini
+akan memerlukan konfirmasi Anda KECUALI Anda menggunakan `` -f` emas Setelah bendera --force`
+perintah add.
 
-## Removing the Config Add-on
+## Melepaskan Config Add-on
 
-Deleting all the existing configuration settings from a deployment can be done by
-removing the Add-on.
-~~~bash
-$ ironcliapp APP_NAME/DEP_NAME addon.remove config.free
+Menghapus semua pengaturan konfigurasi yang ada dari penyebaran bisa dilakukan oleh
+Menghapus add-on.
+~~~ Bash
+$ APP_NAME ironcliapp / DEP_NAME addon.remove config.free
 ~~~
 
-This will remove all the custom configuration settings.
-
+Ini akan menghapus semua konfigurasi pengaturan kustom.

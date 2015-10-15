@@ -1,155 +1,155 @@
-#Deploying a Spring Application
+#Deploying Aplikasi Musim Semi
 
-In this tutorial we're going to show you how to deploy a Spring/MVC/Hibernate application on [CloudKilat]. The example app is a ready to deploy project based on the [Spring Roo petclinic] example.
+Dalam tutorial ini kita akan menunjukkan kepada Anda bagaimana untuk menggunakan Spring aplikasi / MVC / Hibernate pada [CloudKilat]. Contoh aplikasi adalah siap untuk menyebarkan proyek berdasarkan [musim semi Roo petclinic] contoh.
 
-## The Spring Application Explained
+## Aplikasi musim semi Dijelaskan
 
-### Get the App
+### Dapatkan App
 
 
-First, clone the Spring application from our repository:
+Pertama, mengkloning aplikasi semi dari repositori kami:
 
-~~~bash
-$ git clone https://github.com/cloudControl/java-spring-hibernate-example-app
-$ cd java-spring-hibernate-example-app
+~~~ Pesta
+$ Git clone https://github.com/cloudControl/java-spring-hibernate-example-app
+$ Cd java-semi-hibernasi-contoh-aplikasi
 ~~~
 
 
-### Production Server
+### Server Produksi
 
-The [Jetty Runner] provides a fast and easy way to run your app in an application server. We've added a dependency to the build plugins section in the `pom.xml`:
+The [Jetty Runner] menyediakan cara yang mudah dan cepat untuk menjalankan aplikasi Anda di server aplikasi. Kami telah menambahkan ketergantungan ke bagian membangun plugin di `pom.xml`:
 
-~~~xml
+~~~ Xml
 ...
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>2.3</version>
-            <executions>
-                <execution>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>copy</goal>
-                    </goals>
-                    <configuration>
-                        <artifactItems>
-                            <artifactItem>
-                                <groupId>org.mortbay.jetty</groupId>
-                                <artifactId>jetty-runner</artifactId>
-                                <version>7.4.5.v20110725</version>
-                                <destFileName>jetty-runner.jar</destFileName>
-                            </artifactItem>
-                        </artifactItems>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-</build>
+        <Plugin>
+            <GroupId> org.apache.maven.plugins </ groupId>
+            <ArtifactId> maven-ketergantungan-plugin </ artifactId>
+            <Versi> 2.3 </ version>
+            <Eksekusi>
+                <Eksekusi>
+                    <Fase> paket </ fase>
+                    <Tujuan>
+                        <Tujuan> copy </ tujuan>
+                    </ Tujuan>
+                    <Configuration>
+                        <ArtifactItems>
+                            <ArtifactItem>
+                                <GroupId> org.mortbay.jetty </ groupId>
+                                <ArtifactId> jetty-pelari </ artifactId>
+                                <Version> 7.4.5.v20110725 </ version>
+                                <DestFileName> jetty-runner.jar </ destFileName>
+                            </ ArtifactItem>
+                        </ ArtifactItems>
+                    </ Configuration>
+                </ Eksekusi>
+            </ Eksekusi>
+        </ Plugin>
+    </ Plugin>
+</ Membangun>
 ~~~
 
 
 
-### Production Database
+### Database Produksi
 
-In this tutorial we use the [Shared MySQL Add-on]. We have changed the `src/main/resources/META-INF/spring/applicationContext.xml` to read the [Database credentials] provided by MySQLs Add-on:
+Dalam tutorial ini kita menggunakan [Bersama MySQL Add-on]. Kami telah mengubah `src / main / sumber / META-INF / semi / applicationContext.xml` membaca [kredensial database] disediakan oleh MySQLs Add-on:
 
-~~~xml
-<property name="url" value="jdbc:mysql://${MYSQLS_HOSTNAME}:${MYSQLS_PORT}/${MYSQLS_DATABASE}"/>
-<property name="username" value="${MYSQLS_USERNAME}"/>
-<property name="password" value="${MYSQLS_PASSWORD}"/>
+~~~ Xml
+<Property name = "url" value = "jdbc: mysql: // $ {} MYSQLS_HOSTNAME: $ {} MYSQLS_PORT / $ {} MYSQLS_DATABASE" />
+<Properti name = "username" value = "$ {} MYSQLS_USERNAME" />
+<Properti name = "password" value = "$ {} MYSQLS_PASSWORD" />
 ~~~
 
-### Adjust Logger Configuration
+### Sesuaikan Logger Konfigurasi
 
-Logging to a file is not recommended since the container's [file system] is not persistent.
-The default logger configuration - `src/main/resources/log4j.properties` is modified to log to `stdout/stderr`.
-Then CloudKilat can pick up all the messages and provide them to you via the [log command]. This is how the file looks now:
-~~~xml
-og4j.rootLogger=DEBUG, stdout
-log4j.appender.stdout=org.apache.log4j.ConsoleAppender
-log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
-log4j.appender.stdout.layout.ConversionPattern=%p [%t] (%c) - %m%n%
+Logging ke file tidak dianjurkan karena [file system] wadah ini tidak terus-menerus.
+Konfigurasi default logger - `src / main / sumber / log4j.properties` dimodifikasi untuk login ke` stdout / stderr`.
+Kemudian CloudKilat dapat mengambil semua pesan dan memberikan mereka kepada Anda melalui [log perintah]. Ini adalah bagaimana file terlihat sekarang:
+~~~ Xml
+og4j.rootLogger = DEBUG, stdout
+log4j.appender.stdout = org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout = org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern =% p [% t] (% c) - m%% n%
 ~~~
 
-### Process Type Definition
+### Proses Type Definition
 
-CloudKilat uses the `Procfile` to start the application. The `Procfile` in the project root therefore specifies the command which executes the Jetty Runner:
+CloudKilat menggunakan `Procfile` untuk memulai aplikasi. The `Procfile` di root proyek karena menentukan perintah yang mengeksekusi Jetty Runner:
 
 ~~~
-web: java $JAVA_OPTS -jar target/dependency/jetty-runner.jar --port $PORT target/*.war
+perang java $ JAVA_OPTS jar sasaran / ketergantungan / jetty-runner.jar --port sasaran $ PORT / *: web.
 ~~~
 
 
-## Pushing and Deploying your App
+## Mendorong dan Menyebarkan App Anda
 
-Choose a unique name (from now on called APP_NAME) for your application and create it on the CloudKilat platform:
+Pilih nama yang unik (dari sekarang disebut APP_NAME) untuk aplikasi Anda dan membuatnya pada platform CloudKilat:
 
-~~~bash
-$ ironcliapp APP_NAME create java
+~~~ Pesta
+$ Ironcliapp APP_NAME buat java
 ~~~
 
-Push your code to the application's repository:
+Mendorong kode Anda ke repositori aplikasi:
 
-~~~bash
-$ ironcliapp APP_NAME/default push
-Counting objects: 223, done.
-Delta compression using up to 4 threads.
-Compressing objects: 100% (212/212), done.
-Writing objects: 100% (223/223), 99.59 KiB, done.
-Total 223 (delta 107), reused 0 (delta 0)
+~~~ Pesta
+$ Ironcliapp APP_NAME / dorongan bawaan
+Menghitung objek: 223, dilakukan.
+Delta kompresi menggunakan sampai 4 benang.
+Mengompresi objek: 100% (212/212), dilakukan.
+Menulis objek: 100% (223/223), 99,59 KiB, dilakukan.
+Total 223 (delta 107), kembali 0 (delta 0)
 
------> Receiving push
------> Installing OpenJDK 1.7(openjdk7.b32.tar.gz)... done
------> Installing Maven (maven_3_1_with_cache_1.tar.gz)... done
------> Installing settings.xml... done
------> executing /srv/tmp/buildpack-cache/.maven/bin/mvn -B -Duser.home=/srv/tmp/builddir -Dmaven.repo.local=/srv/tmp/buildpack-cache/.m2/repository -s /srv/tmp/buildpack-cache/.m2/settings.xml -DskipTests=true clean install
-       [INFO] Scanning for projects...
+-----> Mendorong Menerima
+-----> Instalasi OpenJDK 1,7 (openjdk7.b32.tar.gz) ... dilakukan
+-----> Instalasi Maven (maven_3_1_with_cache_1.tar.gz) ... dilakukan
+-----> Instalasi settings.xml ... dilakukan
+-----> Mengeksekusi /srv/tmp/buildpack-cache/.maven/bin/mvn -B -Duser.home = / srv / tmp / builddir -Dmaven.repo.local = / srv / tmp / buildpack-Cache /.m2/repository -s /srv/tmp/buildpack-cache/.m2/settings.xml -DskipTests = true instalasi yang bersih
+       [INFO] Scanning untuk proyek-proyek ...
        [INFO]
-       [INFO] ---------------------------------------------------------------
-       [INFO] Building petclinic 0.1.0-SNAPSHOT
-       [INFO] ---------------------------------------------------------------
+       [INFO] ----------------------------------------------- ----------------
+       [INFO] Bangunan petclinic 0.1.0-SNAPSHOT
+       [INFO] ----------------------------------------------- ----------------
        ...
-       [INFO] Packaging webapp
-       [INFO] Assembling webapp [petclinic] in [/srv/tmp/builddir/target/petclinic-0.1.0.BUILD-SNAPSHOT]
-       [INFO] Processing war project
-       [INFO] Copying webapp resources [/srv/tmp/builddir/src/main/webapp]
-       [INFO] Webapp assembled in [365 msecs]
-       [INFO] Building war: /srv/tmp/builddir/target/petclinic-0.1.0.BUILD-SNAPSHOT.war
-       [INFO] WEB-INF/web.xml already added, skipping
+       [INFO] Kemasan webapp
+       [INFO] Perakitan webapp [petclinic] di [/srv/tmp/builddir/target/petclinic-0.1.0.BUILD-SNAPSHOT]
+       [INFO] proyek perang Pengolahan
+       [INFO] sumber Menyalin webapp [/ srv / tmp / builddir / src / main / webapp]
+       [INFO] webapp dirakit di [365 msecs]
+       Perang [INFO] Bangunan: /srv/tmp/builddir/target/petclinic-0.1.0.BUILD-SNAPSHOT.war
+       [INFO] WEB-INF / web.xml sudah ditambahkan, melompat-lompat
        [INFO]
-       [INFO] --- maven-dependency-plugin:2.3:copy (default) @ petclinic ---
+       [INFO] --- maven-ketergantungan-plugin: 2.3: copy (default) @ petclinic ---
        ...
-       [INFO] ---------------------------------------------------------------
-       [INFO] BUILD SUCCESS
-       [INFO] ---------------------------------------------------------------
-       [INFO] Total time: 3:38.174s
-       [INFO] Finished at: Thu Juli 20 11:23:02 UTC 2013
-       [INFO] Final Memory: 20M/229M
-       [INFO] ---------------------------------------------------------------
------> Building image
------> Uploading image (84M)
+       [INFO] ----------------------------------------------- ----------------
+       [INFO] MEMBANGUN SUKSES
+       [INFO] ----------------------------------------------- ----------------
+       [INFO] Total waktu: 3: 38.174s
+       [INFO] Selesai di: Thu Juli 20 11:23:02 UTC 2013
+       [INFO] Akhir Memory: 20M / 229M
+       [INFO] ----------------------------------------------- ----------------
+-----> Gambar Building
+-----> Gambar Mengunggah (84m)
 
-To ssh://APP_NAME@kilatiron.net/repository.git
- * [new branch]      master -> master
+Untuk ssh: //APP_NAME@kilatiron.net/repository.git
+ * [Cabang baru] Master -> Master
 ~~~
 
-Add MySQLs Add-on with free plan to your deployment and deploy it:
+Tambahkan MySQLs Add-on dengan rencana bebas untuk penyebaran dan menyebarkan:
 
-~~~bash
-$ ironcliapp APP_NAME/default addon.add mysqls.free
-$ ironcliapp APP_NAME/default deploy --memory=768MB
+~~~ Pesta
+$ Ironcliapp APP_NAME / default addon.add mysqls.free
+$ Ironcliapp APP_NAME / default menyebarkan --memory = 768MB
 ~~~
 
-The `--memory=768MB` argument increases the container size to meet the high memory consumption of the Spring framework. Please note: increasing the size comes with additional costs.
+The `--memory = 768MB` argumen meningkatkan ukuran wadah untuk memenuhi konsumsi memori tinggi dari kerangka Spring. Harap dicatat: meningkatkan ukuran datang dengan biaya tambahan.
 
-Et voila, the app is now up and running at `http[s]://APP_NAME.kilatiron.net` .
+Et voila, app sekarang dan berjalan di `http [s]: // APP_NAME.kilatiron.net`.
 
 
-[Spring Roo petclinic]: http://static.springsource.org/spring-roo/reference/html/intro.html#intro-exploring-sample
-[Database credentials]: /Guides/Java/Add-on%20credentials.md
+[Musim semi Roo petclinic]: http://static.springsource.org/spring-roo/reference/html/intro.html#intro-exploring-sample
+[Database kredensial]: /Guides/Java/Add-on%20credentials.md
 [Jetty Runner]: http://wiki.eclipse.org/Jetty/Howto/Using_Jetty_Runner
 [CloudKilat]: http://www.cloudkilat.com/
-[file system]: /Platform%20Documentation.md/#non-persistent-filesystem
-[log command]: /Platform%20Documentation.md//#logging
-[Shared MySQL Add-on]: /Add-on%20Documentation/Data%20Storage/MySQLs.md
+[Sistem file]: /Platform%20Documentation.md/#non-persistent-filesystem
+[Log perintah]: /Platform%20Documentation.md//#logging
+[Bersama MySQL Add-on]: /Add-on%20Documentation/Data%20Storage/MySQLs.md

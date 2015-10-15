@@ -1,341 +1,341 @@
-#Deploying Symfony 1.4 to CloudKilat
+#Deploying Symfony 1.4 untuk CloudKilat
 
-![Successful Deployment](/static/apps/images/symfony1.4-homepage.png)
+! [Deployment Sukses] (/ statis / apps / gambar / symfony1.4-homepage.png)
 
-If you're looking for a feature-rich, open source, PHP Framework for your projects complete with a strong community, large variety of plugins and add-ons and a strong history of active development, you can't go past [Symfony 1](http://symfony.com/). It comes with a variety of features to speed up your application development, including:
+Jika Anda sedang mencari kaya fitur, open source, PHP Framework untuk proyek-proyek Anda lengkap dengan masyarakat yang kuat, berbagai macam plugin dan add-ons dan sejarah yang kuat pengembangan aktif, Anda tidak dapat melewati [Symfony 1 ] (http://symfony.com/). Muncul dengan berbagai fitur untuk mempercepat pengembangan aplikasi Anda, termasuk:
 
- * Database engine independent
- * Highly configurable
- * Enterprise ready
- * Easy to extend
- * Built-in internationalisation
- * Factories, plug-ins, and mixins
- * Built-in unit and functional testing framework
+ * Independen mesin database
+ * Sangat dikonfigurasi
+ * Perusahaan siap
+ * Mudah untuk memperpanjang
+ * Built-in internasionalisasi
+ * Pabrik, plug-in, dan mixin
+ * Unit Built-in dan kerangka pengujian fungsional
 
-In this tutorial, we're going to take you through deploying CakePHP v2.2.1 to [the CloudKilat platform](http://www.cloudkilat.com/).
+Dalam tutorial ini, kita akan membawa Anda melalui penggelaran CakePHP v2.2.1 untuk [platform CloudKilat] (http://www.cloudkilat.com/).
 
-##Prerequisites
+## Prasyarat
 
-You're going to need only a few things to following along with this tutorial. These are:
+Anda akan hanya perlu beberapa hal untuk mengikuti bersama dengan tutorial ini. Ini adalah:
 
- * A [Git client](http://git-scm.com/), whether command-line or GUI.
- * A MySQL client, whether command-line or GUI, such as [MySQL Workbench](http://dev.mysql.com/downloads/workbench/) or the command-line tools.
+ * A [Git klien] (http://git-scm.com/), apakah baris perintah atau GUI.
+ * Seorang klien MySQL, apakah baris perintah atau GUI, seperti [MySQL Workbench] (http://dev.mysql.com/downloads/workbench/) atau alat baris perintah.
 
-##1. Grab a Copy of Symfony
+## 1. Ambil Copy Symfony
 
-Now that you have the prerequisites in place, download a copy of the latest, stable, release of Symfony, **version 1.4** at the time or publishing. You can find it at: [http://www.symfony-project.org/installation/1_4](http://www.symfony-project.org/installation/1_4). After that, extract it to your local filesystem.
+Sekarang bahwa Anda memiliki prasyarat di tempat, men-download salinan terbaru, stabil, rilis Symfony, ** versi 1.4 ** pada saat atau penerbitan. Anda dapat menemukannya di: [http://www.symfony-project.org/installation/1_4](http://www.symfony-project.org/installation/1_4). Setelah itu, ekstrak ke sistem file lokal Anda.
 
-![Source files](/static/apps/images/symfony1-source.png)
+[Sumber file] (/ statis / apps / gambar / symfony1-source.png)
 
-##2. Amend the Code
+## 2. Mengubah Kode
 
-As I mentioned before, a few changes need to be made to the default Symfony configuration. These changes are as follows:
+Seperti yang saya sebutkan sebelumnya, beberapa perubahan perlu dibuat ke default konfigurasi Symfony. Perubahan ini adalah sebagai berikut:
 
- * Change the default [Cross-Site Request Forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)) (CSRF) secret key
- * Enable Propel instead of Doctrine
- * Store session and log files in a database
- * Auto-magically determine the environment and set the configuration
+ * Ubah default [Cross-Site Request Pemalsuan] (https://www.owasp.org/index.php/Cross-Site_Request_Forgery_ (CSRF)) (CSRF) kunci rahasia
+ * Aktifkan Propel bukan Ajaran
+ * Sesi Store dan log file dalam database
+ * Auto-ajaib menentukan lingkungan dan mengatur konfigurasi
 
-###2.1 Store Sessions in the Database & Disable Logging
+### 2.1 Toko Sesi dalam Database & Nonaktifkan Logging
 
-We need to do this because Symfony, by default, logs to and stores its session files on the filesystem. However, this approach recommended on the CloudKilat platform.
+Kita perlu melakukan ini karena Symfony, secara default, log ke dan menyimpan file sesi pada filesystem. Namun, pendekatan ini dianjurkan pada platform CloudKilat.
 
-What's more, storing files in a multi-server environment can lead to hard to debug issues. So what we're going to do is to store sessions in the database and disable logging.
+Terlebih lagi, menyimpan file dalam lingkungan multi-server dapat menyebabkan sulit untuk debug masalah. Jadi apa yang kita akan lakukan adalah untuk menyimpan sesi dalam database dan menonaktifkan logging.
 
-Thankfully, Symfony is written in a very straight-forward and configurable manner, so this isn't too hard to do. What's more, the community around it is very healthy, so there's loads of options and support available.
+Untungnya, Symfony ditulis dalam cara yang sangat lurus ke depan dan dikonfigurasi, jadi ini tidak terlalu sulit untuk dilakukan. Terlebih lagi, masyarakat sekitar sangat sehat, sehingga ada banyak pilihan dan dukungan yang tersedia.
 
-###2.2 Auto-magically determine the environment and set the configuration
+### 2.2 Auto-ajaib menentukan lingkungan dan mengatur konfigurasi
 
-As each environment will, likely, have different configuration settings, we also need to be able to differentiate between them. To keep it simple, what we need to do is to have one bootstrap file, across multiple deployments, and for it to programmatically know where it is and set the appropriate configuration options. So we're going to be making additions to the code so this happens.
+Karena setiap lingkungan akan, mungkin, memiliki pengaturan konfigurasi yang berbeda, kami juga harus mampu membedakan antara mereka. Untuk tetap sederhana, apa yang perlu kita lakukan adalah untuk memiliki satu file bootstrap, di beberapa penyebaran, dan untuk itu untuk pemrograman tahu di mana itu dan mengatur pilihan konfigurasi yang sesuai. Jadi kita akan membuat penambahan kode sehingga hal ini terjadi.
 
-##3. Put the Code under Git Control
+## 3. Masukan Kode di bawah kontrol Git
 
-Ok, now let's get started making these changes and deploying the application. We'll begin by putting it under Git control. So run the following command to do that:
+Ok, sekarang mari kita mulai membuat perubahan ini dan menggunakan aplikasi. Kita akan mulai dengan meletakkan di bawah kontrol Git. Jadi jalankan perintah berikut untuk melakukannya:
 
-    cd <your Symfony directory>
+    cd <directory Symfony Anda>
 
-    git init .
+    git init.
 
     git add -A
 
-    git commit -m "First addition of the source files"
+    git commit -m "Selain Pertama sumber file"
 
-Now that the code's under version control, we're going to create a testing branch as well, so that we have one to test with and one for production. Run the following command and it will be done:
+Sekarang bahwa kode ini di bawah kontrol versi, kita akan membuat cabang pengujian juga, sehingga kita memiliki satu untuk menguji dengan dan satu untuk produksi. Jalankan perintah berikut dan itu akan dilakukan:
 
-    git checkout -b testing
+    git checkout pengujian -b
 
-If you're not familiar with Git, the previous command will checkout a copy of our existing branch, into a new branch, called ``testing``. You can confirm that you now have two branches, by running the following command:
+Jika Anda tidak terbiasa dengan Git, perintah sebelumnya akan checkout salinan cabang kami yang ada, menjadi cabang baru, yang disebut `` testing``. Anda dapat mengkonfirmasi bahwa Anda sekarang memiliki dua cabang, dengan menjalankan perintah berikut:
 
     git branch
 
-That will show output similar to below:
+Itu akan menunjukkan output yang mirip dengan di bawah:
 
-    $ git branch
-        master
-        * testing
+    $ Git branch
+        menguasai
+        * Pengujian
 
-Choose a unique name to replace the `APP_NAME` placeholder for your application and create it on the CloudKilat platform. Now, we need to make our first deployment of both branches to the CloudKilat platform. To do this we checkout the master branch, create the application in our CloudKilat account and push and deploy both deployments. By running the following commands, this will all be done:
+Pilih nama yang unik untuk menggantikan `APP_NAME` tempat untuk aplikasi Anda dan membuatnya pada platform CloudKilat. Sekarang, kita perlu membuat penyebaran pertama kami kedua cabang ke platform CloudKilat. Untuk melakukan ini kita checkout cabang master, membuat aplikasi di akun CloudKilat kami dan mendorong dan menyebarkan kedua penyebaran. Dengan menjalankan perintah berikut, ini semua akan dilakukan:
 
-    // switch to the master branch
-    git checkout master
+    // Beralih ke cabang master
+    Master checkout git
 
-    // create the application
-    ironcliapp APP_NAME create php
+    // Membuat aplikasi
+    ironcliapp APP_NAME membuat php
 
-    // deploy the default branch
-    ironcliapp APP_NAME/default push
-    ironcliapp APP_NAME/default deploy
+    // Menyebarkan cabang default
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
 
-    // deploy the testing branch
-    ironcliapp APP_NAME/testing push
-    ironcliapp APP_NAME/testing deploy
+    // Menyebarkan cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
-###3.1 Symfony Auto-Detected
+### 3.1 Symfony Auto-Terdeteksi
 
-When you do this, you'll see output similar to the following:
+Ketika Anda melakukan ini, Anda akan melihat output yang mirip dengan berikut:
 
-    $ ironcliapp APP_NAME/default push
-    Counting objects: 15, done.
-    Delta compression using up to 2 threads.
-    Compressing objects: 100% (7/7), done.
-    Writing objects: 100% (8/8), 1.23 KiB, done.
-    Total 8 (delta 4), reused 0 (delta 0)
+    $ Ironcliapp APP_NAME / dorongan bawaan
+    Menghitung benda: 15, dilakukan.
+    Delta kompresi menggunakan sampai 2 benang.
+    Mengompresi objek: 100% (7/7), dilakukan.
+    Menulis objek: 100% (8/8), 1,23 KiB, dilakukan.
+    Total 8 (delta 4), kembali 0 (delta 0)
 
-    >> Receiving push
-    >> Compiling PHP
-         INFO: Symfony 1.x detected
-         INFO: No '.ccconfig.yaml' found, setting web content to '/web'.
-    >> Building image
-    >> Uploading image (3.0M)
+    >> Mendorong Menerima
+    >> Kompilasi PHP
+         INFO: Symfony 1.x terdeteksi
+         INFO: ada '.ccconfig.yaml' ditemukan, pengaturan konten web untuk '/ Web.
+    >> Bangunan gambar
+    >> Gambar Mengunggah (3.0m)
 
-    To ssh://APP_NAME@kilatiron.net/repository.git
-       d90506c..4078c78  master -> master
+    Untuk ssh: //APP_NAME@kilatiron.net/repository.git
+       d90506c..4078c78 Master -> Master
 
-Note the following lines:
+Perhatikan baris berikut:
 
-    INFO: Symfony 1.x detected
-    INFO: No '.ccconfig.yaml' found, setting web content to '/web'.
+    INFO: Symfony 1.x terdeteksi
+    INFO: ada '.ccconfig.yaml' ditemukan, pengaturan konten web untuk '/ Web.
 
-In the previous version of the CloudKilat platform, you would have had to have used a platform-specific config file called: ``.ccconfig.yaml`` and in it set the following:
+Dalam versi sebelumnya dari platform CloudKilat, Anda akan harus menggunakan file-platform tertentu config disebut: `` .ccconfig.yaml`` dan di dalamnya mengatur sebagai berikut:
 
     BaseConfig:
-      WebContent: /web
+      Webcontent: / web
 
 
-##4. Initialise the Required Add-ons
+## 4. Menginisialisasinya Diperlukan Add-ons
 
-Now that that's done, we need to configure two add-ons, config and mysqls. The config Add-on is required for determining the active environment and mysqls for storing our session and logging information.
+Sekarang itu selesai, kita perlu mengkonfigurasi dua add-ons, config dan mysqls. Config Add-on diperlukan untuk menentukan lingkungan aktif dan mysqls untuk menyimpan sesi dan login informasi.
 
-###4.1 Initialising mysqls
+### 4.1 Mengawali mysqls
 
-To initialise mysqls, run the following commands and make a note of the output:
+Untuk menginisialisasi mysqls, jalankan perintah berikut dan membuat catatan dari output:
 
-    // Initialise the mysqls.free addon for the default deployment
-    ironcliapp APP_NAME/default addon.add mysqls.free
+    // Menginisialisasinya addon mysqls.free untuk penyebaran standar
+    ironcliapp APP_NAME / default addon.add mysqls.free
 
-    // Retrieve the settings
-    ironcliapp APP_NAME/default addon mysqls.free
+    // Ambil pengaturan
+    ironcliapp APP_NAME / default addon mysqls.free
 
-    // Initialise the mysqls.free addon for the testing deployment
-    ironcliapp APP_NAME/testing addon.add mysqls.free
+    // Menginisialisasinya addon mysqls.free untuk penyebaran pengujian
+    ironcliapp APP_NAME / pengujian addon.add mysqls.free
 
-    // Retrieve the settings
-    ironcliapp APP_NAME/testing addon mysqls.free
+    // Ambil pengaturan
+    ironcliapp APP_NAME / pengujian addon mysqls.free
 
-The output of the commands will be similar to that below:
+Output dari perintah akan mirip dengan yang di bawah ini:
 
-    Addon                    : mysqls.free
+    Addon: mysqls.free
 
-     Settings
-       MYSQLS_DATABASE          : <database_username>
-       MYSQLS_PASSWORD          : <database_password>
-       MYSQLS_PORT              : 3306
-       MYSQLS_HOSTNAME          : mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
-       MYSQLS_USERNAME          : <database_name>
+     Pengaturan
+       MYSQLS_DATABASE: <database_username>
+       MYSQLS_PASSWORD: <database_password>
+       MYSQLS_PORT: 3306
+       MYSQLS_HOSTNAME: mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
+       MYSQLS_USERNAME: <database_name>
 
-###4.2 Initialising config
+### 4.2 Mengawali config
 
-Now we need to configure the config addon and store the respective environment setting in it. So run the following commands to do this:
+Sekarang kita perlu mengkonfigurasi addon config dan menyimpan lingkungan masing-masing pengaturan di dalamnya. Jadi jalankan perintah berikut untuk melakukan hal ini:
 
-    // Set the default environment setting
-    ironcliapp     APP_NAME/default config.add APPLICATION_ENV=production
+    // Mengatur pengaturan lingkungan default
+    ironcliapp APP_NAME / default config.add APPLICATION_ENV = produksi
 
-    // Set the testing environment setting
-    ironcliapp     APP_NAME/testing config.add APPLICATION_ENV=testing
+    // Mengatur pengaturan lingkungan pengujian
+    ironcliapp APP_NAME / pengujian config.add APPLICATION_ENV = pengujian
 
-Now that this is done, we're ready to make some changes to our code to make use of the new configuration.
+Sekarang ini dilakukan, kita siap untuk membuat beberapa perubahan pada kode kita untuk menggunakan konfigurasi baru.
 
-##5. Environment Configuration
+## 5. Konfigurasi lingkungan
 
-###5.1 Change the default Cross-Site Request Forgery (CSRF) Secret Key
+### 5.1 Mengubah Permintaan standar Cross-Site Pemalsuan (CSRF) Kunci Rahasia
 
-In ``apps/frontend/config/settings.yml``, find the following configuration:
+Dalam `` apps / frontend / config / settings.yml``, menemukan konfigurasi berikut:
 
-    # Form security secret (CSRF protection)
-    csrf_secret:            83d9c79e8609e738e148c8ccd41113d5c5ddf301
+    # Formulir rahasia keamanan (perlindungan CSRF)
+    csrf_secret: 83d9c79e8609e738e148c8ccd41113d5c5ddf301
 
-If that's left in place, Symfony will throw an error. So we need to change it to a value that's unique for our environment. I've changed for the purposes of a simple example to the following:
+Jika yang tersisa di tempat, Symfony akan melempar kesalahan. Jadi kita perlu mengubahnya ke nilai yang unik untuk lingkungan kita. Aku sudah berubah untuk tujuan contoh sederhana sebagai berikut:
 
-    csrf_secret:            664914c3be95fc798d87a12ce4ea1610e2104d92
+    csrf_secret: 664914c3be95fc798d87a12ce4ea1610e2104d92
 
-###5.2 Enable Propel instead of Doctrine
+### 5.2 Aktifkan Propel bukan Ajaran
 
-Now you don't necessarily need to do this. I've done it because I'm more comfortable with it. If you're a Doctrine guru, or just more comfortable with it, please skip this section.
+Sekarang Anda tidak perlu melakukan hal ini. Aku telah melakukannya karena aku lebih nyaman dengan itu. Jika Anda seorang guru Doktrin, atau hanya lebih nyaman dengan itu, silakan melewati bagian ini.
 
-In ``config/properties.ini``, look for the following line:
+Dalam `` config / properties.ini``, mencari baris berikut:
 
-    orm=Doctrine
+    orm = Doktrin
 
-Change it to:
+Mengubahnya ke:
 
-    orm=Propel
+    orm = Propel
 
-###5.3 Store Sessions in the Database
+### 5.3 Toko Sesi di Database
 
-Under ``apps/frontend/config`` open the file ``factories.yaml``. In that file, we need to adding in session configuration for both prod and test. These are identified by ``prod:`` and ``test:`` respectively. For each one, add in a configuration similar to that below, changing the respective details where necessary:
+Di bawah `` apps / frontend / config`` membuka file `` factories.yaml``. Dalam file itu, kita perlu menambahkan di konfigurasi sesi untuk kedua prod dan uji. Ini diidentifikasi oleh `` prod: `` dan `` uji: `` masing-masing. Untuk masing-masing, tambahkan konfigurasi yang sama dengan yang di bawah, mengubah rincian masing di mana diperlukan:
 
-      storage:
-        class: sfCacheSessionStorage
+      Penyimpanan:
+        kelas: sfCacheSessionStorage
         param:
           session_name: symfony1_CloudKilat
           session_cookie_path: /
           session_cookie_domain: APP_NAME.kilatiron.net
-          session_cookie_lifetime: +30 days
-          session_cookie_secure: false
+          session_cookie_lifetime: +30 hari
+          session_cookie_secure: palsu
           session_cookie_http_only: true
           cache:
-            class: sfAPCCache
+            kelas: sfAPCCache
             param: ~
 
-What this has done is to tell Symfony to use the [sfCacheSessionStorage](http://www.symfony-project.org/api/1_4/sfCacheSessionStorage) to manage the session storage with the [sfAPCCache](http://www.symfony-project.org/api/1_4/sfAPCCache) class for physically storing the sessions.
+Apa yang telah dilakukan adalah untuk memberitahu Symfony menggunakan [sfCacheSessionStorage] (http://www.symfony-project.org/api/1_4/sfCacheSessionStorage) untuk mengelola penyimpanan sesi dengan [sfAPCCache] (http: // www. symfony-project.org/api/1_4/sfAPCCache) kelas untuk fisik menyimpan sesi.
 
-###5.4 Disable Logging
+### 5.4 Nonaktifkan Logging
 
-As we just did for session configuration, in factories.yaml, add in the following configuration, for prod and test, to disable logging:
+Seperti yang kita hanya melakukan untuk konfigurasi sesi, di factories.yaml, menambahkan konfigurasi berikut, untuk prod dan uji, untuk menonaktifkan logging:
 
       logger:
-        class:   sfNoLogger
+        kelas: sfNoLogger
         param:
-          level:   err
-          loggers: ~
+          Tingkat: err
+          penebang: ~
 
-What this has done is to tell Symfony to use the [sfNoLogger](http://www.symfony-project.org/api/1_4/sfNoLogger) to manage logging, effectively throwing away the logs, like ``/dev/null`` on Linux/BSD.
+Apa yang telah dilakukan adalah untuk memberitahu Symfony menggunakan [sfNoLogger] (http://www.symfony-project.org/api/1_4/sfNoLogger) untuk mengelola logging, secara efektif membuang log, seperti `` / dev / null `` di Linux / BSD.
 
-###5.5 Auto-Magically Determine the Environment and Set the Configuration
+### 5.5 Auto-Ajaib Menentukan Lingkungan dan Set Konfigurasi
 
-In the file ``web/index.php``, find the line that's similar to below:
+Dalam file `` web / index.php``, menemukan garis yang mirip dengan di bawah ini:
 
-    $configuration = ProjectConfiguration::getApplicationConfiguration(
-        'frontend', 'prod', false
+    $ Konfigurasi = ProjectConfiguration :: getApplicationConfiguration (
+        'Frontend', 'prod', false
     );
 
-And then replace it with the following
+Dan kemudian menggantinya dengan yang berikut
 
-    $environment = 'prod';
-    $debug = false;
+    $ Lingkungan = 'prod';
+    $ Debug = false;
 
-    if (!empty($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localdomain') === FALSE) {
-        // Parse the json file with ADDONS credentials
-        $string = file_get_contents($_ENV['CRED_FILE'], false);
+    if (! empty ($ _ SERVER ['HTTP_HOST']) && strpos ($ _ SERVER ['HTTP_HOST'], 'localdomain') === FALSE) {
+        // Parse file json dengan addons kredensial
+        $ String = file_get_contents ($ _ ENV ['CRED_FILE'], false);
 
-        if ($string == false) {
-            die('FATAL: Could not read credentials file');
+        if ($ string == false) {
+            die ('FATAL: Tidak dapat membaca berkas kredensial');
         }
 
-        $creds = json_decode($string, true);
-        $environment = $creds['CONFIG']['CONFIG_VARS']['CAKE_ENV'];
-    } else {
-        $environment = 'development';
+        $ Creds = json_decode ($ string, true);
+        $ Lingkungan = $ creds ['CONFIG'] ['CONFIG_VARS'] ['CAKE_ENV'];
+    } Else {
+        $ Lingkungan = 'pembangunan';
     }
 
-    if ($environment == 'development') {
-        $debug = true;
+    if ($ lingkungan == 'pembangunan') {
+        $ Debug = true;
     }
 
-    $configuration = ProjectConfiguration::getApplicationConfiguration(
-        'frontend', $environment, $debug
+    $ Konfigurasi = ProjectConfiguration :: getApplicationConfiguration (
+        'Frontend', $ lingkungan, $ men-debug
     );
 
-What that will do is, if we're not using the local development environment, determined by having ``localdomain`` in the url, then we will retrieve a copy of the credentials file from the environment settings, that comes with every CloudKilat application deployment by default.
+Apa yang akan dilakukan adalah, jika kita tidak menggunakan lingkungan pembangunan daerah, ditentukan dengan memiliki `` localdomain`` di url, maka kita akan mengambil salinan mandat file dari pengaturan lingkungan, yang datang dengan setiap aplikasi CloudKilat penyebaran secara default.
 
-In there, we'll look for what the value of the **APPLICATION_ENV** config var is. If it's set, then we set the environment to be that. If it's not set, then we'll set the environment to ``prod``, so that we have a safe and sane default at all times.
+Di sana, kita akan melihat apa nilai ** APPLICATION_ENV ** config var. Jika itu diatur, maka kita mengatur lingkungan untuk itu. Jika tidak diatur, maka kita akan mengatur lingkungan untuk `` prod``, sehingga kita memiliki standar aman dan waras setiap saat.
 
-###5.6 Database Configuration
+Konfigurasi 5.6 database ###
 
-In ``config/databases.yml`` by default, Symfony will have the following settings present:
+Dalam `` config / databases.yml`` secara default, Symfony akan memiliki pengaturan berikut ini:
 
-    all:
-      doctrine:
-        class: sfDoctrineDatabase
+    semua:
+      doktrin:
+        kelas: sfDoctrineDatabase
 
-What we're going to do is change it to have the values from our initialised mysqls.free add-on. So take the settings that you took note of earlier and change the file so that, with your settings, it looks similar to the configuration below:
+Apa yang kita akan lakukan adalah mengubahnya untuk memiliki nilai-nilai dari mysqls.free dijalankan kami add-on. Jadi mengambil pengaturan yang Anda mencatat sebelumnya dan mengubah file sehingga, dengan pengaturan Anda, terlihat mirip dengan konfigurasi di bawah ini:
 
     dev:
-      propel:
-        class: sfPropelDatabase
+      mendorong:
+        kelas: sfPropelDatabase
         param:
           classname: DebugPDO
-          debug: { realmemoryusage: true, details: { time: { enabled: true }, slow: { enabled: true, threshold: 0.1 }, mem: { enabled: true }, mempeak: { enabled: true }, memdelta: { enabled: true } } }
-          dsn: 'mysql:host=localhost;dbname=CloudKilat_symfony1'
+          men-debug: {realmemoryusage: true, rincian: {waktu: {diaktifkan: true}, lambat: {diaktifkan: true, ambang batas: 0,1}, mem: {diaktifkan: true}, mempeak: {diaktifkan: true}, memdelta: {diaktifkan : true}}}
+          dsn: 'mysql: host = localhost; dbname = CloudKilat_symfony1'
           username: cc_dev
           password: cc_dev
           encoding: utf8
-          persistent: true
+          gigih: true
           pooling: true
 
-    test:
-      propel:
-        class: sfPropelDatabase
+    Tes:
+      mendorong:
+        kelas: sfPropelDatabase
          param:
           classname: PropelPDO
-          debug: { realmemoryusage: true, details: { time: { enabled: true }, slow: { enabled: true, threshold: 0.1 }, mem: { enabled: true }, mempeak: { enabled: true }, memdelta: { enabled: true } } }
-           dsn: 'mysql:host=mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com;dbname=<database_name>'
+          men-debug: {realmemoryusage: true, rincian: {waktu: {diaktifkan: true}, lambat: {diaktifkan: true, ambang batas: 0,1}, mem: {diaktifkan: true}, mempeak: {diaktifkan: true}, memdelta: {diaktifkan : true}}}
+           dsn: 'mysql: host = mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com; dbname = <database_name>'
            username: <database_username>
            password: <database_password>
           encoding: utf8
-          persistent: true
+          gigih: true
           pooling: true
 
     prod:
-      propel:
-        class: sfPropelDatabase
+      mendorong:
+        kelas: sfPropelDatabase
         param:
           classname: PropelPDO
-          debug: { realmemoryusage: true, details: { time: { enabled: true }, slow: { enabled: true, threshold: 0.1 }, mem: { enabled: true }, mempeak: { enabled: true }, memdelta: { enabled: true } } }
-          dsn: 'mysql:host=mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com;dbname=<database_name>'
+          men-debug: {realmemoryusage: true, rincian: {waktu: {diaktifkan: true}, lambat: {diaktifkan: true, ambang batas: 0,1}, mem: {diaktifkan: true}, mempeak: {diaktifkan: true}, memdelta: {diaktifkan : true}}}
+          dsn: 'mysql: host = mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com; dbname = <database_name>'
           username: <database_username>
           password: <database_password>
           encoding: utf8
-          persistent: true
+          gigih: true
           pooling: true
 
-    all:
+    semua:
 
-Please note that if you're using Doctrine, leave ``sfDoctrineDatabase`` in place instead of replacing it with ``sfPropelDatabase``.
+Perlu diketahui bahwa jika Anda menggunakan Doktrin, meninggalkan `` sfDoctrineDatabase`` di tempat bukan menggantinya dengan `` sfPropelDatabase``.
 
-After this, stage all the files in Git and commit them with a suitable commit message. Then commit the changes and push and deploy both environments again so that the new information will be used. This can be done quickly with the following commands:
+Setelah ini, tahap semua file dalam Git dan komit mereka dengan pesan komit sesuai. Kemudian melakukan perubahan dan mendorong dan menyebarkan kedua lingkungan lagi sehingga informasi baru akan digunakan. Hal ini dapat dilakukan dengan cepat dengan perintah berikut:
 
-    // commit the changes
-    git commit -m "changed to store log and session in mysql and auto-determine environment"
+    // Melakukan perubahan
+    git komit -m "berubah untuk menyimpan log dan sesi di mysql dan auto-menentukan lingkungan"
 
-    // deploy the default branch
-    ironcliapp APP_NAME/default push
-    ironcliapp APP_NAME/default deploy
+    // Menyebarkan cabang default
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
 
-    git checkout testing
-    git merge master
+    pengujian checkout git
+    Master menggabungkan git
 
-    // deploy the testing branch
-    ironcliapp APP_NAME/testing push
-    ironcliapp APP_NAME/testing deploy
+    // Menyebarkan cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
 
-##7. Review the Deployment
+## 7. Tinjau Deployment yang
 
-With that completed, then have a look at both your deployments to ensure that they're working.
+Dengan itu selesai, maka kita lihat baik penyebaran Anda untuk memastikan bahwa mereka bekerja.
 
-With that, you should be up and running, ready to create your next, amazing, PHP web application, using Symfony. If you have any issues, feel free to email [support@CloudKilat.ch](mailto:support@CloudKilat.ch).
+Dengan itu, Anda harus bangun dan berjalan, siap untuk membuat berikutnya, menakjubkan, aplikasi PHP web Anda, menggunakan Symfony. Jika Anda memiliki masalah apapun, jangan ragu untuk email [support@CloudKilat.ch] (mailto: support@CloudKilat.ch).
 
-##Links
+## Links
 
  * [http://www.designdisclosure.com/2009/11/symfony-apc-cache-and-memcache-session-storage/](http://www.designdisclosure.com/2009/11/symfony-apc-cache-and-memcache-session-storage/)

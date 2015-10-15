@@ -1,71 +1,70 @@
-# Python Amazon S3 integration
+Integrasi # Python Amazon S3
 
-[Amazon S3](http://aws.amazon.com/s3/) is a Storage-as-a-Service solution. It provides a simple web service interface that can be used to store and retrieve data from anywhere on the web.
+[Amazon S3] (http://aws.amazon.com/s3/) adalah Storage-as-a-Service solusi. Ini menyediakan antarmuka layanan web sederhana yang dapat digunakan untuk menyimpan dan mengambil data dari mana saja di web.
 
 ## Amazon S3 SDK
 
-For Python you can choose between different SDKs for Amazon S3:
-* [Amazon S3 Python SDK / boto](http://aws.amazon.com/sdkforpython/)
-* [python-s3](https://github.com/nephics/python-s3)
-* [py-mini-s3](http://code.google.com/p/pts-mini-gpl/source/browse/#svn/trunk/py-mini-s3)
+Untuk Python Anda dapat memilih antara SDK yang berbeda untuk Amazon S3:
+* [Amazon S3 Python SDK / boto] (http://aws.amazon.com/sdkforpython/)
+* [Python-s3] (https://github.com/nephics/python-s3)
+* [Py-mini-s3] (http://code.google.com/p/pts-mini-gpl/source/browse/#svn/trunk/py-mini-s3)
 
-## Getting started
+## Persiapan
 
-Follow the [Amazon Guide](http://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html) to setup an account and get your [AWS access credentials](http://aws.amazon.com/security-credentials).
+Ikuti [Amazon Panduan] (http://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html) untuk membuat akun dan mendapatkan Anda [AWS akses kredensial] (http: //aws.amazon. com / keamanan kredensial).
 
-To use `AWS S3` storage in your application just specify an additional dependency in your `requirements.txt`:
+Untuk menggunakan `penyimpanan AWS S3` dalam aplikasi Anda hanya menentukan ketergantungan tambahan dalam` requirements.txt` Anda:
 
 ~~~
-boto==2.9.8
+boto == 2.9.8
 ~~~
 
-## Example usage:
+## Contoh penggunaan:
 
-The recommended way to provide your AWS credentials to your app is via environment variables. To do this, use the [Config Add-on](/Add-on%20Documentation/Deployment/Custom%20Config.md):
+Cara yang disarankan untuk memberikan mandat AWS untuk aplikasi Anda adalah melalui variabel lingkungan. Untuk melakukan hal ini, gunakan [Config Add-on] (/ Add-on% 20Documentation / Deployment / Kustom% 20Config.md):
 
-~~~bash
-$ ironcliapp APP_NAME/default config.add AWS_SECRET_KEY=[YOUR_SECRET_KEY] AWS_ACCESS_KEY=[YOUR_ACCESS_KEY]
+~~~ Pesta
+$ Ironcliapp APP_NAME / default config.add AWS_SECRET_KEY = [YOUR_SECRET_KEY] AWS_ACCESS_KEY = [YOUR_ACCESS_KEY]
 ~~~
 
-Now let's show some operations on buckets and objects:
+Sekarang mari kita menunjukkan beberapa operasi pada ember dan benda-benda:
 
-~~~python
+~~~ Python
 
-import uuid
-import boto
-from boto.s3.key import Key
+impor uuid
+impor boto
+dari boto.s3.key impor Key
 
-if __name__ == "__main__":
+jika __name__ == "__main__":
 
-    # S3 client connection - AWS credentials by default are read
-    # from env varaiables: AWS_ACCESS_KEY and AWS_SECRET_KEY
-    conn = boto.connect_s3()
+    # Koneksi klien S3 - AWS mandat secara default dibaca
+    # Dari env varaiables: AWS_ACCESS_KEY dan AWS_SECRET_KEY
+    conn = boto.connect_s3 ()
 
-    # Create bucket
-    bucket = conn.create_bucket('testbucket{0}'.format(str(uuid.uuid4())))
+    # Buat ember
+    ember = conn.create_bucket ('testbucket {0}'. Format (str (uuid.uuid4 ())))
 
-    # List buckets
-    buckets = conn.get_all_buckets()
-    print 'Buckets: ',buckets
+    # Daftar ember
+    ember = conn.get_all_buckets ()
+    print 'Ember:', ember
 
-    # Put object
-    k = Key(bucket)
-    k.key = 'key'
-    file_name = 'testfile{0}'.format(str(uuid.uuid4()))
-    file = open(file_name, 'w')
-    file.write('This is a test file which will land on S3')
-    file.close()
-    k.set_contents_from_filename(file_name)
+    # Objek Masukan
+    k = Key (bucket)
+    k.key = 'kunci'
+    nama_file = 'testfile {0}'. Format (str (uuid.uuid4 ()))
+    file = open (nama_file, 'w')
+    file.write ('Ini adalah file tes yang akan mendarat di S3')
+    file.close ()
+    k.set_contents_from_filename (nama_file)
 
-    # Read object
-    key = bucket.get_key('key')
+    # Baca objek
+    key = bucket.get_key ('key')
 
-    print key.get_contents_as_string()
+    print key.get_contents_as_string ()
 
-    # Delete object
-    bucket.delete_key('key')
+    # Objek Delete
+    bucket.delete_key ('key')
 
-    # Delete bucket
-    conn.delete_bucket(bucket.name)
+    # Hapus ember
+    conn.delete_bucket (bucket.name)
 ~~~
-

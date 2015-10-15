@@ -1,102 +1,102 @@
-# MySQLs: Shared MySQL Add-on
+# MySQLs: Bersama MySQL Add-on
 
-Every deployment can access a highly available shared MySQL add-on with
-databases guaranteed to be located in CloudKilat datacenters in Indonesia.
+Setiap penyebaran dapat mengakses sangat tersedia MySQL bersama dengan add-on
+database dijamin akan Terletak di pusat data CloudKilat di Indonesia.
 
-## Adding the MySQLs Add-on
+## Menambahkan MySQLs Add-on
 
-The database comes in different sizes and prices. It can be added using the addon.add command.
-
-~~~
-$ ironcliapp APP_NAME/DEP_NAME addon.add mysqls.OPTION
-~~~
-Replace `mysqls.OPTION` with a valid option, e.g. `mysqls.free`.
-
-## Upgrading the MySQLs Add-on
-
-To upgrade from one plan to another use the addon.upgrade command.
+Database datang dalam berbagai ukuran dan harga. Hal ini dapat ditambahkan dengan menggunakan perintah addon.add.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME addon.upgrade mysqls.OPTION_OLD mysqls.OPTION_NEW
+$ APP_NAME ironcliapp / DEP_NAME addon.add mysqls.OPTION
 ~~~
+`Mysqls.OPTION` Ganti dengan pilihan yang valid, eg` mysqls.free`.
 
-## Downgrading the MySQLs Add-on
+## Upgrade MySQLs Add-on
 
-To downgrade from the current plan to a smaller one use the addon.downgrade command.
-
-~~~
-$ ironcliapp APP_NAME/DEP_NAME addon.downgrade mysqls.OPTION_OLD mysqls.OPTION_NEW
-~~~
-
-## Removing the MySQLs Add-on
-
-Similarily, an add-on can also be removed from the deployment by using the addon.remove command.
-
-**Attention:** Removing the MySQLs add-on deletes all data in the database.
+Untuk meng-upgrade dari satu pesawat untuk menggunakan Ulasan addon.upgrade perintah lain.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME addon.remove mysqls.OPTION
+$ APP_NAME ironcliapp / DEP_NAME addon.upgrade mysqls.OPTION_OLD mysqls.OPTION_NEW
 ~~~
 
-## Replication and Failover
+## Merendahkan yang MySQLs Add-on
 
-All data is synchronously replicated in our robust multi master 
-[MariaDB](https://mariadb.org/) [Galera](http://galeracluster.com/) cluster. No slave lag or lost transactions. We provide high available access with our smart load balancers. By periodically checks, nodes in maintenance or failure state are automatically excluded from the load balancers database backend pool. That assures that requests are routed to healthy nodes only.
+Untuk downgrade dari peta saat ini untuk yang lebih kecil addon.downgrade menggunakan perintah.
 
-## Database Credentials
+~~~
+$ APP_NAME ironcliapp / DEP_NAME addon.downgrade mysqls.OPTION_OLD mysqls.OPTION_NEW
+~~~
+
+## Melepaskan MySQLs Add-on
+
+Demikian pula, sebuah add-on dapat dihapus dari penyebaran également dengan menggunakan perintah addon.remove.
+
+** Peringatan: ** Menghapus pengaya MySQLs menghapus semua data dalam database.
+
+~~~
+$ APP_NAME ironcliapp / DEP_NAME addon.remove mysqls.OPTION
+~~~
+
+Replikasi dan Failover ##
+
+Semua data serentak direplikasi dalam multi induk yang kuat kami
+[MariaDB] (https://mariadb.org/) [Galera] (http://galeracluster.com/) klaster. Tidak ada budak lag atau transaksi hilang. Kami menyediakan tersedia dengan balancers beban pintar kita akses yang tinggi. Dengan pemeriksaan berkala, layanan node dalam kegagalan negara emas secara otomatis dikeluarkan dari database backend balancers beban kolam renang. Itu meyakinkan Itu permintaan yang diarahkan ke node sehat saja.
+
+## Kredensial database
 
 ### Internal Access
 
-It's recommended to the read database credentials from the creds.json file. The
-location of the file is available in the `CRED_FILE` environment variable.
-Reading the credentials from the creds.json file ensures your app is always
-using the correct credentials. For detailed instructions on how to use the
-creds.json file please refer to the section about
-[Add-on Credentials](/Platform Documentation.md/#add-ons)
-in the general documentation.
+Ini dianjurkan untuk membaca kredensial database dari antrian creds.json. Itu
+sewa file tersedia dalam `variabel lingkungan CRED_FILE`.
+Membaca mandat dari file creds.json Memastikan aplikasi Anda selalu
+menggunakan mandat yang tepat. Untuk petunjuk rinci tentang cara menggunakan
+File creds.json silahkan Lihat bagian tentang
+[Add-on Kredensial] (/ Landasan Documentation.md/#add-ons)
+dalam dokumentasi umum.
 
-Most database drivers provide a reconnect on connection issues when you add **autoReconnect=true** parameter to your database uri. This should be enabled to have the most stable setup. For example with Java:
+Kebanyakan database driver Menyediakan menyambungkan kembali memiliki masalah koneksi Ketika Anda menambahkan -autoreconnect ** ** = parameter benar untuk uri database Anda. Ini keharusan diaktifkan untuk dimiliki Paling Stabil setup. Misalnya dengan Java:
 ~~~
-jdbc:mysql://{MYSQLS_HOSTNAME}:{MYSQLS_PORT}/{MYSQLS_DATABASE}?autoReconnect=true
-~~~
-
-
-### External Access
-
-External access to the MySQLs add-on is available through an SSL encrypted connection by following these simple steps.
-
- 1. Download the [certificate file](TODO) to your local machine.
- 1. Connect to the database using an SSL encrypted connection.
-
-The following example uses the MySQL command line tool.
-
-~~~
-$ mysql -u MYSQLS_USERNAME -p --host=MYSQLS_HOSTNAME --ssl-ca=PATH_TO_CERTIFICATE/ca-cert.pem
+jdbc: mysql: // {MYSQLS_HOSTNAME} {} MYSQLS_PORT / {} MYSQLS_DATABASE -autoreconnect = true?
 ~~~
 
-Replace the uppercase variables with the corresponding values shown by the addon command.
+
+### Akses Eksternal
+
+Akses eksternal ke MySQLs add-on yang tersedia melalui koneksi SSL terenkripsi dengan tesis sederhana Mengikuti langkah.
+
+ 1. Download [sertifikat file] (TODO) ke komputer lokal Anda.
+ 1. Hubungkan ke database menggunakan koneksi SSL terenkripsi.
+
+The Berikut contoh menggunakan MySQL alat baris perintah.
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME addon mysqls.OPTION
-Addon : mysqls.512mb
-
-Settings
-
-MYSQLS_DATABASE    : SOME_DATABASE_NAME
-MYSQLS_HOSTNAME    : mysql.kilatiron.net
-MYSQLS_PORT        : 3306
-MYSQLS_PASSWORD    : SOME_SECRET_PASSWORD
-MYSQLS_USERNAME    : SOME_SECRET_USERNAME
+$ Mysql -u -p MYSQLS_USERNAME --host = MYSQLS_HOSTNAME --ssl = PATH_TO_CERTIFICATE-ca / ca-cert.pem
 ~~~
 
-Likewise imports and exports are equally simple.
+Mengganti variabel dengan nilai-nilai Sesuai huruf besar ditunjukkan oleh perintah addon.
 
-To **export** your data use the mysqldump command.
 ~~~
-$ mysqldump -u MYSQLS_USERNAME -p --host=MYSQLS_HOSTNAME --ssl-ca=PATH_TO_CERTIFICATE/ca-cert.pem MYSQLS_DATABASE > MYSQLS_DATABASE.sql
+$ APP_NAME ironcliapp / DEP_NAME addon mysqls.OPTION
+Addon: mysqls.512mb
+
+Pengaturan
+
+MYSQLS_DATABASE: SOME_DATABASE_NAME
+MYSQLS_HOSTNAME: mysql.kilatiron.net
+MYSQLS_PORT: 3306
+MYSQLS_PASSWORD: SOME_SECRET_PASSWORD
+MYSQLS_USERNAME: SOME_SECRET_USERNAME
 ~~~
 
-To **import** an sql file into a MySQL database use the following command.
+Demikian juga impor dan ekspor yang Sama mudah.
+
+** ** Untuk mengekspor data Anda menggunakan perintah mysqldump.
 ~~~
-$ mysql -u MYSQLS_USERNAME -p --host=MYSQLS_HOSTNAME --ssl-ca=PATH_TO_CERTIFICATE/ca-cert.pem MYSQLS_DATABASE < MYSQLS_DATABASE.sql
+$ Mysqldump -u -p MYSQLS_USERNAME --host = MYSQLS_HOSTNAME --ssl-ca = PATH_TO_CERTIFICATE / ca-cert.pem MYSQLS_DATABASE> MYSQLS_DATABASE.sql
+~~~
+
+** ** Untuk mengimpor file sql ke dalam database MySQL Gunakan perintah berikut.
+~~~
+$ Mysql -u -p MYSQLS_USERNAME --host = MYSQLS_HOSTNAME --ssl = PATH_TO_CERTIFICATE-ca / ca-cert.pem MYSQLS_DATABASE <MYSQLS_DATABASE.sql
 ~~~

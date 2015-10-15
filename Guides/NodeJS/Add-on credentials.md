@@ -1,74 +1,74 @@
-# Getting the Add-on Credentials
+# Mendapatkan Add-on Kredensial yang
 
-Each deployment gets different credentials for each Add-on. Providers can change these credentials at any time, so they shouldn't be hard-coded in the source code. If the credentials are not in the source code, they also won't appear in the version control and cause potential security issues.
+Setiap penyebaran mendapat mandat yang berbeda untuk masing-masing Add-on. Penyedia dapat mengubah mandat ini setiap saat, sehingga mereka tidak harus keras-kode dalam kode sumber. Jika kredensial tidak dalam kode sumber, mereka juga tidak akan muncul di kontrol versi dan menyebabkan masalah keamanan potensial.
 
-There are two ways to get the [Add-on credentials] in a Node.js app.
+Ada dua cara untuk mendapatkan [Add-on kredensial] dalam aplikasi Node.js.
 
-## Reading the Credentials from Environment Variables
+## Membaca Kredensial dari Variabel Lingkungan
 
-By default, each Add-on exposes its credentials in the environment. You can look up the individual environment variable names in the respective Add-on documentation. To use a particular environment variable, you can refer to it using  `process.env.ENVIRONMENT_VARIABLE_NAME` in your code. Some examples for database Add-ons can be seen in the last section.
+Secara default, setiap Add-on mengekspos identitasnya di lingkungan. Anda dapat melihat lingkungan individu nama variabel di masing Add-on dokumentasi. Untuk menggunakan variabel lingkungan tertentu, Anda dapat merujuk ke menggunakan `process.env.ENVIRONMENT_VARIABLE_NAME` dalam kode Anda. Beberapa contoh untuk database Add-ons dapat dilihat di bagian terakhir.
 
-In case you don't want to expose these credentials in the environment, you can disable them by executing:
+Jika Anda tidak ingin mengekspos identitasnya tersebut di lingkungan, Anda dapat menonaktifkan mereka dengan menjalankan:
 
-~~~bash
-$ ironcliapp APP_NAME/DEP_NAME config.add SET_ENV_VARS=false
+~~~ Pesta
+$ Ironcliapp APP_NAME / DEP_NAME config.add SET_ENV_VARS = false
 ~~~
 
-The Add-on credentials can still be read from the credentials file, as explained in the next section.
+Add-on kredensial masih bisa dibaca dari mandat mengajukan, seperti yang dijelaskan di bagian selanjutnya.
 
-Note that there are some other interesting [environment variables] available in your deployment containers, such as the path to the credentials file.
+Perhatikan bahwa ada beberapa [variabel lingkungan] menarik lain yang tersedia dalam wadah penyebaran Anda, seperti jalan ke kredensial berkas.
 
-## Reading the Credentials from a Credentials File
+## Membaca Kredensial dari Kredensial Berkas
 
-All the [Add-on credentials] can be found in a provided JSON file as well, which path is exposed in
-the `CRED_FILE` environment variable. You can see the format of that file locally with the command:
+Semua [Add-on kredensial] dapat ditemukan di sebuah tersedia JSON file juga, jalan mana yang terkena di
+yang `variabel lingkungan CRED_FILE`. Anda dapat melihat format file lokal dengan perintah:
 
-~~~bash
-$ ironcliapp APP_NAME/DEP_NAME addon.creds
+~~~ Pesta
+$ Ironcliapp addon.creds APP_NAME / DEP_NAME
 ~~~
 
-You can use the following code wherever you want to get the credentials in your Node.js app:
+Anda dapat menggunakan kode berikut di mana pun Anda ingin mendapatkan mandat dalam aplikasi Node.js Anda:
 
-~~~javascript
-var fs = require('fs');
+~~~ Javascript
+fs var = require ('fs');
 
-var creds = JSON.parse(
-    fs.readFileSync(process.env.CRED_FILE)
+creds var = JSON.parse (
+    fs.readFileSync (process.env.CRED_FILE)
 );
 
 var param1 = creds.ADDON_NAME.ADDON_NAME_PARAMETER1;
 var param2 = creds.ADDON_NAME.ADDON_NAME_PARAMETER2;
 var param3 = creds.ADDON_NAME.ADDON_NAME_PARAMETER3;
-// e.g. for MYSQLS: var hostname = creds.MYSQLS.MYSQLS_HOSTNAME
+// Misal untuk MYSQLS: var hostname = creds.MYSQLS.MYSQLS_HOSTNAME
 ~~~
 
-# Examples
+# Contoh
 
-CloudKilat offers a number of data storage solutions via the [Add-on Marketplace]. Below you can see how to access Add-on credentials for MySQL.
+CloudKilat menawarkan sejumlah solusi penyimpanan data melalui [Add-on Marketplace]. Di bawah ini Anda dapat melihat bagaimana mengakses Add-on kredensial untuk MySQL.
 
-##MySQL
-To add a MySQL database, use the [MySQL Shared Add-on].
+## MySQL
+Untuk menambahkan database MySQL, gunakan [MySQL Bersama Add-on].
 
-Here's a Node.js snippet that reads the database settings from the credentials file:
+Berikut adalah potongan Node.js yang membaca pengaturan database dari mandat berkas:
 
-~~~javascript
-var fs = require('fs');
+~~~ Javascript
+fs var = require ('fs');
 
-var creds = JSON.parse(
-    fs.readFileSync(process.env.CRED_FILE)
+creds var = JSON.parse (
+    fs.readFileSync (process.env.CRED_FILE)
 );
 
 var host = creds.MYSQLS.MYSQLS_HOSTNAME;
-var database = creds.MYSQLS.MYSQLS_DATABASE;
+Database var = creds.MYSQLS.MYSQLS_DATABASE;
 var user = creds.MYSQLS.MYSQLS_USERNAME;
-var password = creds.MYSQLS.MYSQLS_PASSWORD;
-var port = creds.MYSQLS.MYSQLS_PORT;
+sandi var = creds.MYSQLS.MYSQLS_PASSWORD;
+pelabuhan var = creds.MYSQLS.MYSQLS_PORT;
 
 ~~~
 
-Remember, you can always refer to the `addon.creds` command to see the actual variable names and values.
+Ingat, Anda selalu dapat merujuk pada `perintah addon.creds` untuk melihat nama-nama variabel yang sebenarnya dan nilai-nilai.
 
 [Add-on Marketplace]: http://www.cloudkilat.com/
-[environment variables]: /Platform%20Documentation.md/#environment-variables
-[MySQL Shared Add-on]: /Add-on%20Documentation/Data%20Storage/MySQLs.md
-[Add-on credentials]: /Platform%20Documentation.md/#add-on-credentials
+[Variabel lingkungan]: /Platform%20Documentation.md/#environment-variables
+[MySQL Bersama Add-on]: /Add-on%20Documentation/Data%20Storage/MySQLs.md
+[Add-on kredensial]: /Platform%20Documentation.md/#add-on-credentials

@@ -1,300 +1,299 @@
 #Deploying Drupal 7
-![Successful Deployment](/static/apps/images/drupal7.png)
+! [Deployment Sukses] (/ statis / apps / gambar / drupal7.png)
 
-If you're looking for a flexible, friendly and powerful content management platform, built in PHP, for your projects, you really can't go past [Drupal](http://drupal.org/). Having been consistently growing and evolving since it was first created by Dries Buytaert in January 2001, Drupal 7 is the latest iteration and comes packed with a variety of features to speed up your application development, including:
+Jika Anda sedang mencari sebuah platform manajemen konten yang fleksibel, ramah dan kuat, dibangun di PHP, untuk proyek-proyek Anda, Anda benar-benar tidak dapat melewati [Drupal] (http://drupal.org/). Setelah secara konsisten tumbuh dan berkembang sejak pertama kali diciptakan oleh Dries Buytaert pada Januari 2001, Drupal 7 adalah iterasi terbaru dan hadir dengan berbagai fitur untuk mempercepat pengembangan aplikasi Anda, termasuk:
 
- * A host of core and third party modules
- * Localised into 55 languages
- * A large, thriving, community
- * Auto-update notification
- * Easy to read documentation
+ * Sejumlah inti dan modul pihak ketiga
+ * Localised dalam 55 bahasa
+ * Sebuah besar, berkembang, masyarakat
+ * Pemberitahuan Pembaruan
+ * Mudah untuk membaca dokumentasi
 
-In this tutorial, we're going to take you through deploying Drupal 7 to [the CloudKilat platform](http://www.CloudKilat.ch).
+Dalam tutorial ini, kita akan membawa Anda melalui penggelaran Drupal 7 ke [platform CloudKilat] (http://www.CloudKilat.ch).
 
-##Prerequisites
+## Prasyarat
 
-You're going to need only a few things to following along with this tutorial. These are:
+Anda akan hanya perlu beberapa hal untuk mengikuti bersama dengan tutorial ini. Ini adalah:
 
- * A [Git client](http://git-scm.com/), whether command-line or GUI.
- * A MySQL client, whether command-line or GUI, such as [MySQL Workbench](http://dev.mysql.com/downloads/workbench/) or the command-line tools.
+ * A [Git klien] (http://git-scm.com/), apakah baris perintah atau GUI.
+ * Seorang klien MySQL, apakah baris perintah atau GUI, seperti [MySQL Workbench] (http://dev.mysql.com/downloads/workbench/) atau alat baris perintah.
 
-##1. Grab a Copy of Drupal 7. 
+## 1. Ambil Copy Drupal 7.
 
-So now that you have the prerequisites in place, download a copy of the latest, stable, release, 7.14 at the time or publishing. You can find it at: [http://ftp.drupal.org/files/projects/drupal-7.14.tar.gz](http://ftp.drupal.org/files/projects/drupal-7.14.tar.gz). After that, extract it to your local filesystem. 
+Jadi sekarang bahwa Anda memiliki prasyarat di tempat, men-download salinan terbaru, stabil, rilis, 7.14 pada saat atau penerbitan. Anda dapat menemukannya di: [http://ftp.drupal.org/files/projects/drupal-7.14.tar.gz](http://ftp.drupal.org/files/projects/drupal-7.14.tar.gz). Setelah itu, ekstrak ke sistem file lokal Anda.
 
-![Source files](/static/apps/images/drupal7-files.png)
+[Sumber file] (/ statis / apps / gambar / drupal7-files.png)
 
-After this, in your local development environment, perform a standard installation of Drupal, as covered in the [online installation documentation](http://drupal.org/documentation/install). 
+Setelah ini, dalam lingkungan pengembangan lokal Anda, melakukan instalasi standar Drupal, seperti dibahas dalam [dokumentasi instalasi secara online] (http://drupal.org/documentation/install).
 
-##2. Amend the Code
+## 2. Mengubah Kode
 
-A few changes need to be made to the default Drupal 7 configuration. These changes are as follows:
+Beberapa perubahan perlu dibuat ke default Drupal 7 konfigurasi. Perubahan ini adalah sebagai berikut:
 
-###2.1 Auto-Magically Determine the Environment and Configuration the Application
+### 2.1 Auto-Ajaib Menentukan Lingkungan dan Konfigurasi Aplikasi
 
-As is quite common in modern application development, we deploy to multiple environments, such as testing, staging and production. And each of these environments will, likely, have different configuration settings for the *database*, *caching* etc, so we need to be able to differentiate between them. Drupal does not automatically do this out of the box, but it's not that hard to adjust it to make it happen.
+Seperti cukup umum dalam pengembangan aplikasi modern, kami menyebarkan ke beberapa lingkungan, seperti pengujian, pementasan dan produksi. Dan masing-masing lingkungan ini akan, mungkin, memiliki pengaturan konfigurasi yang berbeda untuk * Database *, * caching * dll, jadi kita harus mampu membedakan antara mereka. Drupal tidak secara otomatis melakukan hal ini di luar kotak, tapi itu tidak sulit untuk menyesuaikan untuk mewujudkannya.
 
-And luckily for us, Drupal 7, by default, stores most of its logging and session information automatically in the database. So we don't need to make many configuration changes there to make sure that it works. 
+Dan untungnya bagi kita, Drupal 7, secara default, toko kebanyakan penebangan dan sesi informasi secara otomatis dalam database. Jadi kita tidak perlu melakukan banyak perubahan konfigurasi sana untuk memastikan bahwa ia bekerja.
 
-What is not being covered in this tutorial is connecting the installation to a writeable filesystem, such as [Amazon S3](http://aws.amazon.com/s3/). That will be done in a follow up to this tutorial.
+Apa yang tidak sedang dibahas dalam tutorial ini adalah menghubungkan instalasi ke filesystem ditulisi, seperti [Amazon S3] (http://aws.amazon.com/s3/). Yang akan dilakukan dalam tindak lanjut untuk tutorial ini.
 
-##3. Put the Code Under Git Control
+## 3. Masukan Control Kode bawah Git
 
-Ok, now let's get started making these changes and deploying the application. We'll begin by putting it under Git control. So run the following command to do that:
+Ok, sekarang mari kita mulai membuat perubahan ini dan menggunakan aplikasi. Kita akan mulai dengan meletakkan di bawah kontrol Git. Jadi jalankan perintah berikut untuk melakukannya:
 
-    cd <your Drupal 7 directory>
+    cd <directory Drupal 7 Anda>
     
-    git init .
+    git init.
     
     git add -A
     
-    git commit -m "First addition of the source files"
+    git commit -m "Selain Pertama sumber file"
     
-Now that the code's under version control, we're going to create a testing branch as well, so that we have one to test with and one for production. Run the following command and it will be done:
+Sekarang bahwa kode ini di bawah kontrol versi, kita akan membuat cabang pengujian juga, sehingga kita memiliki satu untuk menguji dengan dan satu untuk produksi. Jalankan perintah berikut dan itu akan dilakukan:
 
-    git checkout -b testing
+    git checkout pengujian -b
     
-If you're not familiar with Git, the previous command will checkout a copy of our existing branch, into a new branch, called **testing**. You can confirm that you now have two branches, by running the following command:
+Jika Anda tidak terbiasa dengan Git, perintah sebelumnya akan checkout salinan cabang kami yang ada, menjadi cabang baru, yang disebut ** pengujian **. Anda dapat mengkonfirmasi bahwa Anda sekarang memiliki dua cabang, dengan menjalankan perintah berikut:
 
     git branch
     
-That will show output similar to below:
+Itu akan menunjukkan output yang mirip dengan di bawah:
 
-    $ git branch
-        master
-        * testing
+    $ Git branch
+        menguasai
+        * Pengujian
 
-Choose a unique name to replace the `APP_NAME` placeholder for your application and create it on the CloudKilat platform. Now, we need to make our first deployment of both branches to the CloudKilat platform. To do this we checkout the master branch, create the application in our CloudKilat account and *push* and *deploy* both deployments. By running the following commands, this will all be done:
+Pilih nama yang unik untuk menggantikan `APP_NAME` tempat untuk aplikasi Anda dan membuatnya pada platform CloudKilat. Sekarang, kita perlu membuat penyebaran pertama kami kedua cabang ke platform CloudKilat. Untuk melakukan ini kita checkout cabang master, membuat aplikasi di akun CloudKilat dan * mendorong * dan * menggunakan * baik penyebaran. Dengan menjalankan perintah berikut, ini semua akan dilakukan:
 
-    // switch to the master branch
-    git checkout master
+    // Beralih ke cabang master
+    Master checkout git
     
-    // create the application, indicating it's PHP-based
-    ironcliapp APP_NAME create php
+    // Membuat aplikasi, menunjukkan itu berbasis PHP
+    ironcliapp APP_NAME membuat php
     
-    // deploy the default branch
-    ironcliapp APP_NAME/default push    
-    ironcliapp APP_NAME/default deploy
+    // Menyebarkan cabang default
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
     
-    // deploy the testing branch
-    ironcliapp APP_NAME/testing push    
-    ironcliapp APP_NAME/testing deploy
+    // Menyebarkan cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
-##4. Initialise the Required Addons
+## 4. Menginisialisasinya Addons Diperlukan
 
-Now that that's done, we need to configure two add-ons, config and mysqls. The config add-on is required to determine the active environment and mysqls for storing our session and logging information. 
+Sekarang itu selesai, kita perlu mengkonfigurasi dua add-ons, config dan mysqls. Config add-on diperlukan untuk menentukan lingkungan aktif dan mysqls untuk menyimpan sesi dan login informasi.
 
-###4.1 Initialising mysqls
+### 4.1 Mengawali mysqls
 
-To initialise mysqls, run the following commands and make a note of the output:
+Untuk menginisialisasi mysqls, jalankan perintah berikut dan membuat catatan dari output:
 
-    // Initialise the mysqls.free addon for the default deployment
-    ironcliapp APP_NAME/default addon.add mysqls.free
+    // Menginisialisasinya addon mysqls.free untuk penyebaran standar
+    ironcliapp APP_NAME / default addon.add mysqls.free
 
-    // Retrieve the settings
-    ironcliapp APP_NAME/default addon mysqls.free
+    // Ambil pengaturan
+    ironcliapp APP_NAME / default addon mysqls.free
 
-    // Initialise the mysqls.free addon for the testing deployment
-    ironcliapp APP_NAME/testing addon.add mysqls.free
+    // Menginisialisasinya addon mysqls.free untuk penyebaran pengujian
+    ironcliapp APP_NAME / pengujian addon.add mysqls.free
 
-    // Retrieve the settings
-    ironcliapp APP_NAME/testing addon mysqls.free
+    // Ambil pengaturan
+    ironcliapp APP_NAME / pengujian addon mysqls.free
 
-The output of the commands will be similar to that below:
+Output dari perintah akan mirip dengan yang di bawah ini:
 
-    Addon                    : mysqls.free
+    Addon: mysqls.free
 
-     Settings
-       MYSQLS_DATABASE          : <database_name>
-       MYSQLS_PASSWORD          : <database_password>
-       MYSQLS_PORT              : 3306
-       MYSQLS_HOSTNAME          : mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
-       MYSQLS_USERNAME          : <database_username>
+     Pengaturan
+       MYSQLS_DATABASE: <database_name>
+       MYSQLS_PASSWORD: <database_password>
+       MYSQLS_PORT: 3306
+       MYSQLS_HOSTNAME: mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
+       MYSQLS_USERNAME: <database_username>
 
-###4.2 Initialising config
+### 4.2 Mengawali config
 
-Now we need to configure the config addon and store the respective environment setting in it. So run the following commands to do this:
+Sekarang kita perlu mengkonfigurasi addon config dan menyimpan lingkungan masing-masing pengaturan di dalamnya. Jadi jalankan perintah berikut untuk melakukan hal ini:
 
-    // Set the default environment setting
-    ironcliapp APP_NAME/default config.add APPLICATION_ENV=production
+    // Mengatur pengaturan lingkungan default
+    ironcliapp APP_NAME / default config.add APPLICATION_ENV = produksi
 
-    // Set the testing environment setting
-    ironcliapp APP_NAME/testing config.add APPLICATION_ENV=testing
+    // Mengatur pengaturan lingkungan pengujian
+    ironcliapp APP_NAME / pengujian config.add APPLICATION_ENV = pengujian
 
-Now that this is done, we're ready to make some changes to our code to make use of the new configuration.
+Sekarang ini dilakukan, kita siap untuk membuat beberapa perubahan pada kode kita untuk menggunakan konfigurasi baru.
 
-##5. Environment Configuration
+## 5. Konfigurasi lingkungan
 
-Now we're going to extend the Drupal 7 bootstrap process to be able to determine which environment is being used, which we talked about earlier. To do that, open up ``sites/default/settings.php`` and add in the code below right at the end of the file. 
+Sekarang kita akan memperpanjang proses bootstrap Drupal 7 untuk dapat menentukan lingkungan yang sedang digunakan, yang kita bicarakan sebelumnya. Untuk melakukan itu, membuka `` situs / default / settings.php`` dan menambahkan kode di bawah ini tepat di akhir file.
 
-Have a look at it and we'll go through it together.
+Silahkan lihat pada itu dan kami akan pergi melalui bersama-sama.
 
-    $env = 'production';
+    $ Env = 'produksi';
     
-    if (!empty($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localdomain') !== FALSE) {
-       $env = 'development'; 
+    if (! empty ($ _ SERVER ['HTTP_HOST']) && strpos ($ _ SERVER ['HTTP_HOST'], 'localdomain')! == FALSE) {
+       $ Env = 'pembangunan';
     }
     
-    if (!empty($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localdomain') === FALSE) {
-        // Parse the json file with ADDONS credentials
-        $string = file_get_contents($_ENV['CRED_FILE'], false);
+    if (! empty ($ _ SERVER ['HTTP_HOST']) && strpos ($ _ SERVER ['HTTP_HOST'], 'localdomain') === FALSE) {
+        // Parse file json dengan addons kredensial
+        $ String = file_get_contents ($ _ ENV ['CRED_FILE'], false);
     
-        if ($string == false) {
-            die('FATAL: Could not read credentials file');
+        if ($ string == false) {
+            die ('FATAL: Tidak dapat membaca berkas kredensial');
         }
     
-        $creds = json_decode($string, true);
+        $ Creds = json_decode ($ string, true);
     
-        // Now getenv('APPLICATION_ENV') should work:
-        $env = $creds['CONFIG']['CONFIG_VARS']['APPLICATION_ENV'];
+        // Sekarang getenv ('APPLICATION_ENV') harus bekerja:
+        $ Env = $ creds ['CONFIG'] ['CONFIG_VARS'] ['APPLICATION_ENV'];
     }
     
     
-    $local_settings = __DIR__ . "/settings.{$env}.inc"; 
-    include($local_settings);
+    $ Local_settings = __DIR__. "/settings.{$env}.inc";
+    termasuk ($ local_settings);
 
-Firstly, we set the environment to default to production. Then, if we're in a local development environment, as determined, rather simply, by having ``localdomain`` in the URL, then we set the environment to development.
+Pertama, kita mengatur lingkungan ke default produksi. Kemudian, jika kita berada dalam lingkungan pembangunan daerah, sebagaimana ditentukan, bukan hanya, dengan memiliki `` localdomain`` dalam URL, maka kita mengatur lingkungan untuk pembangunan.
 
-Otherwise, we will retrieve the setting contained in the CloudKilat credentials file setting, **APPLICATION_ENV**, that we set earlier with the config addon, which should be one of '**production**' or '**testing**'.
+Jika tidak, kami akan mengambil setting yang terkandung dalam CloudKilat pengaturan kredensial berkas, ** APPLICATION_ENV **, yang kita tetapkan sebelumnya dengan addon konfigurasi, yang harus menjadi salah satu '** ** produksi' atau '** pengujian **' .
 
-With this code in place, we can now bootstrap multiple environments. Following this, we need to configure the database,.
+Dengan kode ini di tempat, kita sekarang dapat bootstrap beberapa lingkungan. Setelah ini, kita perlu mengkonfigurasi database ,.
 
-##6. Configuring the Database
+## 6. Konfigurasi Database
 
-When we configured the add ons earlier (mysqls and config) the settings were automatically persisted to the running server environments. So we’re now able to retrieve these settings, when we’re not in a local development environment, and configure our database connection to use them automatically. 
+Ketika kami dikonfigurasi add ons sebelumnya (mysqls dan config) pengaturan yang secara otomatis bertahan dengan lingkungan server berjalan. Jadi kita sekarang dapat mengambil pengaturan ini, ketika kita tidak dalam lingkungan pembangunan daerah, dan mengkonfigurasi koneksi database kami untuk menggunakannya secara otomatis.
 
-It’s really handy as we don’t need to do too much to make use of the options.
+Ini benar-benar berguna karena kita tidak perlu melakukan terlalu banyak untuk memanfaatkan opsi.
 
-Under **sites/default** create three new files:
+Di bawah ** situs / default ** membuat tiga file baru:
 
- * ``settings.development.inc``
- * ``settings.testing.inc``
- * ``settings.production.inc``
+ * `` Settings.development.inc``
+ * `` Settings.testing.inc``
+ * `` Settings.production.inc``
 
-In there, past the respective database settings for your different environments that you can retrieve from the database add-on configuration or your local development environment. 
+Di sana, melewati pengaturan database masing-masing untuk lingkungan yang berbeda Anda bahwa Anda dapat mengambil dari database add-on konfigurasi atau lingkungan pengembangan lokal Anda.
 
-Two examples are provided below: 
+Dua contoh yang disediakan di bawah:
 
-###6.1 Production
+### 6.1 Produksi
 
-    <?php
+    <? Php
     
-    // read the credentials file
-    $string = file_get_contents($_ENV['CRED_FILE'], false);
-    if ($string == false) {
-        die('FATAL: Could not read credentials file');
+    // Membaca kredensial berkas
+    $ String = file_get_contents ($ _ ENV ['CRED_FILE'], false);
+    if ($ string == false) {
+        die ('FATAL: Tidak dapat membaca berkas kredensial');
     }
     
-    // the file contains a JSON string, decode it and return an associative array
-    $creds = json_decode($string, true);
+    // File berisi string JSON, decode dan mengembalikan array asosiatif
+    $ Creds = json_decode ($ string, true);
     
-    $databases = array (
-      'default' => array (
-        'default' => array (
-          'database' => $creds["MYSQLS"]["MYSQLS_DATABASE"],
-          'username' => $creds["MYSQLS"]["MYSQLS_USERNAME"],
-          'password' => $creds["MYSQLS"]["MYSQLS_PASSWORD"],
-          'host' => $creds["MYSQLS"]["MYSQLS_HOSTNAME"],
-          'port' => '',
-          'driver' => 'mysql',
-          'prefix' => '',
+    $ Database = array (
+      'Default' => array (
+        'Default' => array (
+          'Database' => $ creds ["MYSQLS"] ["MYSQLS_DATABASE"],
+          'Username' => $ creds ["MYSQLS"] ["MYSQLS_USERNAME"],
+          'Password' => $ creds ["MYSQLS"] ["MYSQLS_PASSWORD"],
+          'Host' => $ creds ["MYSQLS"] ["MYSQLS_HOSTNAME"],
+          'Pelabuhan' => '',
+          'Driver' => 'mysql',
+          'Awalan' => '',
         ),
       ),
     );
 
-###6.2 Testing
+### 6.2 Pengujian
 
-    <?php
+    <? Php
     
-    // read the credentials file
-    $string = file_get_contents($_ENV['CRED_FILE'], false);
-    if ($string == false) {
-        die('FATAL: Could not read credentials file');
+    // Membaca kredensial berkas
+    $ String = file_get_contents ($ _ ENV ['CRED_FILE'], false);
+    if ($ string == false) {
+        die ('FATAL: Tidak dapat membaca berkas kredensial');
     }
     
-    // the file contains a JSON string, decode it and return an associative array
-    $creds = json_decode($string, true);
+    // File berisi string JSON, decode dan mengembalikan array asosiatif
+    $ Creds = json_decode ($ string, true);
     
-    $databases = array (
-      'default' => array (
-        'default' => array (
-          'database' => $creds["MYSQLS"]["MYSQLS_DATABASE"],
-          'username' => $creds["MYSQLS"]["MYSQLS_USERNAME"],
-          'password' => $creds["MYSQLS"]["MYSQLS_PASSWORD"],
-          'host' => $creds["MYSQLS"]["MYSQLS_HOSTNAME"],
-          'port' => '',
-          'driver' => 'mysql',
-          'prefix' => '',
+    $ Database = array (
+      'Default' => array (
+        'Default' => array (
+          'Database' => $ creds ["MYSQLS"] ["MYSQLS_DATABASE"],
+          'Username' => $ creds ["MYSQLS"] ["MYSQLS_USERNAME"],
+          'Password' => $ creds ["MYSQLS"] ["MYSQLS_PASSWORD"],
+          'Host' => $ creds ["MYSQLS"] ["MYSQLS_HOSTNAME"],
+          'Pelabuhan' => '',
+          'Driver' => 'mysql',
+          'Awalan' => '',
         ),
       ),
     );
 
-###6.3 Database Schema
+### 6.3 Database Schema
 
-Ok, next we need to create a basic database schema for storing the session and
-log information as well as the other configuration and user data settings that
-Drupal stores. Download [the file](/static/apps/drupal_CloudKilat_init.sql), ready to be used to initialise the database. 
+Ok, kita perlu membuat skema database dasar untuk menyimpan sesi dan
+log informasi serta pengaturan konfigurasi dan data pengguna lain yang
+Drupal toko. Unduh [file] (/ statis / apps / drupal_CloudKilat_init.sql), siap digunakan untuk menginisialisasi database.
 
-Now, in the shell, we're going to load the data in to the remote mysql instance that we created earlier. To do so, run the following command, changing the respective options with your configuration settings, doing this for both **default** and **testing**:
+Sekarang, di shell, kita akan memuat data ke dalam mysql contoh remote yang kita buat sebelumnya. Untuk melakukannya, jalankan perintah berikut, mengubah pilihan masing-masing dengan pengaturan konfigurasi Anda, melakukan hal ini untuk kedua ** bawaan ** dan ** pengujian **:
 
-    mysql -u <database_username> -p \
-        -h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
-        --ssl-ca=mysql-ssl-ca-cert.pem <database_name> < drupal_CloudKilat_init.sql
+    mysql -u <database_username> p \
+        h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
+        --ssl-ca = mysql-ssl-ca-cert.pem <database_name> <drupal_CloudKilat_init.sql
 
-In the command above, you can see a reference to a **.pem** file. This can be downloaded from: [http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem](http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem). All being well, the command will finish silently, loading the data. You can check that all's gone well with following commands:
+Pada perintah di atas, Anda dapat melihat referensi ke pem ** berkas **.. Ini dapat didownload dari: [http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem](http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem). Semua yang baik, perintah akan selesai diam-diam, memuat data. Anda dapat memeriksa bahwa semua sudah pergi baik dengan perintah berikut:
 
-    mysql -u <database_username> -p \
-        -h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
-        --ssl-ca=mysql-ssl-ca-cert.pem <database_name>
+    mysql -u <database_username> p \
+        h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
+        --ssl-ca = mysql-ssl-ca-cert.pem <database_name>
     
-    show tables;
+    menampilkan tabel;
     
-This should show you output similar to below:
+Ini harus menunjukkan output yang Anda mirip dengan di bawah:
 
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+Ketik 'bantuan;' atau '\ h' untuk membantu. Ketik '\ c' untuk menghapus pernyataan masukan saat ini.
 
     mysql> show tables;
-    +-----------------------------+
-    | Tables_in_dep29a6hxt9       |
-    +-----------------------------+
-    | actions                     |
-    | authmap                     |
-    | batch                       |
-    | block                       |
-    | block_custom                |
-    …
-    | taxonomy_vocabulary         |
-    | url_alias                   |
-    | users                       |
-    | users_roles                 |
-    | variable                    |
-    | watchdog                    |
-    +-----------------------------+
+    + ----------------------------- +
+    | Tables_in_dep29a6hxt9 |
+    + ----------------------------- +
+    | Tindakan |
+    | Authmap |
+    | Bets |
+    | Blok |
+    | Block_custom |
+    ...
+    | Taxonomy_vocabulary |
+    | Url_alias |
+    | Pengguna |
+    | Users_roles |
+    | Variabel |
+    | Pengawas |
+    + ----------------------------- +
     74 rows in set (0.06 sec)
     
-    mysql>  
+    mysql>
 
-##7. Commit the Code Changes
+## 7. Komit Kode Perubahan
 
-Now that that's done, commit the changes we made earlier and push and deploy both environments again so that the new information will be used. This can be done quickly with the following commands:
+Sekarang itu selesai, melakukan perubahan yang kami buat sebelumnya dan mendorong dan menyebarkan kedua lingkungan lagi sehingga informasi baru akan digunakan. Hal ini dapat dilakukan dengan cepat dengan perintah berikut:
 
-    // commit the changes
-    git commit -m "changed to store log and session in mysql and auto-determine environment"
+    // Melakukan perubahan
+    git komit -m "berubah untuk menyimpan log dan sesi di mysql dan auto-menentukan lingkungan"
 
-    // deploy the default branch
-    ironcliapp APP_NAME/default push    
-    ironcliapp APP_NAME/default deploy
+    // Menyebarkan cabang default
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
     
-    git checkout testing
-    git merge master
+    pengujian checkout git
+    Master menggabungkan git
     
-    // deploy the testing branch
-    ironcliapp APP_NAME/testing push    
-    ironcliapp APP_NAME/testing deploy
+    // Menyebarkan cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
-##8. Review the Deployment
+## 8. Tinjau Deployment yang
 
-With that completed, then you'll be able to have a look at both your deployments to ensure that they're working. 
+Dengan itu selesai, maka Anda akan dapat melihat di kedua penyebaran Anda untuk memastikan bahwa mereka bekerja.
 
-With that, you should be up and running, ready to create your next, amazing, PHP web application, using Drupal 7. If you have any issues, feel free to email [support@cloudkilat.com](mailto:support@cloudkilat.com).
-
+Dengan itu, Anda harus bangun dan berjalan, siap untuk membuat berikutnya, menakjubkan, aplikasi PHP web Anda, menggunakan Drupal 7. Jika Anda memiliki masalah apapun, jangan ragu untuk email [support@cloudkilat.com] (mailto: dukungan @ cloudkilat. com).

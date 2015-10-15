@@ -1,360 +1,359 @@
-#Deploying Yii 1.1.10 to CloudKilat
+#Deploying Yii 1.1.10 ke CloudKilat
 
-![Successful Deployment](/static/apps/images/yii-framework-logo.png)
+! [Deployment Sukses] (/ statis / apps / gambar / yii-kerangka-logo.png)
 
-If you're looking for a lightning fast, light and effective PHP Framework for your projects, one without a lot of the cruft and legacy overhead of some of the other popular PHP frameworks available today, you can't go past [Yii Framework](http://www.yiiframework.com/). Now at [version 1.1.11](http://yii.googlecode.com/files/yii-1.1.11.58da45.tar.gz) it comes with a variety of features to speed up your application development, including:
+Jika Anda sedang mencari kilat cepat, ringan dan Kerangka PHP efektif untuk proyek-proyek Anda, satu tanpa banyak cruft dan warisan overhead beberapa lainnya kerangka PHP populer yang tersedia saat ini, Anda tidak dapat melewati [Yii Kerangka] (http://www.yiiframework.com/). Sekarang di [versi 1.1.11] (http://yii.googlecode.com/files/yii-1.1.11.58da45.tar.gz) datang dengan berbagai fitur untuk mempercepat pengembangan aplikasi Anda, termasuk:
 
- * Baked in Security
- * Clear MVC approach
- * A large, thriving, community
- * Loads of plugins and add-ons
- * Easy to read documentation
+ * Baked di Keamanan
+ * Pendekatan Batal MVC
+ * Sebuah besar, berkembang, masyarakat
+ * Banyak plugin dan add-ons
+ * Mudah untuk membaca dokumentasi
 
-In this tutorial, we're going to take you through deploying the Yii Framework v1.1.11 to [the CloudKilat platform](http://www.cloudkilat.com/).
+Dalam tutorial ini, kita akan membawa Anda melalui penggelaran v1.1.11 Yii Framework [platform CloudKilat] (http://www.cloudkilat.com/).
 
-##Prerequisites
+## Prasyarat
 
-You're going to need only a few things to following along with this tutorial. These are:
+Anda akan hanya perlu beberapa hal untuk mengikuti bersama dengan tutorial ini. Ini adalah:
 
- * A [Git client](http://git-scm.com/), whether command-line or GUI.
- * A MySQL client, whether command-line or GUI, such as [MySQL Workbench](http://dev.mysql.com/downloads/workbench/) or the command-line tools.
+ * A [Git klien] (http://git-scm.com/), apakah baris perintah atau GUI.
+ * Seorang klien MySQL, apakah baris perintah atau GUI, seperti [MySQL Workbench] (http://dev.mysql.com/downloads/workbench/) atau alat baris perintah.
 
-##1. Grab a Copy of the Yii Framework
+## 1. Ambil Copy Kerangka Yii
 
-So now that you have the prerequisites in place, download a copy of the latest, stable, release. You can find it at: [http://yii.googlecode.com/files/yii-1.1.11.58da45.tar.gz](http://yii.googlecode.com/files/yii-1.1.11.58da45.tar.gz). After that, extract it to your local file sytem.
+Jadi sekarang bahwa Anda memiliki prasyarat di tempat, men-download salinan terbaru, stabil, rilis. Anda dapat menemukannya di: [http://yii.googlecode.com/files/yii-1.1.11.58da45.tar.gz](http://yii.googlecode.com/files/yii-1.1.11.58da45.tar.gz). Setelah itu, ekstrak file sytem lokal.
 
-![Source files](/static/apps/images/yii-framework-source.png)
+[Sumber file] (/ statis / apps / gambar / yii-kerangka-source.png)
 
 
-##Create a Basic Application
+## Buat Aplikasi Dasar
 
-Ok, first things first, [follow the online tutorial](http://www.yiiframework.com/doc/guide/1.1/en/quickstart.installation) on the Yii site and create a simple application in your local development environment. Then, after you've done that, we're going to make a set of simple changes and you'll be ready to deploy your first application to CloudKilat.
+Ok, hal pertama yang pertama, [mengikuti tutorial secara online] (http://www.yiiframework.com/doc/guide/1.1/en/quickstart.installation) di situs Yii dan membuat aplikasi sederhana dalam lingkungan pengembangan lokal Anda. Kemudian, setelah Anda melakukan itu, kita akan membuat satu set perubahan sederhana dan Anda akan siap untuk menyebarkan aplikasi pertama Anda untuk CloudKilat.
 
-##2. Amend the Code
+## 2. Mengubah Kode
 
-Ok, now that you have your test application created and running, we need to modify a few parts of the code. These changes are as follows:
+Ok, sekarang Anda memiliki aplikasi pengujian Anda dibuat dan berjalan, kita perlu mengubah beberapa bagian dari kode. Perubahan ini adalah sebagai berikut:
 
- * Store session information in APC
- * Log messages in the database, not on the filesystem
- * Auto-magically determine the environment and set the configuration
+ * Informasi sesi Simpan dalam APC
+ * Log pesan dalam database, bukan pada filesystem
+ * Auto-ajaib menentukan lingkungan dan mengatur konfigurasi
 
-###2.1 Store Session in the Cache Log Files in a Database, Not on the Filesystem
+### 2.1 Toko Sesi di Cache File log di Database, Bukan pada Filesystem yang
 
-We need to do this because Yii Framework, by default, logs to and stores its session files on the filesystem. However, this approach isn't recommended on the CloudKilat platform.
+Kita perlu melakukan ini karena Yii Framework, secara default, log ke dan menyimpan file sesi pada filesystem. Namun, pendekatan ini tidak dianjurkan pada platform CloudKilat.
 
-What's more, storing files in a multi-server environment can lead to hard to debug issues. So what we're going to do is to store both the session and log files in a two-level cache, composed of MySQL and APC.
+Terlebih lagi, menyimpan file dalam lingkungan multi-server dapat menyebabkan sulit untuk debug masalah. Jadi apa yang kita akan lakukan adalah untuk menyimpan baik sesi dan log file dalam cache dua tingkat, yang terdiri dari MySQL dan APC.
 
-Thankfully, Yii Framework is written in a very straight-forward and configurable manner, so this isn't too hard to do. What's more, the community around it is very healthy, so there's loads of options and support available.
+Untungnya, Yii Framework ditulis dalam cara yang sangat lurus ke depan dan dikonfigurasi, jadi ini tidak terlalu sulit untuk dilakukan. Terlebih lagi, masyarakat sekitar sangat sehat, sehingga ada banyak pilihan dan dukungan yang tersedia.
 
-###2.2 Auto-magically Determine the Environment and Set the Configuration
+### 2.2 Auto-ajaib Tentukan Lingkungan dan Set Konfigurasi
 
-As each environment will, likely, have different configuration settings, we also need to be able to differentiate between them. Yii Framework does do this out of the box, but it's done by using different bootstrap files, such as ``index.php``, ``index-test.php`` and so on.
+Karena setiap lingkungan akan, mungkin, memiliki pengaturan konfigurasi yang berbeda, kami juga harus mampu membedakan antara mereka. Yii Kerangka melakukan hal ini di luar kotak, tapi itu dilakukan dengan menggunakan file bootstrap yang berbeda, seperti `` index.php``, `` indeks-test.php`` dan sebagainya.
 
-On CloudKilat, an app should programmatically know where it is and set the appropriate configuration options. That way, your code will run in every environment. So we're going to be making additions to the code so this happens auto-magically.
+Pada CloudKilat, sebuah aplikasi harus pemrograman tahu di mana itu dan mengatur pilihan konfigurasi yang sesuai. Dengan cara itu, kode Anda akan berjalan di setiap lingkungan. Jadi kita akan membuat penambahan kode sehingga hal ini terjadi auto-ajaib.
 
-##3. Put the Code Under Git Control
+## 3. Masukan Control Kode bawah Git
 
-Ok, now let's get started making these changes and deploying the application. We'll begin by putting it under Git control. So run the following command to do that:
+Ok, sekarang mari kita mulai membuat perubahan ini dan menggunakan aplikasi. Kita akan mulai dengan meletakkan di bawah kontrol Git. Jadi jalankan perintah berikut untuk melakukannya:
 
-    cd <your Yii Framework directory>
+    cd <directory Yii Kerangka Anda>
 
-    git init .
+    git init.
 
     git add -A
 
-    git commit -m "First addition of the source files"
+    git commit -m "Selain Pertama sumber file"
 
-Now that the code's under version control, we're going to create a testing branch as well, so that we have one to test with and one for production. Run the following command and it will be done:
+Sekarang bahwa kode ini di bawah kontrol versi, kita akan membuat cabang pengujian juga, sehingga kita memiliki satu untuk menguji dengan dan satu untuk produksi. Jalankan perintah berikut dan itu akan dilakukan:
 
-    git checkout -b testing
+    git checkout pengujian -b
 
-If you're not familiar with Git, the previous command will checkout a copy of our existing branch, into a new branch, called *testing*. You can confirm that you now have two branches, by running the following command:
+Jika Anda tidak terbiasa dengan Git, perintah sebelumnya akan checkout salinan cabang kami yang ada, menjadi cabang baru, yang disebut * pengujian *. Anda dapat mengkonfirmasi bahwa Anda sekarang memiliki dua cabang, dengan menjalankan perintah berikut:
 
     git branch
 
-That will show output similar to below:
+Itu akan menunjukkan output yang mirip dengan di bawah:
 
-    $ git branch
-        master
-        * testing
+    $ Git branch
+        menguasai
+        * Pengujian
 
-Choose a unique name to replace the `APP_NAME` placeholder for your application and create it on the CloudKilat platform. Now, we need to make our first deployment of both branches to the CloudKilat platform. To do this we checkout the master branch, create the application in our CloudKilat account and push and deploy both deployments. By running the following commands, this will all be done:
+Pilih nama yang unik untuk menggantikan `APP_NAME` tempat untuk aplikasi Anda dan membuatnya pada platform CloudKilat. Sekarang, kita perlu membuat penyebaran pertama kami kedua cabang ke platform CloudKilat. Untuk melakukan ini kita checkout cabang master, membuat aplikasi di akun CloudKilat kami dan mendorong dan menyebarkan kedua penyebaran. Dengan menjalankan perintah berikut, ini semua akan dilakukan:
 
-    // switch to the master branch
-    git checkout master
+    // Beralih ke cabang master
+    Master checkout git
 
-    // create the application
-    ironcliapp APP_NAME create php
+    // Membuat aplikasi
+    ironcliapp APP_NAME membuat php
 
-    // deploy the default branch
-    ironcliapp APP_NAME/default push
-    ironcliapp APP_NAME/default deploy
+    // Menyebarkan cabang default
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
 
-    // deploy the testing branch
-    ironcliapp APP_NAME/testing push
-    ironcliapp APP_NAME/testing deploy
+    // Menyebarkan cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
-You should see output as below:
+Anda harus melihat output seperti di bawah ini:
 
-    $ ironcliapp APP_NAME/default push
-    Counting objects: 2257, done.
-    Delta compression using up to 2 threads.
-    Compressing objects: 100% (2131/2131), done.
-    Writing objects: 100% (2257/2257), 5.42 MiB | 117 KiB/s, done.
-    Total 2257 (delta 735), reused 0 (delta 0)
+    $ Ironcliapp APP_NAME / dorongan bawaan
+    Menghitung objek: 2257, dilakukan.
+    Delta kompresi menggunakan sampai 2 benang.
+    Mengompresi objek: 100% (2131/2131), dilakukan.
+    Menulis objek: 100% (2257/2257), 5.42 MiB | 117 KiB / s, dilakukan.
+    Total 2257 (delta 735), kembali 0 (delta 0)
 
-    >> Receiving push
-    >> Compiling PHP
-         INFO: Yii Framework detected
-         INFO: No '.ccconfig.yaml' found, setting web content to '/testdrive'.
-         INFO: Required directory missing, creating 'testdrive/protected/runtime'.
-    >> Building image
-    >> Uploading image (4.1M)
+    >> Mendorong Menerima
+    >> Kompilasi PHP
+         INFO: Yii Kerangka terdeteksi
+         INFO: ada '.ccconfig.yaml' ditemukan, pengaturan konten web untuk '/ testdrive'.
+         INFO: direktori yang diperlukan hilang, menciptakan 'testdrive / protected / runtime'.
+    >> Bangunan gambar
+    >> Gambar Mengunggah (4,1 juta)
 
-    To ssh://APP_NAME@kilatiron.net/repository.git
-     * [new branch]      master -> master
+    Untuk ssh: //APP_NAME@kilatiron.net/repository.git
+     * [Cabang baru] Master -> Master
 
-##4. Initialise the Required Add-ons
+## 4. Menginisialisasinya Diperlukan Add-ons
 
-Now that that's done, we need to configure two add-ons, config and mysqls. The config Add-on is required for determining the active environment and mysqls for storing our session and logging information.
+Sekarang itu selesai, kita perlu mengkonfigurasi dua add-ons, config dan mysqls. Config Add-on diperlukan untuk menentukan lingkungan aktif dan mysqls untuk menyimpan sesi dan login informasi.
 
-###4.1 Check the Add-on Configuration
+### 4.1 Periksa Add-on Konfigurasi
 
-Now let's be sure that everything is in order by having a look at the add-on configuration output, in this case for testing. To do that, run the command below:
+Sekarang mari kita pastikan bahwa segala sesuatu adalah dalam rangka dengan memiliki melihat output konfigurasi add-on, dalam hal ini untuk pengujian. Untuk melakukan itu, jalankan perintah di bawah ini:
 
-    // Initialise the mysqls.free addon for the default deployment
-    ironcliapp APP_NAME/default addon.add mysqls.free
+    // Menginisialisasinya addon mysqls.free untuk penyebaran standar
+    ironcliapp APP_NAME / default addon.add mysqls.free
 
-    // Retrieve the settings
-    ironcliapp APP_NAME/default addon mysqls.free
+    // Ambil pengaturan
+    ironcliapp APP_NAME / default addon mysqls.free
 
-    // Initialise the mysqls.free addon for the testing deployment
-    ironcliapp APP_NAME/testing addon.add mysqls.free
+    // Menginisialisasinya addon mysqls.free untuk penyebaran pengujian
+    ironcliapp APP_NAME / pengujian addon.add mysqls.free
 
-    // Retrieve the settings
-    ironcliapp APP_NAME/testing addon mysqls.free
+    // Ambil pengaturan
+    ironcliapp APP_NAME / pengujian addon mysqls.free
 
-The output of the commands will be similar to that below:
+Output dari perintah akan mirip dengan yang di bawah ini:
 
-    Addon                    : mysqls.free
+    Addon: mysqls.free
 
-     Settings
-       MYSQLS_DATABASE          : <database_name>
-       MYSQLS_PASSWORD          : <database_password>
-       MYSQLS_PORT              : 3306
-       MYSQLS_HOSTNAME          : mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
-       MYSQLS_USERNAME          : <database_username>
+     Pengaturan
+       MYSQLS_DATABASE: <database_name>
+       MYSQLS_PASSWORD: <database_password>
+       MYSQLS_PORT: 3306
+       MYSQLS_HOSTNAME: mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com
+       MYSQLS_USERNAME: <database_username>
 
-###4.2 Initialising config
+### 4.2 Mengawali config
 
-Now we need to configure the config add-on and store the respective environment setting in it. So run the following commands to do this:
+Sekarang kita perlu mengkonfigurasi config add-on dan menyimpan lingkungan masing-masing pengaturan di dalamnya. Jadi jalankan perintah berikut untuk melakukan hal ini:
 
-    // Set the default environment setting
-    ironcliapp APP_NAME/default config.add APPLICATION_ENV=main
+    // Mengatur pengaturan lingkungan default
+    ironcliapp APP_NAME / default config.add APPLICATION_ENV = utama
 
-    // Set the testing environment setting
-    ironcliapp APP_NAME/testing config.add APPLICATION_ENV=testing
+    // Mengatur pengaturan lingkungan pengujian
+    ironcliapp APP_NAME / pengujian config.add APPLICATION_ENV = pengujian
 
-Now that this is done, we're ready to make some changes to our code to make use of the new configuration.
+Sekarang ini dilakukan, kita siap untuk membuat beberapa perubahan pada kode kita untuk menggunakan konfigurasi baru.
 
-##5. Environment Configuration
+## 5. Konfigurasi lingkungan
 
-###5.1 Bootstrap
+### 5.1 Bootstrap
 
-By default, Yii comes with 3 bootstrap configuration files. Located in ``<yourapp>/protected/config`` the files are called ``console.php``, ``main.php`` and ``test.php``. They are the *console*, *production* and *testing* environment configurations, respectively.
+Secara default, Yii datang dengan file konfigurasi 3 bootstrap. Terletak di `` <yourapp> / protected / config`` file disebut `` console.php``, `` main.php`` dan `` test.php``. Mereka adalah konsol * *, * produksi * dan * pengujian * lingkungan konfigurasi, masing-masing.
 
-We need to change them slightly so that they'll do what we need. Have a look at the code below that will show, specifically, what we need to change.
+Kita perlu mengubah mereka sedikit sehingga mereka akan melakukan apa yang kita butuhkan. Silahkan lihat pada kode di bawah ini yang akan menunjukkan, secara spesifik, apa yang kita perlu mengubah.
 
-####5.1.1 Load the Settings from the Environment
+#### 5.1.1 Load Settings dari Lingkungan
 
-We'll look specifically at main.php here, but you can change the other two files as well. We add the code below to the top of the file so that we are able to access the ``CRED_FILE`` variable.
+Kami akan melihat secara khusus main.php di sini, tapi Anda dapat mengubah dua lainnya file juga. Kami menambahkan kode berikut ke atas file sehingga kita dapat mengakses `` variabel CRED_FILE``.
 
-When we configured the add ons earlier (mysqls and config) the settings were automatically persisted to the running server environments. So we’re now able to retrieve these settings and configure our database connection to use them. It’s really handy as we don’t need to do too much to make use of the options.
+Ketika kami dikonfigurasi add ons sebelumnya (mysqls dan config) pengaturan yang secara otomatis bertahan dengan lingkungan server berjalan. Jadi kita sekarang dapat mengambil pengaturan ini dan mengkonfigurasi koneksi database kami untuk menggunakannya. Ini benar-benar berguna karena kita tidak perlu melakukan terlalu banyak untuk memanfaatkan opsi.
 
-    if (!empty($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localdomain') === FALSE) {
-        // Parse the json file with ADDONS credentials
-        $string = file_get_contents($_ENV['CRED_FILE'], false);
+    if (! empty ($ _ SERVER ['HTTP_HOST']) && strpos ($ _ SERVER ['HTTP_HOST'], 'localdomain') === FALSE) {
+        // Parse file json dengan addons kredensial
+        $ String = file_get_contents ($ _ ENV ['CRED_FILE'], false);
 
-        if ($string == false) {
-            die('FATAL: Could not read credentials file');
+        if ($ string == false) {
+            die ('FATAL: Tidak dapat membaca berkas kredensial');
         }
 
-        $creds = json_decode($string, true);
+        $ Creds = json_decode ($ string, true);
     }
 
-####5.1.2 Enable the MySQL Database Configuration
+#### 5.1.2 Mengaktifkan Konfigurasi Database MySQL
 
-With the ``CRED_FILE`` information available, we set the database name, username, password and hostname automatically, as below:
+Dengan `` informasi CRED_FILE`` tersedia, kami menetapkan nama database, username, password dan nama host secara otomatis, seperti di bawah ini:
 
-	'db'=>array(
-		'connectionString' => 'mysql:host=' . $creds["MYSQLS"]["MYSQLS_HOSTNAME"] . ';dbname=' . $creds["MYSQLS"]["MYSQLS_DATABASE"],
-		'emulatePrepare' => true,
-		'username' => $creds["MYSQLS"]["MYSQLS_USERNAME"],
-		'password' => $creds["MYSQLS"]["MYSQLS_PASSWORD"],
-		'charset' => 'utf8',
-	),
+'Db' ​​=> array (
+'ConnectionString' => 'mysql: host ='. $ Creds ["MYSQLS"] ["MYSQLS_HOSTNAME"]. '; Dbname ='. $ Creds ["MYSQLS"] ["MYSQLS_DATABASE"],
+'EmulatePrepare' => benar,
+'Username' => $ creds ["MYSQLS"] ["MYSQLS_USERNAME"],
+'Password' => $ creds ["MYSQLS"] ["MYSQLS_PASSWORD"],
+'Charset' => 'utf8',
+),
 
-####5.1.3 Enable Database Logging
+#### 5.1.3 Aktifkan database Logging
 
-Now that the database is configured, we enable logging, with the CDbLogRoute class, specifying the connectionID to be that of our database, 'db'. Now, we have database logging enabled and ready.
+Sekarang database dikonfigurasi, kita mengaktifkan logging, dengan kelas CDbLogRoute, menentukan connectionID bahwa dari database kami, 'db'. Sekarang, kami memiliki database logging diaktifkan dan siap.
 
-We also enable ``autoCreateLogTable``, which will create the database logging table automatically for us, if we don't initialise it with the SQL schema later. We're going to, but this way, you see that you don't have to as well as see the table schema. So whichever way you go, you're covered.
+Kami juga mengaktifkan `` autoCreateLogTable``, yang akan membuat tabel database penebangan secara otomatis bagi kita, jika kita tidak menginisialisasinya dengan skema SQL nanti. Kita akan, tapi cara ini, Anda melihat bahwa Anda tidak harus serta melihat skema tabel. Jadi cara mana Anda pergi, Anda tertutup.
 
-We're sticking with the default logging levels of error and warning. So if you want to have more levels enabled, please change this to suit your needs.
+Kami bertahan dengan tingkat standar penebangan kesalahan dan peringatan. Jadi jika Anda ingin memiliki tingkat lebih diaktifkan, ubah ini sesuai dengan kebutuhan Anda.
 
-	'log'=>array(
-		'class'=>'CLogRouter',
-		'routes'=>array(
-			array(
-				'class'=>'CDbLogRoute',
-				'autoCreateLogTable' => 1,
-				'connectionID' => 'db',
-				'levels'=>'error, warning',
-			),
-		),
-	),
+'Log' => array (
+'Kelas' => 'CLogRouter',
+'Rute' => array (
+array (
+'Kelas' => 'CDbLogRoute',
+'AutoCreateLogTable' => 1,
+'ConnectionID' => 'db',
+'Tingkat' => 'kesalahan, peringatan',
+),
+),
+),
 
-You can find out more about the class in [the online documentation](http://www.yiiframework.com/doc/api/1.1/CDbLogRoute/).
+Anda dapat mengetahui lebih lanjut tentang kelas di [dokumentasi online] (http://www.yiiframework.com/doc/api/1.1/CDbLogRoute/).
 
-####5.1.4 Enable Caching with APC
+#### 5.1.4 Mengaktifkan Caching dengan APC
 
-To enable caching of our applications, we then enable the 'cache' module using the ``system.caching.CApcCache`` class. With these done, we're just about ready to go.
+Untuk mengaktifkan caching aplikasi kami, kami kemudian mengaktifkan modul 'tembolok' menggunakan `` kelas system.caching.CApcCache``. Dengan melakukan ini, kami sudah siap untuk pergi.
 
-	'cache'=>array(
-        'class'=>'system.caching.CApcCache',
+'Cache' => array (
+        'Kelas' => 'system.caching.CApcCache',
     ),
 
-You can find out more about the class in [the online documentation](http://www.yiiframework.com/doc/api/1.1/CApcCache).
+Anda dapat mengetahui lebih lanjut tentang kelas di [dokumentasi online] (http://www.yiiframework.com/doc/api/1.1/CApcCache).
 
-###5.3 index.php
+### 5.3 index.php
 
-Initially, ``index.php`` will use the ``main.php`` configuration file as so:
+Awalnya, `` index.php`` akan menggunakan `file konfigurasi main.php``` sebagai begitu:
 
-    $config = dirname(__FILE__) . '/protected/config/main.php';
+    $ Config = dirname (__ FILE__). '/protected/config/main.php';
 
-But we need to change that based on the environment we're in, as determined by the *APPLICATION_ENV* value we set with the configs add-on. So change ``index.php`` to be as follows:
+Tapi kita perlu mengubah bahwa berdasarkan lingkungan kita berada di, sebagaimana ditentukan oleh * APPLICATION_ENV * nilai yang kita set dengan konfigurasi add-on. Jadi perubahan `` index.php`` menjadi sebagai berikut:
 
-    if (!empty($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localdomain') === FALSE) {
-        // Parse the json file with ADDONS credentials
-        $string = file_get_contents($_ENV['CRED_FILE'], false);
+    if (! empty ($ _ SERVER ['HTTP_HOST']) && strpos ($ _ SERVER ['HTTP_HOST'], 'localdomain') === FALSE) {
+        // Parse file json dengan addons kredensial
+        $ String = file_get_contents ($ _ ENV ['CRED_FILE'], false);
 
-        if ($string == false) {
-            die('FATAL: Could not read credentials file');
+        if ($ string == false) {
+            die ('FATAL: Tidak dapat membaca berkas kredensial');
         }
 
-        $creds = json_decode($string, true);
+        $ Creds = json_decode ($ string, true);
 
-        // Now getenv('APPLICATION_ENV') should work:
-        $entryScript = $creds['CONFIG']['CONFIG_VARS']['APPLICATION_ENV'];
+        // Sekarang getenv ('APPLICATION_ENV') harus bekerja:
+        $ EntryScript = $ creds ['CONFIG'] ['CONFIG_VARS'] ['APPLICATION_ENV'];
 
-    } else {
-        $entryScript = 'development';
+    } Else {
+        $ EntryScript = 'pembangunan';
     }
 
-    $config = dirname(__FILE__) . '/protected/config/' . $entryScript . '.php';
+    $ Config = dirname (__ FILE__). '/ Protected / config /'. $ EntryScript. 'Php';
 
-Now, ``index.php`` will load the configuration file based on *APPLICATION_ENV* automatically for us.
+Sekarang, `` index.php`` akan memuat file konfigurasi berdasarkan * APPLICATION_ENV * otomatis bagi kita.
 
-##6. Database Schema
+## 6. Database Schema
 
-Ok, next we need to create a basic database schema for storing both the session and log information. To save time, add the following to a SQL file called ``Yii Framework_CloudKilat_init.sql``, ready to be used to initialise the database next.
+Ok, kita perlu membuat skema database dasar untuk menyimpan baik sesi dan informasi log. Untuk menghemat waktu, tambahkan berikut ke file SQL yang disebut `` Yii Framework_CloudKilat_init.sql``, siap digunakan untuk menginisialisasi database berikutnya.
 
-    --
-    -- Table structure for table `YiiLog`
-    --
+    -
+    - Struktur tabel untuk tabel `YiiLog`
+    -
 
     DROP TABLE IF EXISTS `YiiLog`;
-    /*!40101 SET @saved_cs_client     = @@character_set_client */;
-    /*!40101 SET character_set_client = utf8 */;
+    ! / * 40101 SETsaved_cs_client =@@character_set_client * /;
+    ! / * 40101 SET character_set_client = utf8 * /;
     CREATE TABLE `YiiLog` (
-      `id` int(11) NOT NULL AUTO_INCREMENT,
-      `level` varchar(128) DEFAULT NULL,
-      `category` varchar(128) DEFAULT NULL,
-      `logtime` int(11) DEFAULT NULL,
-      `message` text,
+      `Id` int (11) NOT NULL AUTO_INCREMENT,
+      `Level` varchar (128) DEFAULT NULL,
+      `Category` varchar (128) DEFAULT NULL,
+      `Logtime` int (11) DEFAULT NULL,
+      `Teks message`,
       PRIMARY KEY (`id`)
-    ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-    /*!40101 SET character_set_client = @saved_cs_client */;
+    ) ENGINE = MyISAM AUTO_INCREMENT = 2 DEFAULT CHARSET = latin1;
+    ! / * 40101 SET character_set_client =saved_cs_client * /;
 
-    --
-    -- Table structure for table `tbl_user`
-    --
+    -
+    - Struktur tabel untuk tabel `tbl_user`
+    -
 
     DROP TABLE IF EXISTS `tbl_user`;
-    /*!40101 SET @saved_cs_client     = @@character_set_client */;
-    /*!40101 SET character_set_client = utf8 */;
+    ! / * 40101 SETsaved_cs_client =@@character_set_client * /;
+    ! / * 40101 SET character_set_client = utf8 * /;
     CREATE TABLE `tbl_user` (
-      `id` int(11) NOT NULL AUTO_INCREMENT,
-      `username` varchar(128) NOT NULL,
-      `password` varchar(128) NOT NULL,
-      `email` varchar(128) NOT NULL,
+      `Id` int (11) NOT NULL AUTO_INCREMENT,
+      `Username` varchar (128) NOT NULL,
+      `Password` varchar (128) NOT NULL,
+      `Email` varchar (128) NOT NULL,
       PRIMARY KEY (`id`)
-    ) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
-    /*!40101 SET character_set_client = @saved_cs_client */;
+    ) ENGINE = MyISAM AUTO_INCREMENT = 22 DEFAULT CHARSET = latin1;
+    ! / * 40101 SET character_set_client =saved_cs_client * /;
 
-Now, in the shell, we're going to load the data in to the remote mysql instance that we created earlier. To do so, run the following command, changing the respective options with your configuration settings, doing this for both default and testing:
+Sekarang, di shell, kita akan memuat data ke dalam mysql contoh remote yang kita buat sebelumnya. Untuk melakukannya, jalankan perintah berikut, mengubah pilihan masing-masing dengan pengaturan konfigurasi Anda, melakukan hal ini untuk kedua standar dan pengujian:
 
-    mysql -u <database_username> -p \
-        -h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
-        --ssl-ca=mysql-ssl-ca-cert.pem <database_name> < Yii Framework_CloudKilat_init.sql
+    mysql -u <database_username> p \
+        h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
+        --ssl-ca = mysql-ssl-ca-cert.pem <database_name> <Yii Framework_CloudKilat_init.sql
 
-In the command above, you can see a reference to a **.pem** file. This can be downloaded from: [http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem](http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem). All being well, the command will finish silently, loading the data. You can check that all's gone well with following commands:
+Pada perintah di atas, Anda dapat melihat referensi ke pem ** berkas **.. Ini dapat didownload dari: [http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem](http://s3.amazonaws.com/rds-downloads/mysql-ssl-ca-cert.pem). Semua yang baik, perintah akan selesai diam-diam, memuat data. Anda dapat memeriksa bahwa semua sudah pergi baik dengan perintah berikut:
 
-    mysql -u <database_username> -p \
-        -h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
-        --ssl-ca=mysql-ssl-ca-cert.pem <database_name>
+    mysql -u <database_username> p \
+        h mysqlsdb.co8hm2var4k9.eu-west-1.rds.amazonaws.com \
+        --ssl-ca = mysql-ssl-ca-cert.pem <database_name>
 
-    show tables;
+    menampilkan tabel;
 
-This will show you the tables from the SQL file.
+Ini akan menunjukkan tabel dari file SQL.
 
-Now that that's done, commit the changes we made earlier and push and deploy both environments again so that the new information will be used. This can be done quickly with the following commands:
+Sekarang itu selesai, melakukan perubahan yang kami buat sebelumnya dan mendorong dan menyebarkan kedua lingkungan lagi sehingga informasi baru akan digunakan. Hal ini dapat dilakukan dengan cepat dengan perintah berikut:
 
-    // commit the changes
-    git commit -m "changed to store log and session in mysql and auto-determine environment"
+    // Melakukan perubahan
+    git komit -m "berubah untuk menyimpan log dan sesi di mysql dan auto-menentukan lingkungan"
 
-    // deploy the default branch
-    ironcliapp APP_NAME/default push
-    ironcliapp APP_NAME/default deploy
+    // Menyebarkan cabang default
+    ironcliapp APP_NAME / dorongan bawaan
+    ironcliapp APP_NAME / default menyebarkan
 
-    git checkout testing
-    git merge master
+    pengujian checkout git
+    Master menggabungkan git
 
-    // deploy the testing branch
-    ironcliapp APP_NAME/testing push
-    ironcliapp APP_NAME/testing deploy
+    // Menyebarkan cabang pengujian
+    ironcliapp APP_NAME / pengujian dorongan
+    ironcliapp APP_NAME / pengujian menyebarkan
 
-##7. Review the Deployment
+## 7. Tinjau Deployment yang
 
-With that completed, then have a look at both your deployments to ensure that they're working.
-You should see output similar to that below, in figure 2.
+Dengan itu selesai, maka kita lihat baik penyebaran Anda untuk memastikan bahwa mereka bekerja.
+Anda harus melihat output mirip dengan yang di bawah ini, pada gambar 2.
 
-![Successful Deployment](/static/apps/images/yii-framework-running.png)
+! [Deployment Sukses] (/ statis / apps / gambar / yii-kerangka-running.png)
 
-###7.1 Deployment Problems
+### 7.1 Masalah Deployment
 
-If you have any issues deploying the Yii Framework application, then please consult the log files. There are, currently, two available, these are **deploy** and **error**. As the names suggest, deploy provides an overview of the deployment process and error shows any and all PHP errors to the extend allowed by your current logging level.
+Jika Anda memiliki masalah penggelaran aplikasi Yii Framework, maka silakan baca file log. Ada, saat ini, dua tersedia, ini adalah ** menyebarkan ** dan ** ** kesalahan. Sebagai nama menyarankan, menyebarkan memberikan gambaran tentang proses penyebaran dan error menunjukkan kesalahan PHP setiap dan semua ke memperpanjang diperbolehkan oleh tingkat penebangan Anda saat ini.
 
-To view the information, run the following commands respectively:
+Untuk melihat informasi ini, jalankan perintah berikut masing-masing:
 
-####7.1.1 Deployment
+#### 7.1.1 Deployment
 
-    ironcliapp APP_NAME/default log deploy
+    ironcliapp APP_NAME / default log menyebarkan
 
-####7.1.1 Errors
+#### 7.1.1 Kesalahan
 
-    ironcliapp APP_NAME/default log error
+    ironcliapp APP_NAME / default error log
 
-The commands output information in a [UNIX tail](http://en.wikipedia.org/wiki/Tail_%28Unix%29) like fashion. So just call them and cancel the commend when you are no longer interested in the output.
+Perintah output informasi dalam [UNIX ekor] (http://en.wikipedia.org/wiki/Tail_%28Unix%29) seperti fashion. Jadi hanya memanggil mereka dan membatalkan memuji ketika Anda tidak lagi tertarik pada output.
 
-##8. All done
+## 8. Semua selesai
 
-With that, you should be up and running, ready to create your next, amazing, PHP web application, using Yii Framework. If you want to save yourself some time, you can clone a copy of the modified Yii Framework source from the CloudKilat Github repository. If you have any issues, feel free to email [support@cloudkilat.com](mailto:support@cloudkilat.com).
+Dengan itu, Anda harus bangun dan berjalan, siap untuk membuat berikutnya, menakjubkan, aplikasi PHP web Anda, menggunakan Yii Kerangka. Jika Anda ingin menyelamatkan diri beberapa waktu, Anda dapat mengkloning salinan dimodifikasi sumber Yii Framework dari repositori CloudKilat Github. Jika Anda memiliki masalah apapun, jangan ragu untuk email [support@cloudkilat.com] (mailto: support@cloudkilat.com).
 
-##Links
+## Links
 
- * [Yii Framework](http://www.yiiframework.com/)
- * [Yii on Wikipedia](http://en.wikipedia.org/wiki/Yii)
- * [Yii on Twitter](https://twitter.com/yiiframework)
- * [Learning Yii from Larry Ullman](http://www.larryullman.com/series/learning-the-yii-framework/)
-
+ * [Yii Kerangka] (http://www.yiiframework.com/)
+ * [Yii di Wikipedia] (http://en.wikipedia.org/wiki/Yii)
+ * [Yii di Twitter] (https://twitter.com/yiiframework)
+ * [Belajar Yii dari Larry Ullman] (http://www.larryullman.com/series/learning-the-yii-framework/)

@@ -1,106 +1,104 @@
+Cron # Add-on
 
-# Cron Add-on
+## Apa cronjobs?
 
-## What are cronjobs?
+Pada sistem UNIX [cronjobs] (http://en.wikipedia.org/wiki/Cron) Itu adalah perintah
+Berkala Dilaksanakan. Kami CloudKilat Namun, tidak ada satu node Itu
+kita dapat menjalankan cronjob tersebut. The Oleh karena itu kami CloudKilat cronjobs panggilan berkala
+Menentukan URL untuk Anda.
 
-On UNIX systems [cronjobs](http://en.wikipedia.org/wiki/Cron) are commands that
-are periodically executed. On CloudKilat however, there is no one node that
-the cronjob can run on. Therefore cronjobs on CloudKilat are periodical calls
-to a URL you specify.
+## Bagaimana cara kerjanya?
 
-## How does it work?
+The Cron Add-on Memungkinkan Anda untuk memanggil URL dalam interval tertentu, misalnya emas harian
+jam. Ketika Anda menambahkan cron per jam di 14:45, panggilan berikutnya akan dijalankan pada
+03:45. Untuk Cron harian Ini akan terulang kembali pada hari berikutnya di 14:45. The Cron
+Add-on Apakah tidak menjamin URL hanya disebut ounce kadaluarsa per interval.
 
-The Cron Add-on allows you to call an URL in a specific interval, e.g. daily or
-hourly. When you add an hourly cron at 2.45pm, the next call will run at
-3.45pm. For the daily Cron it would reoccur the next day at 2.45pm. The Cron
-Add-on does not guarantee a URL is only called once per interval.
-
-Cronjobs are regular requests against your app and are subject to the same 55s
+Cronjobs adalah permintaan rutin terhadap aplikasi Anda dan tunduk pada 55 sama
 timelimit.
 
-If you need more control over when and how often tasks are run and/or have
-tasks that take longer than 55 seconds we recommend using the
-[Worker](/Add-on Documentation/Data Processing/Worker.md) Add-on.
+Jika Anda membutuhkan lebih banyak kontrol atas tugas Kapan dan Seberapa sering dijalankan dan / atau dimiliki
+Itu tugas membawa serta dari 55 detik kami sarankan menggunakan
+[Pekerja] (/ Add-on Dokumentasi / Pengolahan Data / Worker.md) Add-on.
 
-## Adding the Cron Add-on
+## Menambahkan Cron Add-on
 
-Before you can add a Cron job, the Add-on itself has to be added:
-
-~~~
-$ ironcliapp APP_NAME/DEP_NAME addon.add cron.OPTION
-~~~
-
-As always the different options are listed on the [Cron Add-on](/Add-on Documentation/Deployment/Cron.md) page.
-
-## Adding a url for the Cron job
-
-To call an URL with the specific interval you write it as the parameter:
+Sebelum Anda dapat menambahkan pekerjaan Cron, Add-on Hakikat yang Memiliki Untuk ditambahkan:
 
 ~~~
-# for the default deployment
-$ ironcliapp APP_NAME/default cron.add http[s]://[user:password@]APP_NAME.kilatiron.net
-# for any additional deployment
-$ ironcliapp APP_NAME/DEP_NAME cron.add http[s]://[user:password@]DEP_NAME.APP_NAME.kilatiron.net
+$ APP_NAME ironcliapp / DEP_NAME addon.add cron.OPTION
 ~~~
 
-You can only add cron jobs calling a verified alias of the deployment. It is
-recommended to use https when sending credentials.
+Seperti biasa pilihan yang berbeda tercantum pada [Cron Add-on] (/ Dokumentasi Add-on / Deployment / Cron.md) halaman.
 
-## List Cron overview
+## Menambahkan url untuk pekerjaan Cron
 
-Get an overview of all your Cron jobs:
-
-~~~
-$ ironcliapp APP_NAME/DEP_NAME cron
-~~~
-
-## Cron details
-
-Get the details of a specific Cron job:
+Untuk memanggil URL dengan interval tertentu yang Anda tulis sebagai parameter:
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME cron CRON_ID
+# Untuk penyebaran standar
+$ APP_NAME ironcliapp / default cron.add http [s]: // [user: password @] APP_NAME.kilatiron.net
+# Untuk Setiap penyebaran tambahan
+$ APP_NAME ironcliapp / DEP_NAME cron.add http [s]: // [user: password @] DEP_NAME.APP_NAME.kilatiron.net
+~~~
+
+Anda hanya dapat menambahkan panggilan pekerjaan cron telah diverifikasi alias penyebaran. Ini
+dianjurkan untuk menggunakan https Saat mengirim kredensial.
+
+## Cron Daftar gambaran
+
+Mendapatkan gambaran dari semua pekerjaan Cron Anda:
+
+~~~
+$ APP_NAME ironcliapp / cron DEP_NAME
+~~~
+
+## Rincian Cron
+
+Dapatkan rincian pekerjaan Cron tertentu:
+
+~~~
+$ APP_NAME ironcliapp / cron DEP_NAME CRON_ID
 Cronjob
- job_id   : jobkqy7rdmg
- url      : http://APP_NAME.kilatiron.net
- next_run : 2011-05-09 19:39:39
- created  : 2011-05-05 19:39:39
- modified : 2011-05-05 19:39:39
+ job_id: jobkqy7rdmg
+ url: http://APP_NAME.kilatiron.net
+ next_run: 2011-05-09 19:39:39
+ dibuat: 2011/05/05 19:39:39
+ diubah: 2011/05/05 19:39:39
 ~~~
 
-## Removing a Cron job:
+## Menghapus pekerjaan Cron:
 
-You can remove a Cron job by the job_id
-
-~~~
-$ ironcliapp APP_NAME/DEP_NAME cron.remove JOB_ID
-~~~
-
-## Upgrading / downgrading the Cron addon
-
-In order to switch from a daily to hourly Cron or vice versa, use the up- or
-downgrade function
+Anda dapat menghapus pekerjaan Cron oleh job_id yang
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME addon.upgrade cron.free cron.hourly
+$ APP_NAME ironcliapp / DEP_NAME cron.remove job_id
 ~~~
 
-or
+## Upgrade / merendahkan Cron addon
+
+Dalam rangka untuk beralih dari harian per jam Cron atau sebaliknya, gunakan up atau
+Fungsi downgrade
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME addon.downgrade cron.hourly cron.free
+$ APP_NAME ironcliapp / DEP_NAME addon.upgrade cron.free cron.hourly
 ~~~
 
-Crons added with the free Add-on will stay daily and crons added with the
-hourly Add-on will stay hourly.
-
-## Removing the Cron Add-on
-
-Removing the Add-on itself can be done with:
+emas
 
 ~~~
-$ ironcliapp APP_NAME/DEP_NAME addon.remove cron.OPTION
+$ APP_NAME ironcliapp / DEP_NAME addon.downgrade cron.hourly cron.free
 ~~~
 
-Please note: Removing the Add-on will not automatically remove all Cron jobs.
+Cron menambahkan dengan gratis add-on akan tinggal dengan harian dan menambahkan cron
+jam Add-on akan tetap per jam.
 
+## Melepaskan Cron Add-on
+
+Melepaskan add-on Hakikat dapat dilakukan dengan:
+
+~~~
+$ APP_NAME ironcliapp / DEP_NAME addon.remove cron.OPTION
+~~~
+
+Harap dicatat: Melepaskan add-on tidak akan secara otomatis menghapus semua pekerjaan Cron.

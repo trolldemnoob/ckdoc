@@ -1,210 +1,209 @@
-# Deploying a Zend2 Application
+# Menyebarkan Aplikasi Zend2
 
-In this tutorial we're going to show you how to deploy a Zend2 application on [CloudKilat].
+Dalam tutorial ini kita akan menunjukkan kepada Anda bagaimana untuk menggunakan aplikasi Zend2 pada [CloudKilat].
 
-The [example app] is a ready to deploy fork of the official ZendSkeletonApplication available on [github](https://github.com/zendframework/ZendSkeletonApplication).
+The [contoh aplikasi] adalah siap untuk menyebarkan garpu dari ZendSkeletonApplication resmi tersedia di [github] (https://github.com/zendframework/ZendSkeletonApplication).
 
-## The Zend2 Application Explained
+## The Zend2 Aplikasi Dijelaskan
 
-### Get the App
+### Dapatkan App
 
-First, clone the Zend2 application from our repository:
+Pertama, mengkloning aplikasi Zend2 dari repositori kami:
 
-~~~bash
-$ git clone https://github.com/cloudControl/php-zend2-example-app.git
-$ cd php-zend2-example-app
+~~~ Pesta
+$ Git clone https://github.com/cloudControl/php-zend2-example-app.git
+$ Cd php-zend2-contoh-aplikasi
 ~~~
 
-### Optional: Start the App Locally Using the PHP 5.4 Built-in Webserver
+### Opsional: Mulai App Lokal Menggunakan PHP 5.4 Built-in Webserver
 
-The app can be run locally with the PHP 5.4 built-in web server. Simply provide the local db credentials, install the dependencies using Composer, initialize the session table and then start the PHP 5.4 built-in web server.
+Aplikasi ini dapat dijalankan secara lokal dengan PHP 5.4 built-in web server. Cukup memberikan mandat db lokal, menginstal dependensi menggunakan Composer, menginisialisasi tabel sesi dan kemudian mulai PHP 5.4 built-in web server.
 
-Create the file `config/autoload/local.php` with the following code. Make sure to replace the `DATABASE`, `USERNAME` and `PASSWORD` placeholders.
+Membuat file `config / autoload / local.php` dengan kode berikut. Pastikan untuk mengganti `DATABASE`,` `username` dan penampung password`.
 
-~~~php
-<?php
+~~~ Php
+<? Php
 
-return array(
-	'db' => array(
-		'driver'         => 'Pdo',
-		'dsn'            => 'mysql:dbname=DATABASE;host=localhost',
-		'driver_options' => array(
-				PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
-		),
-		'username' => USERNAME,
-		'password' => PASSWORD,
-	)
+kembali array (
+'Db' ​​=> array (
+'Driver' => 'PDO',
+'Dsn' => 'mysql: dbname = DATABASE; host = localhost',
+'Driver_options' => array (
+PDO :: MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \' UTF8 \ ''
+),
+'Username' => USERNAME,
+'Password' => PASSWORD,
+)
 );
 ~~~
 
-~~~bash
-$ php composer.phar install
-$ php public/index.php init-session-table
-[SUCCESS] Session table created.
-$ cd public/
-$ php -S localhost:8888
+~~~ Pesta
+$ Php composer.phar menginstal
+$ Php publik / index.php init-sesi-tabel
+[SUKSES] Sesi meja dibuat.
+$ Cd publik /
+$ Php -S localhost: 8888
 ~~~
 
-Open [localhost:8888](http://localhost:8888/) in your browser to visit the local app.
+Terbuka [localhost: 8888] (http: // localhost: 8888 /) di browser Anda untuk mengunjungi aplikasi lokal.
 
-### Read Credentials from the Environment and Write the Log to Syslog
+### Baca Kredensial dari Lingkungan dan Tuliskan Log untuk Syslog
 
-The code in `config/autoload/global.php` is pretty straightforward. If the environment variable `CRED_FILE` is set, the `get_credentials()` method is used to read the JSON file and return the db credentials as part of the Zend 2 config.
+Kode di `config / autoload / global.php` adalah cukup sederhana. Jika variabel lingkungan `CRED_FILE` diatur,` get_credentials () `metode yang digunakan untuk membaca file JSON dan mengembalikan kepercayaan db sebagai bagian dari Zend 2 konfigurasi.
 
-We also configure the logger to log to syslog.
+Kami juga mengkonfigurasi logger untuk log ke syslog.
 
-~~~php
-<?php
-	
-function get_credentials() {
-	// read the credentials file
-	$creds_content = file_get_contents($_ENV['CRED_FILE'], false);
-	if ($creds_content == false) {
-		throw new Exception('Could not read credentials file');
-	}
-	// the file contains a JSON string, decode it and return an associative array
-	$creds = json_decode($creds_content, true);
+~~~ Php
+<? Php
 
-	if (!array_key_exists('MYSQLS', $creds)){
-		throw new Exception('No MySQL credentials found. Please make sure you have added the mysqls addon.');
-	}
+get_credentials function () {
+// Membaca kredensial berkas
+$ Creds_content = file_get_contents ($ _ ENV ['CRED_FILE'], false);
+if ($ creds_content == false) {
+melempar Exception baru ('Tidak dapat membaca berkas kredensial');
+}
+// File berisi string JSON, decode dan mengembalikan array asosiatif
+$ Creds = json_decode ($ creds_content, true);
 
-	$database_host = $creds["MYSQLS"]["MYSQLS_HOSTNAME"];
-	$database_name = $creds["MYSQLS"]["MYSQLS_DATABASE"];
-	$database_user = $creds["MYSQLS"]["MYSQLS_USERNAME"];
-	$database_password = $creds["MYSQLS"]["MYSQLS_PASSWORD"];
-
-	return array(
-		'driver'         => 'Pdo',
-		'dsn'            => sprintf('mysql:dbname=%s;host=%s', $database_name, $database_host),
-		'driver_options' => array(
-			PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
-		),
-		'username' => $database_user,
-		'password' => $database_password,
-	);
+if (! array_key_exists ('MYSQLS', $ creds)) {
+melempar Exception baru ('. Tidak ada MySQL identitasnya ditemukan Pastikan Anda telah menambahkan mysqls addon.');
 }
 
-$config = array();
+$ Database_host = $ creds ["MYSQLS"] ["MYSQLS_HOSTNAME"];
+$ Database_name = $ creds ["MYSQLS"] ["MYSQLS_DATABASE"];
+$ Database_user = $ creds ["MYSQLS"] ["MYSQLS_USERNAME"];
+$ Database_password = $ creds ["MYSQLS"] ["MYSQLS_PASSWORD"];
 
-// If the app is running on the CloudKilat PaaS read the credentials
-// from the environment. Local db credentials should be put in local.php
-if (isset($_ENV['CRED_FILE'])) {
-	$config['db'] = get_credentials();
+kembali array (
+'Driver' => 'PDO',
+'Dsn' => sprintf ('mysql: dbname =% s; host =% s', $ database_name, $ database_host),
+'Driver_options' => array (
+PDO :: MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \' UTF8 \ ''
+),
+'Username' => $ database_user,
+'Password' => $ database_password,
+);
 }
 
-$config['service_manager'] = array(
-	'factories' => array(
-		'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
-		'Zend\Log\Logger' => function(){
-			$logger = new Zend\Log\Logger;
-			$writer = new Zend\Log\Writer\Syslog();
-			if (!endsWith($_ENV['DEP_NAME'], '/default')) {
-				$writer->addFilter(Zend\Log\Logger::ERR);
-			}
-			$logger->addWriter($writer);
-			return $logger;
-		}
-	),
-	'aliases' => array(
-		'db' => 'Zend\Db\Adapter\Adapter'
-	)
+$ Config = array ();
+
+// Jika aplikasi berjalan pada CloudKilat PaaS membaca kredensial
+// Dari lingkungan. Kredensial db lokal harus dimasukkan ke dalam local.php
+if (isset ($ _ ENV ['CRED_FILE'])) {
+$ Config ['db'] = get_credentials ();
+}
+
+$ Config ['service_manager'] = array (
+'Pabrik' => array (
+'Zend \ Db \ Adapter \ Adapter' => 'Zend \ Db \ Adapter \ AdapterServiceFactory',
+'Zend \ Log \ Logger' => function () {
+$ Logger = baru Zend \ Log \ Logger;
+$ Penulis = Zend baru \ Log \ Penulis \ Syslog ();
+if (! endsWith ($ _ ENV ['DEP_NAME'], '/ default')) {
+$ Writer-> addFilter (Zend \ Log \ Logger :: ERR);
+}
+$ Logger-> addWriter ($ writer);
+kembali $ logger;
+}
+),
+'Alias' => array (
+'Db' ​​=> 'Zend \ Db \ Adapter \ Adapter'
+)
 );
 
-return $config;
+kembali $ config;
 
 ~~~
 
-### Store Sessions in the Database
+### Sesi Simpan dalam Database
 
-Storing sessions on the local filesystem does not work well on a horizontally scaling platform like CloudKilat. Additionally the filesystem on CloudKilat is not persitent across deploys so all sessions are lost after each deploy.
+Menyimpan sesi pada sistem file lokal tidak bekerja dengan baik pada platform horizontal skala seperti CloudKilat. Selain filesystem di CloudKilat tidak persitent di menyebarkan sehingga semua sesi hilang setelah setiap menyebarkan.
 
-To avoid this, the app is preconfigured to store sessions using the previously configured connection in the database.
+Untuk menghindari hal ini, aplikasi telah dikonfigurasikan untuk menyimpan sesi menggunakan koneksi dikonfigurasi sebelumnya dalam database.
 
-The respective code lives in `module/Application/Module.php`. It uses the global database credentials and sets the built-in Zend 2 database session save handler as the default.
+Kode masing tinggal di `modul / Application / Module.php`. Ia menggunakan kredensial database global dan menetapkan sesi Database Zend 2 built-in save handler sebagai default.
 
-~~~php
+~~~ Php
 [...]
 
-class Module
+Modul kelas
 {
-    public function onBootstrap(MvcEvent $e)
+    fungsi publik onBootstrap (MvcEvent $ e)
     {
-    	// configure session to use database
-    	$config = $e->getApplication()->getServiceManager()->get('config');
-    	$dbAdapter = new \Zend\Db\Adapter\Adapter($config['db']);
-    	$sessionOptions = new \Zend\Session\SaveHandler\DbTableGatewayOptions();
-    	$sessionTableGateway = new \Zend\Db\TableGateway\TableGateway('session', $dbAdapter);
-    	$saveHandler = new \Zend\Session\SaveHandler\DbTableGateway($sessionTableGateway, $sessionOptions);
-    	$sessionManager = new \Zend\Session\SessionManager(NULL, NULL, $saveHandler);
-    	Container::setDefaultManager($sessionManager);
+    // Mengkonfigurasi sesi untuk menggunakan database
+    $ Config = $ e> getApplication () -> getServiceManager () -> mendapatkan ('config');
+    $ DbAdapter = baru \ Zend \ Db \ Adapter \ Adapter ($ config ['db']);
+    $ SessionOptions = baru \ Zend \ Session \ SaveHandler \ DbTableGatewayOptions ();
+    $ SessionTableGateway = baru \ Zend \ Db \ TableGateway \ TableGateway ('sesi', $ dbAdapter);
+    $ SaveHandler = baru \ Zend \ Session \ SaveHandler \ DbTableGateway ($ sessionTableGateway, $ sessionOptions);
+    $ SessionManager = baru \ Zend \ Session \ SessionManager (NULL, NULL, $ saveHandler);
+    Kontainer :: setDefaultManager ($ SessionManager);
 
 [...]
 ~~~
 
-## Pushing and Deploying your App
-Choose a unique name to replace the `APP_NAME` placeholder for your application and create it on the CloudKilat platform: 
+## Mendorong dan Menyebarkan App Anda
+Pilih nama yang unik untuk menggantikan `APP_NAME` tempat untuk aplikasi Anda dan membuatnya pada platform CloudKilat:
 
-~~~bash
-$ ironcliapp APP_NAME create php
+~~~ Pesta
+$ Ironcliapp APP_NAME membuat php
 ~~~
 
-Push your code to the application's repository, which triggers the deployment image build process:
+Mendorong kode Anda ke repositori aplikasi, yang memicu penyebaran gambar proses build:
 
-~~~bash
-$ ironcliapp APP_NAME/default push
-Counting objects: 2208, done.
-Delta compression using up to 4 threads.
-Compressing objects: 100% (771/771), done.
-Writing objects: 100% (2208/2208), 869.14 KiB | 180.00 KiB/s, done.
-Total 2208 (delta 1087), reused 2208 (delta 1087)
+~~~ Pesta
+$ Ironcliapp APP_NAME / dorongan bawaan
+Menghitung objek: 2208, dilakukan.
+Delta kompresi menggunakan sampai 4 benang.
+Mengompresi objek: 100% (771/771), dilakukan.
+Menulis objek: 100% (2208/2208), 869,14 KiB | 180.00 KiB / s, dilakukan.
+Total 2208 (delta 1087), kembali 2208 (delta 1087)
        
------> Receiving push
-       Submodule 'vendor/ZF2' (https://github.com/zendframework/zf2.git) registered for path 'vendor/ZF2'
-       Initialized empty Git repository in /data/applications/APP_NAME/git-push-92157c6dc50dfab545adbda2761e4ef5f2138dd9-sDyGf40f/builddir/vendor/ZF2/.git/
-       Submodule path 'vendor/ZF2': checked out '6022f490695b1c835070d9e5a81b45dc20b4a51c'
-       Loading composer repositories with package information
-       Installing dependencies (including require-dev)
-         - Installing zendframework/zendframework (2.2.1)
-           Downloading: 100%
+-----> Mendorong Menerima
+       Submodule 'vendor / ZF2' (https://github.com/zendframework/zf2.git) terdaftar untuk jalur 'vendor / ZF2'
+       Diinisialisasi repositori Git kosong di /data/applications/APP_NAME/git-push-92157c6dc50dfab545adbda2761e4ef5f2138dd9-sDyGf40f/builddir/vendor/ZF2/.git/
+       Submodule jalan 'vendor / ZF2': memeriksa '6022f490695b1c835070d9e5a81b45dc20b4a51c'
+       Repositori Memuat komposer dengan informasi paket
+       Instalasi dependensi (termasuk membutuhkan-dev)
+         - Instalasi ZendFramework / ZendFramework (2.2.1)
+           Download: 100%
        ...
-       Writing lock file
-       Generating autoload files
------> Zend 2.x Framework detected
------> Building image
------> Uploading image (3.1M)
+       Menulis file kunci
+       Menghasilkan file autoload
+-----> Zend Framework 2.x terdeteksi
+-----> Gambar Building
+-----> Gambar Mengunggah (3.1M)
        
-To ssh://APP_NAME@kilatiron.net/repository.git
- * [new branch]      master -> master
+Untuk ssh: //APP_NAME@kilatiron.net/repository.git
+ * [Cabang baru] Master -> Master
 ~~~
 
-Last but not least deploy the latest version of the app with the ironcliapp deploy command:
+Terakhir namun tidak sedikit menyebarkan versi terbaru dari aplikasi dengan ironcliapp yang menyebarkan perintah:
 
-~~~bash
-$ ironcliapp APP_NAME/default deploy
+~~~ Pesta
+$ Ironcliapp APP_NAME / default menyebarkan
 ~~~
 
-## Add the Required MySQL Database Add-on and Initialize the Session Table
+## Tambahkan Database Diperlukan MySQL Add-on dan Inisialisasi Tabel Sesi
 
-To store the sessions we need to add a database Add-on and initialize the table.
+Untuk menyimpan sesi kita perlu menambahkan database Add-on dan menginisialisasi meja.
 
-We are going to use [the MySQLs Add-on's free plan](https://community.CloudKilat.ch/tutorial/mysqls-add-on/). It provides a free shared database for testing and development.
+Kita akan menggunakan [yang MySQLs Add-on ini rencana bebas] (https://community.CloudKilat.ch/tutorial/mysqls-add-on/). Ini menyediakan database bersama gratis untuk pengujian dan pengembangan.
 
-Creating the session table is easy by executing the included init-session-table command in a run-container:
+Membuat tabel sesi mudah dengan menjalankan perintah init-sesi-tabel termasuk dalam run-wadah:
 
-~~~bash
-# add the Add-on
-$ ironcliapp APP_NAME/default addon.add mysqls.free
-# initialize the session table
-$ ironcliapp APP_NAME/default run "php code/public/index.php init-session-table"
-Connecting...
-[SUCCESS] Session table created.
-Connection to sshforwarder.kilatiron.net closed.
+~~~ Pesta
+# Tambahkan Add-on
+$ Ironcliapp APP_NAME / default addon.add mysqls.free
+# Menginisialisasi tabel sesi
+$ Ironcliapp APP_NAME / default run "kode php / public / index.php init-sesi-table"
+Menghubungkan ...
+[SUKSES] Sesi meja dibuat.
+Koneksi ke sshforwarder.kilatiron.net ditutup.
 ~~~
 
-Et voila, the app is now up and running at `http[s]://APP_NAME.kilatiron.net`.
+Et voila, app sekarang dan berjalan di `http [s]: // APP_NAME.kilatiron.net`.
 
 [PHP buildpack]: https://github.com/cloudControl/buildpack-php
 [CloudKilat]: http://www.cloudkilat.com/
-[example app]: https://github.com/cloudControl/php-zend2-example-app.git
-
+[Contoh aplikasi]: https://github.com/cloudControl/php-zend2-example-app.git

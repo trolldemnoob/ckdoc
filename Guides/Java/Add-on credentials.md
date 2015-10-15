@@ -1,83 +1,83 @@
-# Getting the Add-on Credentials
+# Mendapatkan Add-on Kredensial yang
 
-Each deployment gets different credentials for each Add-on. Providers can
-change these credentials at any time, so they shouldn't be hard-coded in the
-source code. If the credentials are not in the source code, they also won't
-appear in the version control and cause potential security issues.
+Setiap penyebaran mendapat mandat yang berbeda untuk masing-masing Add-on. Penyedia bisa
+mengubah mandat ini setiap saat, sehingga mereka tidak harus keras-kode dalam
+kode sumber. Jika kredensial tidak dalam kode sumber, mereka juga tidak akan
+muncul di kontrol versi dan menyebabkan masalah keamanan potensial.
 
-There are two ways to get the [Add-on credentials] in a Java app.
+Ada dua cara untuk mendapatkan [Add-on kredensial] dalam aplikasi Java.
 
-## Reading the Credentials from Environment Variables
+## Membaca Kredensial dari Variabel Lingkungan
 
-By default, each Add-on exposes its credentials in the environment. You can
-look up the individual environment variable names in the respective Add-on
-documentation. To read them, simply use the `System.getenv()` method in your code.
-Some examples for database Add-ons can be seen in the last section.
+Secara default, setiap Add-on mengekspos identitasnya di lingkungan. Kamu bisa
+mencari lingkungan individu nama variabel di masing Add-on
+dokumentasi. Untuk membacanya, cukup gunakan System.getenv () metode `` dalam kode Anda.
+Beberapa contoh untuk database Add-ons dapat dilihat di bagian terakhir.
 
-In case you don't want to expose these credentials in the environment, you can
-disable them by executing:
-~~~bash
-$ ironcliapp APP_NAME/DEP_NAME config.add SET_ENV_VARS=false
+Jika Anda tidak ingin mengekspos identitasnya tersebut di lingkungan, Anda bisa
+menonaktifkan mereka dengan menjalankan:
+~~~ Pesta
+$ Ironcliapp APP_NAME / DEP_NAME config.add SET_ENV_VARS = false
 ~~~
 
-The Add-on credentials can still be read from the credentials file, as explained in the next section.
+Add-on kredensial masih bisa dibaca dari mandat mengajukan, seperti yang dijelaskan di bagian selanjutnya.
 
-Note that there are some other interesting [environment variables]
-available in your deployment containers.
+Perhatikan bahwa ada beberapa [variabel lingkungan] menarik lainnya
+tersedia dalam wadah penyebaran Anda.
 
-## Reading the Credentials from the Credentials File
+## Membaca Kredensial dari Kredensial Berkas
 
-All the [Add-on credentials] can be found in a provided JSON file as well, which path
-is exposed in the `CRED_FILE` environment variable. You can see the format of that file locally:
+Semua [Add-on kredensial] dapat ditemukan di sebuah tersedia JSON file juga, yang jalan
+terkena di `variabel lingkungan CRED_FILE`. Anda dapat melihat format file yang lokal:
 
-~~~bash
-$ ironcliapp APP_NAME/DEP_NAME addon.creds
+~~~ Pesta
+$ Ironcliapp addon.creds APP_NAME / DEP_NAME
 ~~~
 
-We provide a small [CloudKilat credentials helper class] to get the Add-on credentials from the file.
-It requires [json-simple], a simple Java toolkit to encode or decode JSON text easily.
-To use it in your project, add it as a maven dependency:
-~~~xml
-<dependencies>
-    <dependency>
-        <groupId>com.googlecode.json-simple</groupId>
-        <artifactId>json-simple</artifactId>
-        <version>1.1</version>
-    </dependency>
-</dependencies>
+Kami menyediakan kecil [kredensial CloudKilat penolong kelas] untuk mendapatkan Add-on kredensial dari file tersebut.
+Hal ini membutuhkan [json-sederhana], Java toolkit sederhana untuk mengkodekan atau decode JSON teks dengan mudah.
+Untuk menggunakannya dalam proyek Anda, menambahkannya sebagai ketergantungan maven:
+~~~ Xml
+<Dependensi>
+    <Ketergantungan>
+        <GroupId> com.googlecode.json-sederhana </ groupId>
+        <ArtifactId> json-sederhana </ artifactId>
+        <Versi> 1.1 </ version>
+    </ Ketergantungan>
+</ Dependensi>
 ~~~
 
-Now you can get the credentials like this:
-~~~java
-// e.g. for MySQLs
-Credentials cr = Credentials.getInstance();
-String database = (String)cr.getCredential("MYSQLS_DATABASE", "MYSQLS");
+Sekarang Anda bisa mendapatkan mandat seperti ini:
+~~~ Java
+// Misal untuk MySQLs
+Kredensial cr = Credentials.getInstance ();
+String Database = (String) cr.getCredential ("MYSQLS_DATABASE", "MYSQLS");
 ~~~
 
-# Examples
+# Contoh
 
-CloudKilat offers a number of data storage solutions via the [Add-on Marketplace].
-Below you can find examples on how to access the Add-on
-credentials for MySQL.
+CloudKilat menawarkan sejumlah solusi penyimpanan data melalui [Add-on Marketplace].
+Di bawah ini Anda dapat menemukan contoh tentang cara untuk mengakses Add-on
+mandat untuk MySQL.
 
 ## MySQL
-To add a MySQL database, use the [MySQL Shared Add-on].
+Untuk menambahkan database MySQL, gunakan [MySQL Bersama Add-on].
 
-Here's a Java snippet that reads the database settings from the environment variables:
-~~~java
-String database = System.getenv("MYSQLS_DATABASE");
-String host 	= System.getenv("MYSQLS_HOSTNAME");
-int port 		= Integer.valueOf(System.getenv("MYSQLS_PORT"));
-String username = System.getenv("MYSQLS_USERNAME");
-String password = System.getenv("MYSQLS_PASSWORD");
+Berikut adalah potongan Java yang membaca pengaturan database dari variabel lingkungan:
+~~~ Java
+String Database = System.getenv ("MYSQLS_DATABASE");
+String host = System.getenv ("MYSQLS_HOSTNAME");
+int port = Integer.valueOf (System.getenv ("MYSQLS_PORT"));
+String username = System.getenv ("MYSQLS_USERNAME");
+Sandi String = System.getenv ("MYSQLS_PASSWORD");
 ~~~
-Remember, you can always refer to the addon.creds command to see the actual variable names and values.
+Ingat, Anda selalu dapat merujuk pada addon.creds perintah untuk melihat nama-nama variabel yang sebenarnya dan nilai-nilai.
 
-[Java application with MySQL]: https://github.com/cloudControl/java-mysql-example-app
+[Aplikasi Java dengan MySQL]: https://github.com/cloudControl/java-mysql-example-app
 [Add-on Marketplace]: http://www.cloudkilat.com/
-[environment variables]: /Platform%20Documentation.md/#environment-variables
-[Add-on credentials]: /Platform%20Documentation.md/#add-on-credentials
-[cred-env-vars]: /Platform%20Documentation.md/#enablingdisabling-credentials-environment-variables
-[json-simple]: http://code.google.com/p/json-simple/
-[CloudKilat credentials helper class]: https://gist.github.com/b350762c61fcc069b427
-[MySQL Shared Add-on]: /Add-on%20Documentation/Data%20Storage/MySQLs.md
+[Variabel lingkungan]: /Platform%20Documentation.md/#environment-variables
+[Add-on kredensial]: /Platform%20Documentation.md/#add-on-credentials
+[Cred-env-vars]: /Platform%20Documentation.md/#enablingdisabling-credentials-environment-variables
+[Json-sederhana]: http://code.google.com/p/json-simple/
+[CloudKilat kredensial helper class]: https://gist.github.com/b350762c61fcc069b427
+[MySQL Bersama Add-on]: /Add-on%20Documentation/Data%20Storage/MySQLs.md
